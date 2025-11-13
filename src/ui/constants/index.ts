@@ -43,6 +43,15 @@ export const ITEM_ORDER = [
   'dragon',
 ];
 
+export const ITEM_ASSETS: Record<string, {src: string; size?: number}> = {
+  bush: {src: '/assets/items/bush.png', size: 64},
+  tree: {src: '/assets/items/tree.png', size: 72},
+  house: {src: '/assets/items/house.png', size: 72},
+  mansion: {src: '/assets/items/mansion.png', size: 80},
+  bear: {src: '/assets/items/bear.png', size: 72},
+  tomb: {src: '/assets/items/tomb.png', size: 64},
+};
+
 // Pesos base para spawn aleatorio (puedes ajustar)
 export const ITEM_WEIGHTS: Record<string, number> = {
   bush: 60,

@@ -4,7 +4,7 @@ import {Link, useLocation} from 'react-router-dom';
 export function Header() {
   const loc = useLocation();
   return (
-    <header className="w-full bg-[#2f3a26] border-b border-slate-800 shadow-sm">
+    <header className="w-full border-b border-slate-800 shadow-sm">
       <div className="max-w-5xl mx-auto flex items-center justify-between p-3">
         <Link to="/" className="text-2xl font-bold">
           Merge Game

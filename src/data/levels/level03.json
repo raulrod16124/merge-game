@@ -21,6 +21,8 @@
     {"type": "tree", "x": 3, "y": 4}
   ],
 
+  "mapAsset": "/assets/maps/map-grass-2.jpg",
+
   "targetScore": 3800,
   "maxMoves": 54
 }

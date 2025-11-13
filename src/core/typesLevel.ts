@@ -26,6 +26,7 @@ export type LevelConfig = {
   // initial map (optional)
   // If provided, place these items when loading the level
   initialMap?: InitialItem[];
+  mapAsset?: string;
 
   // conditions
   targetScore?: number;

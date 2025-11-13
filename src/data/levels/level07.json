@@ -21,6 +21,8 @@
     {"type": "house", "x": 5, "y": 4}
   ],
 
+  "mapAsset": "/assets/maps/map-grass-2.jpg",
+
   "targetScore": 5300,
   "maxMoves": 58
 }

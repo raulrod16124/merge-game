@@ -21,6 +21,8 @@
     {"type": "bush", "x": 3, "y": 5}
   ],
 
+  "mapAsset": "/assets/maps/map-grass-2.jpg",
+
   "targetScore": 4200,
   "maxMoves": 55
 }
