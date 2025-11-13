@@ -21,7 +21,9 @@ export function Tile({x, y, item}: TileProps) {
 
   return (
     <div
-      className="w-16 h-16 bg-slate-700 rounded-xl flex items-center justify-center cursor-pointer hover:bg-slate-600 transition"
+      className={`w-20 h-20 flex items-center justify-center rounded-xl cursor-pointer transition-all 
+      ${item ? 'bg-emerald-600/80 hover:bg-emerald-500' : 'bg-slate-700/60 hover:bg-slate-600/80'} 
+      border border-slate-600 shadow-md`}
       onClick={handleClick}>
       {item && (
         <motion.div
@@ -30,7 +32,7 @@ export function Tile({x, y, item}: TileProps) {
           animate={{scale: 1, opacity: 1}}
           exit={{scale: 0.5, opacity: 0}}
           transition={{duration: 0.2}}
-          className="text-xl select-none">
+          className="text-3xl select-none">
           {emojiForType(item.type)}
         </motion.div>
       )}

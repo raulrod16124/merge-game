@@ -6,14 +6,14 @@ export function GameBoard() {
   const {cols, rows} = state.boardSize;
 
   const gridTemplate = {
-    gridTemplateColumns: `repeat(${cols}, 64px)`,
-    gridTemplateRows: `repeat(${rows}, 64px)`,
+    gridTemplateColumns: `repeat(${cols}, 80px)`,
+    gridTemplateRows: `repeat(${rows}, 80px)`,
   };
 
   return (
     <div className="flex flex-col items-center mt-8">
       <div
-        className="grid gap-1 bg-slate-800 p-3 rounded-2xl shadow-lg"
+        className="grid gap-2 bg-slate-800/80 p-4 rounded-2xl shadow-2xl border border-slate-700 backdrop-blur-sm"
         style={gridTemplate}>
         {Array.from({length: cols * rows}).map((_, index) => {
           const x = index % cols;

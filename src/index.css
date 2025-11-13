@@ -7,6 +7,6 @@ html,
 body,
 #root {
   height: 100%;
-  background-color: #0f172a; /* slate-900 */
+  background: radial-gradient(circle at top, #0f172a 0%, #020617 100%);
   color: white;
 }
