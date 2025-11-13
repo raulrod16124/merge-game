@@ -1,29 +1,59 @@
-export function emoji(t: string) {
-  switch (t) {
+// src/ui/constants.ts
+export function emoji(type: string) {
+  switch (type) {
     case 'bush':
       return '🌿';
     case 'tree':
       return '🌳';
     case 'house':
       return '🏠';
+    case 'mansion':
+      return '🏡';
     case 'castle':
       return '🏰';
+    case 'bear':
+      return '🐻';
+    case 'tomb':
+      return '🪦';
+    case 'church':
+      return '⛪';
+    case 'cathedral':
+      return '🏛️';
+    case 'treasure':
+      return '💎';
     case 'dragon':
       return '🐉';
-    case 'star':
-      return '🌟';
     default:
       return '❓';
   }
 }
 
-export const ITEM_ORDER = ['bush', 'tree', 'house', 'castle', 'dragon', 'star'];
+// Orden de aparición / progresión
+export const ITEM_ORDER = [
+  'bush',
+  'tree',
+  'house',
+  'mansion',
+  'castle',
+  'bear', // los osos entran en pool como "pieza que puede salir"
+  'tomb',
+  'church',
+  'cathedral',
+  'treasure',
+  'dragon',
+];
 
-export const ITEM_WEIGHTS = {
+// Pesos base para spawn aleatorio (puedes ajustar)
+export const ITEM_WEIGHTS: Record<string, number> = {
   bush: 60,
-  tree: 30,
-  house: 8,
-  castle: 2,
-  dragon: 0.5,
-  star: 0.1,
+  tree: 25,
+  house: 10,
+  mansion: 3,
+  castle: 1,
+  bear: 6, // osos relativamente raros (ajusta)
+  tomb: 0,
+  church: 0,
+  cathedral: 0,
+  treasure: 0,
+  dragon: 0,
 };

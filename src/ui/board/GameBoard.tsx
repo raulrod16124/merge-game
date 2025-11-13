@@ -1,13 +1,23 @@
 // src/ui/components/GameBoard.tsx
 import {useGameStore} from '@/state/gameStore';
 import {Tile} from './Tile';
-import {FloatingScore} from './FloatingScore';
+import {FloatingScore} from '../components/FloatingScore';
 import {AnimatePresence} from 'framer-motion';
+import {useEffect} from 'react';
+import {LEVELS} from '@/data/levels';
 
 export function GameBoard() {
   const {state, addItem, floatingScores, removeFloatingScore} = useGameStore();
 
   const {cols, rows} = state.boardSize;
+
+  useEffect(() => {
+    const load = async () => {
+      const {loadLevel} = useGameStore.getState();
+      loadLevel(LEVELS.level01); // 👈 CARGA EL NIVEL AQUÍ
+    };
+    load();
+  }, []);
 
   const gridStyle = {
     gridTemplateColumns: `repeat(${cols}, 80px)`,

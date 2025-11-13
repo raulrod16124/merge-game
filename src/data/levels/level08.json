@@ -1,0 +1,26 @@
+{
+  "id": "level08",
+  "name": "Wild Woods 1",
+  "boardSize": {"cols": 6, "rows": 6},
+
+  "maxBears": 5,
+  "bearSpawnRate": 0.3,
+  "minTurnsBeforeBearSpawn": 3,
+
+  "itemWeights": {
+    "bush": 54,
+    "tree": 30,
+    "house": 14,
+    "mansion": 2,
+    "bear": 1
+  },
+
+  "initialMap": [
+    {"type": "tree", "x": 1, "y": 0},
+    {"type": "house", "x": 3, "y": 3},
+    {"type": "bush", "x": 4, "y": 5}
+  ],
+
+  "targetScore": 5800,
+  "maxMoves": 60
+}

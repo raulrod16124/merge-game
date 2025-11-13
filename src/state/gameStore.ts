@@ -1,17 +1,11 @@
 // src/state/gameStore.ts
 import {create} from 'zustand';
-import {GameEngine} from '@/core/GameEngine';
+import {GameEngine, type MergeEvent} from '@/core/GameEngine';
 import type {GameState, Position} from '@/core/types';
+import type {LevelConfig} from '@/core/typesLevel';
 import {ITEM_ORDER, ITEM_WEIGHTS} from '@/ui/constants';
 
-/**
- * Versión robusta del store:
- * - Inicializa todo el estado antes de suscribirse
- * - En la suscripción obtiene engine.getLastMergeEvent() UNA vez
- * - Actualiza score y floatingScores de forma inmutable y segura
- * - Añade logs de diagnóstico (puedes comentarlos o eliminarlos luego)
- */
-
+/** Floating score effect */
 type FloatingScore = {
   id: string;
   x: number;
@@ -19,154 +13,181 @@ type FloatingScore = {
   points: number;
 };
 
+type WinLoseResult =
+  | {status: 'win'; reason: string; levelId: string}
+  | {status: 'fail'; reason: string; levelId: string}
+  | null;
+
 type GameStore = {
   engine: GameEngine;
   state: GameState;
+
   score: number;
+  moves: number;
   floatingScores: FloatingScore[];
+
   nextItem: string;
-  highestUnlocked: string;
+  currentLevel: LevelConfig | null;
+
+  // Actions
   addItem: (pos: Position) => boolean;
-  removeFloatingScore: (id: string) => void;
-  resetBoard: () => void;
   generateNextItem: () => void;
-  updateHighestUnlocked: (type: string) => void;
+  removeFloatingScore: (id: string) => void;
+  loadLevel: (lvl: LevelConfig) => void;
+  resetLevel: () => void;
+  checkWinLose: () => WinLoseResult;
 };
 
 export const useGameStore = create<GameStore>((set, get) => {
   const engine = new GameEngine(6, 6);
 
-  // 1) Estado inicial completo y coherente
-  set({
-    engine,
-    state: engine.getState(),
-    score: 0,
-    floatingScores: [],
-    nextItem: 'bush',
-    highestUnlocked: 'tree',
-  });
+  /** Attach engine subscription ONCE */
+  engine.subscribe((newState, mergeEvents) => {
+    set(prev => {
+      const safePrev = {
+        engine: prev?.engine ?? engine,
+        state: newState,
+        score: prev?.score ?? 0,
+        moves: prev?.moves ?? 0,
+        floatingScores: prev?.floatingScores ?? [],
+        nextItem: prev?.nextItem ?? 'bush',
+        currentLevel: prev?.currentLevel ?? null,
+      };
 
-  // 2) Suscripción al engine: lectura segura del mergeEvent y actualización del store
-  engine.subscribe(newState => {
-    try {
-      const mergeEvent = engine.getLastMergeEvent();
+      let newScore = safePrev.score;
+      let newFloating = safePrev.floatingScores;
 
-      // LOG para depurar (borra después si quieres)
-      if (mergeEvent) {
-        // eslint-disable-next-line no-console
-        console.log('[GameStore] MergeEvent:', mergeEvent);
-      }
-
-      set(prev => {
-        // prev ya existe porque hicimos un set inicial, pero por seguridad:
-        const safePrev = prev ?? {
-          score: 0,
-          floatingScores: [],
-          nextItem: 'bush',
-          highestUnlocked: 'tree',
-          engine,
-          state: newState,
-        };
-
-        let newScore = safePrev.score;
-        let newFloating = safePrev.floatingScores;
-
-        if (mergeEvent) {
-          // 1) sumar puntos
-          newScore = safePrev.score + (mergeEvent.points ?? 0);
-
-          // 2) crear entrada flotante (inmutable)
+      if (mergeEvents && mergeEvents.length > 0) {
+        for (const ev of mergeEvents) {
+          newScore += ev.points;
           newFloating = [
-            ...safePrev.floatingScores,
+            ...newFloating,
             {
-              id: mergeEvent.toItem.id,
-              x: mergeEvent.toItem.pos.x,
-              y: mergeEvent.toItem.pos.y,
-              points: mergeEvent.points,
+              id: ev.toItem.id,
+              x: ev.toItem.pos.x,
+              y: ev.toItem.pos.y,
+              points: ev.points,
             },
           ];
         }
+      }
 
-        // 3) devolver estado nuevo (state actualizado por engine)
-        return {
-          state: newState,
-          score: newScore,
-          floatingScores: newFloating,
-          nextItem: safePrev.nextItem,
-          highestUnlocked: safePrev.highestUnlocked,
-          engine: safePrev.engine,
-        };
-      });
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error('[GameStore] Error handling mergeEvent:', err);
-    }
+      return {
+        ...safePrev,
+        state: newState,
+        score: newScore,
+        floatingScores: newFloating,
+      };
+    });
   });
 
-  // 3) API pública del store
   return {
     engine,
     state: engine.getState(),
-    score: 0,
-    floatingScores: [],
-    nextItem: 'bush',
-    highestUnlocked: 'tree',
 
+    score: 0,
+    moves: 0,
+    floatingScores: [],
+
+    nextItem: 'bush',
+    currentLevel: null,
+
+    /** Add item → increments moves → engine.addItem */
     addItem: pos => {
       const type = get().nextItem;
       const ok = engine.addItem(type, pos);
       if (!ok) return false;
-      // tras añadir, generar siguiente item
+
+      set(prev => ({moves: prev.moves + 1}));
       get().generateNextItem();
+
       return true;
     },
 
+    /** Remove floating score after animation */
     removeFloatingScore: id =>
       set(prev => ({
         floatingScores: prev.floatingScores.filter(fs => fs.id !== id),
       })),
 
-    resetBoard: () => {
-      engine.resetBoard();
-      // reset store state coherente con engine
-      set({
-        state: engine.getState(),
-        score: 0,
-        floatingScores: [],
-        nextItem: 'bush',
-        highestUnlocked: 'tree',
-      });
-    },
-
+    /** Weighted random next item */
     generateNextItem: () => {
-      const highest = get().highestUnlocked;
+      const lvl = get().currentLevel;
+      if (!lvl) {
+        set({nextItem: 'bush'});
+        return;
+      }
 
-      const allowedItems = ITEM_ORDER.slice(
-        0,
-        ITEM_ORDER.indexOf(highest) + 1,
-      ) as Array<keyof typeof ITEM_WEIGHTS>;
+      const weights = lvl.itemWeights || ITEM_WEIGHTS;
+      const items = Object.keys(weights);
 
-      const weights = allowedItems.map(t => ITEM_WEIGHTS[t]);
-      const total = weights.reduce((a, b) => a + b, 0);
+      const total = items.reduce((sum, key) => sum + weights[key], 0);
       const r = Math.random() * total;
 
       let acc = 0;
-      for (let i = 0; i < allowedItems.length; i++) {
-        acc += weights[i];
+      for (const it of items) {
+        acc += weights[it];
         if (r <= acc) {
-          set({nextItem: allowedItems[i]});
+          set({nextItem: it});
           return;
         }
       }
+
+      set({nextItem: 'bush'});
     },
 
-    updateHighestUnlocked: type => {
-      const current = get().highestUnlocked;
-      const currIdx = ITEM_ORDER.indexOf(current);
-      const newIdx = ITEM_ORDER.indexOf(type);
-      if (newIdx > currIdx) {
-        set({highestUnlocked: type});
+    /** Load a level and initialize everything */
+    loadLevel: lvl => {
+      engine.resetBoard();
+      // engine.resizeBoard(lvl.boardSize.cols, lvl.boardSize.rows);
+
+      if (lvl.initialMap) {
+        engine.placeInitialItems(lvl.initialMap);
       }
+
+      set({
+        currentLevel: lvl,
+        score: 0,
+        moves: 0,
+        floatingScores: [],
+        nextItem: 'bush',
+      });
+
+      get().generateNextItem();
+      return;
+    },
+
+    resetLevel: () => {
+      const lvl = get().currentLevel;
+      if (!lvl) return;
+
+      get().loadLevel(lvl);
+    },
+
+    /** WIN / FAIL conditions */
+    checkWinLose: () => {
+      const lvl = get().currentLevel;
+      if (!lvl) return null;
+
+      const {score, moves, state} = get();
+
+      // WIN: score threshold reached
+      if (lvl.targetScore && score >= lvl.targetScore) {
+        return {status: 'win', reason: 'scoreReached', levelId: lvl.id};
+      }
+
+      // FAIL: board full
+      const {cols, rows} = state.boardSize;
+      if (state.items.length >= cols * rows) {
+        return {status: 'fail', reason: 'boardFull', levelId: lvl.id};
+      }
+
+      // FAIL: max moves reached
+      if (lvl.maxMoves && moves >= lvl.maxMoves) {
+        return {status: 'fail', reason: 'maxMoves', levelId: lvl.id};
+      }
+
+      return null;
     },
   };
 });

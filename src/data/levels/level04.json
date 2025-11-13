@@ -1,0 +1,26 @@
+{
+  "id": "level04",
+  "name": "Forest Edge 1",
+  "boardSize": {"cols": 6, "rows": 6},
+
+  "maxBears": 3,
+  "bearSpawnRate": 0.2,
+  "minTurnsBeforeBearSpawn": 4,
+
+  "itemWeights": {
+    "bush": 60,
+    "tree": 27,
+    "house": 10,
+    "mansion": 2,
+    "bear": 1
+  },
+
+  "initialMap": [
+    {"type": "bush", "x": 1, "y": 1},
+    {"type": "tree", "x": 4, "y": 2},
+    {"type": "bush", "x": 3, "y": 5}
+  ],
+
+  "targetScore": 4200,
+  "maxMoves": 55
+}
