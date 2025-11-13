@@ -1,56 +1,40 @@
-import {motion} from 'framer-motion';
+// src/ui/components/Tile.tsx
 import type {MergeItem} from '@/core/types';
-import {useGameStore} from '@/state/gameStore';
+import {motion} from 'framer-motion';
+import {emoji} from '../constants';
 
 type TileProps = {
   x: number;
   y: number;
   item?: MergeItem;
+  onClickEmpty: (pos: {x: number; y: number}) => void;
 };
 
-export function Tile({x, y, item}: TileProps) {
-  const {addItem, tryMergeAt} = useGameStore();
-
+export function Tile({x, y, item, onClickEmpty}: TileProps) {
   const handleClick = () => {
-    if (item) {
-      tryMergeAt({x, y});
-    } else {
-      addItem('bush', {x, y});
-    }
+    if (!item) onClickEmpty({x, y});
   };
 
   return (
     <div
-      className={`w-20 h-20 flex items-center justify-center rounded-xl cursor-pointer transition-all 
-      ${item ? 'bg-emerald-600/80 hover:bg-emerald-500' : 'bg-slate-700/60 hover:bg-slate-600/80'} 
-      border border-slate-600 shadow-md`}
-      onClick={handleClick}>
-      {item && (
+      onClick={handleClick}
+      className={`w-20 h-20 flex items-center justify-center rounded-xl border shadow-md transition-all ${
+        item
+          ? 'bg-emerald-600/90 border-emerald-400'
+          : 'bg-slate-700/60 hover:bg-slate-600 cursor-pointer border-slate-600'
+      }`}>
+      {item ? (
         <motion.div
           key={item.id}
-          initial={{scale: 0.7, opacity: 0}}
+          initial={{scale: 0.4, opacity: 0}}
           animate={{scale: 1, opacity: 1}}
-          exit={{scale: 0.5, opacity: 0}}
-          transition={{duration: 0.2}}
+          transition={{duration: 0.25}}
           className="text-3xl select-none">
-          {emojiForType(item.type)}
+          {emoji(item.type)}
         </motion.div>
+      ) : (
+        <div className="text-slate-400 text-sm select-none">+</div>
       )}
     </div>
   );
-}
-
-function emojiForType(type: string) {
-  switch (type) {
-    case 'bush':
-      return '🌿';
-    case 'tree':
-      return '🌳';
-    case 'house':
-      return '🏠';
-    case 'castle':
-      return '🏰';
-    default:
-      return '❓';
-  }
 }
