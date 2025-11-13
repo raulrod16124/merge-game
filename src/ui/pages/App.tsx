@@ -1,7 +1,12 @@
+import {GameBoard} from '@/ui/components/GameBoard';
+import {HUD} from '@/ui/components/HUD';
+
 export default function App() {
   return (
-    <div className="flex items-center justify-center h-screen bg-slate-900 text-white">
-      <h1 className="text-3xl font-bold">Merge Game MVP 🧩</h1>
+    <div className="flex flex-col items-center justify-start h-screen bg-slate-900 text-white p-4">
+      <h1 className="text-3xl font-bold mt-4">Merge Game 🧩</h1>
+      <HUD />
+      <GameBoard />
     </div>
   );
 }
