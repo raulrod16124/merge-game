@@ -4,9 +4,9 @@ import type {GameState, MergeItem, Position} from '@/core/types';
 import {mergeRules} from '@/core/mergeRules';
 
 export type MergeEvent = {
-  fromIds: string[]; // ids eliminados
-  toItem: MergeItem; // item creado
-  points: number; // puntos otorgados
+  fromIds: string[];
+  toItem: MergeItem;
+  points: number;
 };
 
 type Subscriber = (state: GameState) => void;
@@ -24,9 +24,6 @@ export class GameEngine {
     };
   }
 
-  // ============================
-  // SUBSCRIBE / NOTIFY
-  // ============================
   subscribe(fn: Subscriber) {
     this.subscribers.push(fn);
     fn(this.getState());
@@ -43,7 +40,13 @@ export class GameEngine {
     this.subscribers.forEach(fn => fn(snapshot));
   }
 
-  getState(): GameState {
+  resetBoard() {
+    this.state.items = [];
+    this.lastMergeEvent = null;
+    this.notify();
+  }
+
+  getState() {
     return {
       items: this.state.items.map(i => ({...i})),
       boardSize: {...this.state.boardSize},
@@ -54,10 +57,7 @@ export class GameEngine {
     return this.lastMergeEvent;
   }
 
-  // ============================
-  // UTILIDADES BÁSICAS
-  // ============================
-  private isInsideBoard(pos: Position) {
+  private isInside(pos: Position) {
     const {cols, rows} = this.state.boardSize;
     return pos.x >= 0 && pos.y >= 0 && pos.x < cols && pos.y < rows;
   }
@@ -66,18 +66,15 @@ export class GameEngine {
     return this.state.items.find(i => i.pos.x === pos.x && i.pos.y === pos.y);
   }
 
-  private isCellOccupied(pos: Position) {
+  private isOccupied(pos: Position) {
     return this.state.items.some(i => i.pos.x === pos.x && i.pos.y === pos.y);
   }
 
-  // ============================
-  // ADD ITEM + CASCADE MERGE
-  // ============================
   addItem(type: string, pos: Position): boolean {
-    if (!this.isInsideBoard(pos)) return false;
-    if (this.isCellOccupied(pos)) return false;
+    if (!this.isInside(pos)) return false;
+    if (this.isOccupied(pos)) return false;
 
-    this.lastMergeEvent = null;
+    this.lastMergeEvent = null; // limpio evento
 
     const newItem: MergeItem = {
       id: nanoid(),
@@ -85,45 +82,43 @@ export class GameEngine {
       level: 1,
       pos: {...pos},
     };
+
     this.state.items.push(newItem);
 
+    // intenta merge en cascada
     this.tryMergeCascadeAt(pos);
 
+    // ahora notifico
     this.notify();
+
     return true;
   }
 
   private tryMergeCascadeAt(pos: Position) {
+    let merged = false;
+
     while (this.trySingleMergeAt(pos)) {
-      // continua mientras haya merges encadenados
+      merged = true;
     }
+
+    return merged;
   }
 
   private trySingleMergeAt(pos: Position): boolean {
     const target = this.getItemAt(pos);
-    if (!target) {
-      this.lastMergeEvent = null;
-      return false;
-    }
+    if (!target) return false;
 
     const rule = mergeRules.find(r => r.fromType === target.type);
-    if (!rule) {
-      this.lastMergeEvent = null;
-      return false;
-    }
+    if (!rule) return false;
 
     const group = this.findConnectedItems(target);
-    if (group.length < rule.minCount) {
-      this.lastMergeEvent = null;
-      return false;
-    }
 
-    // Eliminar items del grupo
-    this.state.items = this.state.items.filter(
-      i => !group.some(g => g.id === i.id),
-    );
+    if (group.length < rule.minCount) return false;
 
-    // Crear nuevo item
+    // Elimino items
+    this.state.items = this.state.items.filter(i => !group.includes(i.id));
+
+    // Nuevo item
     const newItem: MergeItem = {
       id: nanoid(),
       type: rule.toType,
@@ -132,44 +127,45 @@ export class GameEngine {
     };
     this.state.items.push(newItem);
 
-    // Evento de merge para la UI
+    const points = newItem.level * 10;
+
+    // 🔥 LOG DIRECTO
+    console.log('🔥 MERGE DETECTED', {
+      from: group,
+      to: newItem,
+      points,
+    });
+
     this.lastMergeEvent = {
-      fromIds: group.map(g => g.id),
+      fromIds: group,
       toItem: newItem,
-      points: newItem.level * 10,
+      points,
     };
 
     return true;
   }
 
-  private findConnectedItems(start: MergeItem): MergeItem[] {
+  private findConnectedItems(start: MergeItem): string[] {
     const visited = new Set<string>();
-    const stack: MergeItem[] = [start];
-    const result: MergeItem[] = [];
+    const stack = [start];
+    const group: MergeItem[] = [];
 
-    while (stack.length > 0) {
+    while (stack.length) {
       const curr = stack.pop()!;
       if (visited.has(curr.id)) continue;
-
       visited.add(curr.id);
-      result.push(curr);
+      group.push(curr);
 
       const neighbors = this.state.items.filter(
         i =>
-          !visited.has(i.id) &&
           i.type === start.type &&
+          !visited.has(i.id) &&
           Math.abs(i.pos.x - curr.pos.x) + Math.abs(i.pos.y - curr.pos.y) === 1,
       );
 
       stack.push(...neighbors);
     }
 
-    return result;
-  }
-
-  resetBoard() {
-    this.state.items = [];
-    this.lastMergeEvent = null;
-    this.notify();
+    return group.map(g => g.id);
   }
 }

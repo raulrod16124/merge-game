@@ -31,7 +31,6 @@ export function GameBoard() {
               x={x}
               y={y}
               item={item}
-              // ahora addItem sólo recibe la posición (el tipo viene del store -> nextItem)
               onClickEmpty={({x: cx, y: cy}) => addItem({x: cx, y: cy})}
             />
           );

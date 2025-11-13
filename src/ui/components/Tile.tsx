@@ -1,7 +1,7 @@
 // src/ui/components/Tile.tsx
 import type {MergeItem} from '@/core/types';
 import {motion} from 'framer-motion';
-import {emoji} from '../constants';
+import {emoji} from '@/ui/constants';
 
 type TileProps = {
   x: number;
