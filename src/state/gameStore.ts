@@ -1,9 +1,9 @@
 // src/state/gameStore.ts
 import {create} from 'zustand';
-import {GameEngine, type MergeEvent} from '@/core/GameEngine';
+import {GameEngine} from '@/core/GameEngine';
 import type {GameState, Position} from '@/core/types';
 import type {LevelConfig} from '@/core/typesLevel';
-import {ITEM_ORDER, ITEM_WEIGHTS} from '@/ui/constants';
+import {ITEM_WEIGHTS} from '@/ui/constants';
 
 /** Floating score effect */
 type FloatingScore = {
