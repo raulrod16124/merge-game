@@ -1,10 +1,9 @@
 // src/ui/screens/BoardScreen.tsx
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 import {LEVELS} from '@/data/levels';
 import {useGameStore} from '@/state/gameStore';
 
-import {Header} from '@/ui/components/Header';
 import {HUD} from '@/ui/hud/HUD';
 import {GameBoard} from '@/ui/board/GameBoard';
 

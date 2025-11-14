@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from 'react';
-import {useLocation, useNavigate, useParams} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import {
   HeaderWrapper,
   Logo,
@@ -32,10 +32,10 @@ export function Header() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  const handleOverlayClick = (e: React.MouseEvent) => {
+  const handleOverlayClick = () => {
     setOpen(false);
   };
-  console.log('Header render, path:', pathname);
+
   return (
     <>
       <HeaderWrapper isFixed={!pathname.includes('/play/')}>
