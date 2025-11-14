@@ -6,7 +6,13 @@ export function ScoreBar() {
   const moves = useGameStore(s => s.moves);
 
   return (
-    <div className="w-full mt-3 mb-1 flex items-center justify-between text-sm text-slate-200">
+    <div
+      className="
+        w-full mt-3 mb-1 flex items-center justify-between
+        px-4 py-2 rounded-xl text-sm
+        bg-[rgba(255,255,255,0.2)] text-[#3a2c16]
+        border border-[#cbb893] shadow-inner
+      ">
       <div>
         Puntos: <span className="font-bold">{score}</span>
       </div>

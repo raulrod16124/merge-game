@@ -1,22 +1,44 @@
 // src/ui/screens/Home.tsx
 import {Link} from 'react-router-dom';
+import {
+  HomeWrapper,
+  Title,
+  ContentArea,
+  Card,
+  Illustration,
+  Description,
+  PrimaryButton,
+  FooterInfo,
+} from './Home.styled';
 
 export function Home() {
   return (
-    <div className="flex flex-col items-center gap-6 mt-8">
-      <h1 className="text-4xl font-extrabold">Merge Game 🧩</h1>
-      <p className="text-slate-300 max-w-2xl text-center">
-        Bienvenido — coloca piezas, combina 3 iguales para crear lo siguiente y
-        evita a los osos. Selecciona un nivel y comienza a jugar.
-      </p>
+    <>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;700;900&display=swap"
+        rel="stylesheet"
+      />
 
-      <div className="flex gap-4">
-        <Link
-          to="/levels"
-          className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-lg font-semibold">
-          Seleccionar nivel
-        </Link>
-      </div>
-    </div>
+      <HomeWrapper>
+        <ContentArea>
+          <Title>Merge Game</Title>
+
+          <Card>
+            <Illustration>🌳</Illustration>
+
+            <Description>
+              Combina elementos, crea estructuras nuevas y evita a los osos.
+              ¡Selecciona un nivel y comienza la aventura!
+            </Description>
+
+            <Link to="/levels" style={{width: '100%'}}>
+              <PrimaryButton>Comenzar →</PrimaryButton>
+            </Link>
+          </Card>
+
+          <FooterInfo>v1.0</FooterInfo>
+        </ContentArea>
+      </HomeWrapper>
+    </>
   );
 }
