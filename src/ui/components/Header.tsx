@@ -1,28 +1,82 @@
-// src/ui/components/Header.tsx
-import {Link, useLocation} from 'react-router-dom';
+import {useEffect, useRef, useState} from 'react';
+import {useLocation, useNavigate} from 'react-router-dom';
+import {
+  HeaderWrapper,
+  Logo,
+  MenuButton,
+  SideMenu,
+  MenuLink,
+  Overlay,
+} from './Header.styled';
 
 export function Header() {
-  const loc = useLocation();
-  return (
-    <header className="w-full border-b border-slate-800 shadow-sm">
-      <div className="max-w-5xl mx-auto flex items-center justify-between p-3">
-        <Link to="/" className="text-2xl font-bold">
-          Merge Game
-        </Link>
+  const {pathname} = useLocation();
+  const [open, setOpen] = useState(false);
+  const nav = useNavigate();
+  const menuRef = useRef<HTMLElement | null>(null);
 
-        <nav className="flex items-center gap-3">
-          <Link
-            to="/levels"
-            className={`px-3 py-1 rounded ${loc.pathname.startsWith('/levels') ? 'bg-slate-700' : 'hover:bg-slate-800'}`}>
-            Niveles
-          </Link>
-          <Link
-            to="/"
-            className={`px-3 py-1 rounded ${loc.pathname === '/' ? 'bg-slate-700' : 'hover:bg-slate-800'}`}>
-            Home
-          </Link>
-        </nav>
-      </div>
-    </header>
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if ((window as any).__MERGE_GAME_HEADER_RENDERED) {
+        return;
+      }
+      (window as any).__MERGE_GAME_HEADER_RENDERED = true;
+    }
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  const handleOverlayClick = () => {
+    setOpen(false);
+  };
+
+  return (
+    <>
+      <HeaderWrapper isFixed={!pathname.includes('/play/')}>
+        <Logo>Merge Game</Logo>
+
+        <MenuButton
+          aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
+          onClick={() => setOpen(v => !v)}>
+          {/* simple icon — you can replace with svg */}
+          {open ? '✕' : '☰'}
+        </MenuButton>
+      </HeaderWrapper>
+
+      {/* overlay: darkens background and catches outside clicks */}
+      <Overlay open={open} onClick={handleOverlayClick} />
+
+      {/* side menu panel */}
+      <SideMenu
+        role="dialog"
+        aria-hidden={!open}
+        aria-modal={open}
+        open={open}
+        ref={el => {
+          menuRef.current = el;
+        }}>
+        <MenuLink
+          onClick={() => {
+            nav('/');
+            setOpen(false);
+          }}>
+          Home
+        </MenuLink>
+        <MenuLink
+          onClick={() => {
+            nav('/levels');
+            setOpen(false);
+          }}>
+          Niveles
+        </MenuLink>
+        <MenuLink onClick={() => setOpen(false)}>Cerrar</MenuLink>
+      </SideMenu>
+    </>
   );
 }

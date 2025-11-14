@@ -4,7 +4,7 @@
   "boardSize": {"cols": 6, "rows": 6},
 
   "maxBears": 2,
-  "bearSpawnRate": 0.17,
+  "bearSpawnRate": 0.45,
   "minTurnsBeforeBearSpawn": 5,
 
   "itemWeights": {
