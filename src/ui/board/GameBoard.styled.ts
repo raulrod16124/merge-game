@@ -1,6 +1,6 @@
 // src/ui/board/GameBoard.styled.ts
 import styled from 'styled-components';
-import greenland from '@/assets/greenland.png';
+import greenland from '@/assets/board/greenland.png';
 
 export const BoardScreenWrapper = styled.div`
   width: 100%;
