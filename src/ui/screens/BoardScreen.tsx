@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 
 import {LEVELS} from '@/data/levels';
-import {useGameStore} from '@/state/gameStore';
+import {useGameStore} from '@/state';
 
 import {HUD} from '@/ui/hud/HUD';
 import {GameBoard} from '@/ui/board/GameBoard';
@@ -11,6 +11,7 @@ import {AppLayout} from '@/ui/layout/AppLayout';
 
 import {LevelCompleteModal} from '@/ui/components/modals/LevelCompleteModal';
 import {LevelFailModal} from '@/ui/components/modals/LevelFailModal';
+import type {LevelConfig} from '@/core/types';
 
 export function BoardScreen() {
   const {levelId} = useParams();
@@ -31,7 +32,7 @@ export function BoardScreen() {
       return;
     }
 
-    const lvl = (LEVELS as any)[levelId];
+    const lvl = LEVELS.find(l => l.id === levelId);
     if (!lvl) {
       navigate('/levels');
       return;

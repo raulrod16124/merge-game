@@ -7,7 +7,6 @@ export const HeaderBar = styled.header`
   top: 0;
   left: 0;
   right: 0;
-  width: 100%;
   height: 72px;
   display: flex;
   align-items: center;
@@ -69,6 +68,8 @@ export const MobileMenuBtn = styled.button`
   border: none;
   padding: 10px;
   border-radius: 8px;
+  font-size: 1.8rem;
+  color: #ffffff;
   cursor: pointer;
 
   @media (max-width: 720px) {

@@ -1,55 +1,68 @@
 // src/ui/screens/Home.tsx
-import React from 'react';
 import {Link} from 'react-router-dom';
 import {AppLayout} from '@/ui/layout/AppLayout';
-import {
-  Hero,
-  HeroTitle,
-  HeroSubtitle,
-  Card,
-  PreviewBoard,
-  StartButton,
-  Credits,
-} from './Home.styled';
 import {COSMIC_ICONS} from '@/ui/constants/cosmicData';
+import {
+  Credits,
+  Hero,
+  HeroBanner,
+  HeroSubtitle,
+  HeroTitle,
+  LeanText,
+  OrbLabel,
+  PreviewOrb,
+  StartButton,
+} from './Home.styled';
 
 export function Home() {
   return (
     <AppLayout>
       <Hero>
         <HeroTitle>Stellar Merge</HeroTitle>
+
         <HeroSubtitle>
-          Coloca partículas cósmicas, combina 3 iguales para crear objetos más
-          complejos y desata la cosmogénesis. ¡Explora, combina y sobrevive!
+          Coloca partículas cósmicas. Fusiona 3 iguales para crear objetos más
+          complejos y desata la cosmogénesis en una aventura neón de lógica y
+          estrategia.
         </HeroSubtitle>
 
-        <Card>
-          <PreviewBoard aria-hidden>
-            <img
-              src={COSMIC_ICONS.star_system}
-              alt="preview star system"
-              draggable={false}
-            />
-          </PreviewBoard>
+        <HeroBanner>
+          {/* ORB */}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}>
+            <PreviewOrb>
+              <img
+                src={COSMIC_ICONS.star_system}
+                alt="preview"
+                style={{width: 66, height: 66}}
+                draggable={false}
+              />
+            </PreviewOrb>
+            <OrbLabel>Vista previa</OrbLabel>
+          </div>
 
-          <div style={{padding: 16}}>
-            <p style={{margin: 0, color: '#143049', fontWeight: 700}}>
+          {/* TEXT */}
+          <LeanText>
+            <p style={{margin: '0 0 6px', fontWeight: 800, fontSize: 16}}>
               Comienza tu viaje cósmico
             </p>
-            <p style={{marginTop: 8, color: '#35586b', fontSize: 14}}>
-              Un juego de lógica espacial con progresión por fusiones y
-              power-ups estratégicos.
+
+            <p style={{margin: 0}}>
+              Explora combinaciones, administra recursos y domina el Agujero
+              Errante. Usa power-ups estratégicos para maniobras imposibles.
             </p>
 
-            <div style={{marginTop: 18}}>
-              <Link to="/levels">
-                <StartButton>Comenzar →</StartButton>
-              </Link>
-            </div>
-          </div>
-        </Card>
+            <Link to="/levels" style={{textDecoration: 'none'}}>
+              <StartButton>Comenzar →</StartButton>
+            </Link>
+          </LeanText>
+        </HeroBanner>
 
-        <Credits>v1.0 — Stellar Merge</Credits>
+        <Credits>v1.0 — Stellar Merge • Vector Cartoon UI</Credits>
       </Hero>
     </AppLayout>
   );

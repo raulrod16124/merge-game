@@ -1,20 +1,15 @@
 // src/core/types.ts
-/**
- * Tipos centrales para Stellar Merge (Stellarbound)
- * Fase 0: tipos base y estructuras compartidas
- */
 
 export type CosmicType =
-  | 'dust' // Polvo estelar (nivel 1)
-  | 'micro_asteroid' // Micro-asteroide
-  | 'meteorite' // Meteorito
-  | 'baby_planet' // Planeta bebé
-  | 'mature_planet' // Planeta maduro
-  | 'star' // Estrella
-  | 'star_system' // Sistema estelar
-  | 'nebula' // Nebulosa
-  | 'galaxy' // Galaxia (objeto máximo)
-  | 'fragment'; // Fragmento oscuro (generado por el agujero)
+  | 'dust'
+  | 'micro_asteroid'
+  | 'meteorite'
+  | 'baby_planet'
+  | 'mature_planet'
+  | 'star'
+  | 'star_system'
+  | 'nebula'
+  | 'galaxy';
 
 export interface Pos {
   x: number;
@@ -24,22 +19,25 @@ export interface Pos {
 export interface ItemBase {
   id: string;
   type: CosmicType;
-  level: number; // nivel numérico (1..N)
+  level: number;
   pos: Pos;
-  createdAt?: number; // timestamp (opcional)
-  // flags de estado
-  isFragment?: boolean; // si el objeto está convertido en fragmento
-  frozen?: boolean; // si está temporalmente inmutable
+  createdAt?: number;
+  frozen?: boolean;
 }
 
 export interface HoleEnemy {
   id: string;
   pos: Pos;
-  fragments: Record<string, number>; // counts per type e.g. {'dust':2}
+  fragments: Record<CosmicType, number>;
   active: boolean;
 }
 
-export type ObjectiveType = 'score' | 'create' | 'survive' | 'survive_alive';
+export type ObjectiveType =
+  | 'score'
+  | 'create'
+  | 'survive'
+  | 'survive_alive'
+  | 'supernova';
 
 export interface Objective {
   type: ObjectiveType;
@@ -47,18 +45,18 @@ export interface Objective {
   target: number;
 }
 
-export interface LevelConfig {
+export type LevelConfig = {
   id: string;
   name: string;
-  description?: string;
   boardSize: {cols: number; rows: number};
-  spawnWeights: Record<string, number>;
-  initialMap?: Array<{x: number; y: number; type: CosmicType}>;
-  maxHoles?: number;
-  objectives?: Objective[];
+  enemyCount: number;
+  spawnWeights: Record<CosmicType, number>;
+  initialMap: {type: CosmicType; x: number; y: number}[];
   blockedCells?: Pos[];
+  mapAsset: string;
+  objective?: Objective[];
   timerSeconds?: number;
-}
+};
 
 export interface GameState {
   items: ItemBase[];

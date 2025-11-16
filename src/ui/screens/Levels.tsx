@@ -16,7 +16,7 @@ export function Levels() {
             margin: 0,
             fontFamily: 'var(--font-display)',
             fontSize: 'clamp(20px, 4vw, 36px)',
-            color: '#0b2340',
+            color: '#ffffff',
           }}>
           Selecciona un nivel
         </h2>

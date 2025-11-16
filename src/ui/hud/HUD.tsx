@@ -1,5 +1,5 @@
 // src/ui/hud/HUD.tsx
-import {useGameStore} from '@/state/gameStore';
+import {useGameStore} from '@/state';
 import {TimerBar} from '../components/TimeBar';
 import {ScoreBar} from './ScoreBar';
 import {NextItem} from '../components/NextItem';

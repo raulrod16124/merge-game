@@ -1,82 +1,74 @@
-// src/ui/components/LevelCard.styled.ts
 import styled from 'styled-components';
 
-export const CardWrap = styled.div`
-  background: linear-gradient(180deg, #ffffff, #f7fbff);
-  border-radius: 16px;
-  padding: 14px;
-  box-shadow: 0 10px 24px rgba(12, 38, 56, 0.06);
-  border: 1px solid rgba(10, 30, 45, 0.04);
+export const Card = styled.div`
+  background: linear-gradient(180deg, #1a1b2f 0%, #12121f 100%);
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 14px 18px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  color: #eef1ff;
+  transition: transform 0.15s ease;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
 `;
 
-export const Top = styled.div`
+export const LevelCardHeader = styled.div`
   display: flex;
-  align-items: center;
   justify-content: space-between;
-
-  h3 {
-    margin: 0;
-    font-size: 20px;
-    color: #13344b;
-  }
-
-  .sub {
-    color: #4b6f7f;
-    font-size: 12px;
-    margin-top: 6px;
-  }
-`;
-
-export const IconWrap = styled.div`
-  width: 56px;
-  height: 56px;
-  background: radial-gradient(
-    circle at 30% 20%,
-    rgba(255, 255, 255, 0.6),
-    rgba(255, 255, 255, 0.15)
-  );
-  border-radius: 12px;
-  display: flex;
   align-items: center;
-  justify-content: center;
-  img {
-    width: 70%;
-    height: auto;
-  }
 `;
 
-export const Body = styled.div`
+export const Icon = styled.img`
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+`;
+
+export const Name = styled.h3`
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+`;
+
+export const Sub = styled.div`
+  font-size: 13px;
+  opacity: 0.8;
+`;
+
+export const Info = styled.div`
+  margin-top: 12px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-`;
-
-export const StatPill = styled.div`
-  background: rgba(14, 50, 72, 0.05);
-  color: #1f4960;
-  padding: 10px;
-  border-radius: 12px;
+  gap: 6px;
   font-size: 14px;
 `;
 
-export const PlayButton = styled.button`
-  background: linear-gradient(180deg, #ffd66b, #f0b63a);
-  border: none;
-  padding: 12px;
-  border-radius: 12px;
-  font-weight: 800;
-  color: #2b1910;
-  box-shadow: 0 8px 0 rgba(224, 160, 60, 0.14);
-  cursor: pointer;
-  font-size: 15px;
+export const Pill = styled.div`
+  background: rgba(255, 255, 255, 0.08);
+  padding: 6px 10px;
+  border-radius: 10px;
+  width: fit-content;
 `;
 
-export const Footer = styled.div`
-  text-align: right;
-  color: #6e8a98;
-  font-size: 13px;
-  margin-top: 6px;
+export const PlayBtn = styled.button`
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: none;
+  color: #12121f;
+  font-weight: 700;
+  font-size: 14px;
+  background: linear-gradient(180deg, #9efff3, #4bf7d3);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
+
+  &:active {
+    transform: scale(0.96);
+  }
 `;
