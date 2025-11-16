@@ -1,4 +1,5 @@
 // src/ui/components/modals/LevelFailModal.tsx
+import {Button} from '@/common/Button';
 import {useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -19,10 +20,7 @@ const ModalWrap = styled.div`
   padding: 28px;
   border-radius: 28px;
   background: rgba(24, 20, 36, 0.92);
-  border: 1.5px solid rgba(255, 115, 115, 0.32);
-  box-shadow:
-    0 0 32px rgba(255, 80, 80, 0.32),
-    inset 0 0 18px rgba(255, 120, 120, 0.25);
+  border: 1.5px solid #ff5c5c;
 
   display: flex;
   flex-direction: column;
@@ -46,13 +44,12 @@ const ModalWrap = styled.div`
 const Title = styled.h2`
   font-size: 2rem;
   font-weight: 800;
-  color: #ff9d9d;
-  text-shadow: 0 0 12px rgba(255, 130, 130, 0.65);
+  color: #ff5c5c;
   text-align: center;
 `;
 
 const Text = styled.p`
-  color: #ffe6e6;
+  color: #ffffff;
   text-align: center;
   font-size: 1.05rem;
 `;
@@ -63,45 +60,6 @@ const BtnGroup = styled.div`
   flex-direction: column;
   gap: 12px;
   margin-top: 8px;
-`;
-
-const Button = styled.button<{variant?: 'primary' | 'secondary' | 'ghost'}>`
-  width: 100%;
-  padding: 12px 16px;
-  border-radius: 18px;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 700;
-  transition: 0.15s ease-out;
-
-  ${({variant}) =>
-    variant === 'primary'
-      ? `
-    background: linear-gradient(180deg, #ff6b6b, #d73838);
-    color: white;
-    box-shadow: 0 6px 18px rgba(255, 70, 70, 0.35);
-    &:hover {
-      filter: brightness(1.12);
-    }
-  `
-      : variant === 'secondary'
-        ? `
-    background: rgba(255, 255, 255, 0.13);
-    color: #ffcfcf;
-    border: 1px solid rgba(255, 143, 143, 0.4);
-    &:hover {
-      background: rgba(255, 255, 255, 0.18);
-    }
-  `
-        : `
-    background: rgba(255,255,255,0.08);
-    color: #ffe0e0;
-    border: 1px solid rgba(255,255,255,0.1);
-    &:hover {
-      background: rgba(255,255,255,0.12);
-    }
-  `}
 `;
 
 type Props = {
@@ -119,9 +77,7 @@ export function LevelFailModal({levelId, onClose}: Props) {
         <Text>No has logrado completar el nivel.</Text>
 
         <BtnGroup>
-          <Button
-            variant="primary"
-            onClick={() => navigate(`/play/${levelId}`)}>
+          <Button variant="fail" onClick={() => navigate(`/play/${levelId}`)}>
             Reintentar nivel
           </Button>
 
@@ -129,7 +85,7 @@ export function LevelFailModal({levelId, onClose}: Props) {
             Volver a niveles
           </Button>
 
-          <Button variant="ghost" onClick={onClose}>
+          <Button variant="tertiary" onClick={onClose}>
             Cerrar
           </Button>
         </BtnGroup>

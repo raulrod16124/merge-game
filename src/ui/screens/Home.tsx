@@ -13,6 +13,7 @@ import {
   PreviewOrb,
   StartButton,
 } from './Home.styled';
+import {Button} from '@/common/Button';
 
 export function Home() {
   return (
@@ -55,10 +56,16 @@ export function Home() {
               Explora combinaciones, administra recursos y domina el Agujero
               Errante. Usa power-ups estratégicos para maniobras imposibles.
             </p>
-
-            <Link to="/levels" style={{textDecoration: 'none'}}>
-              <StartButton>Comenzar →</StartButton>
-            </Link>
+            <Button
+              to="/levels"
+              variant="primary"
+              styles={{
+                margin: '24px auto',
+                padding: '12px 24px',
+                fontSize: '1.2rem',
+              }}>
+              Comenzar
+            </Button>
           </LeanText>
         </HeroBanner>
 

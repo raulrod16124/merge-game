@@ -2,6 +2,7 @@
 import {useNavigate} from 'react-router-dom';
 import {LEVELS} from '@/data/levels';
 import styled from 'styled-components';
+import {Button} from '@/common/Button';
 
 const Backdrop = styled.div`
   position: fixed;
@@ -20,10 +21,7 @@ const ModalWrap = styled.div`
   padding: 28px;
   border-radius: 28px;
   background: rgba(24, 20, 36, 0.92);
-  border: 1.5px solid rgba(162, 121, 255, 0.35);
-  box-shadow:
-    0 0 32px rgba(135, 95, 255, 0.35),
-    inset 0 0 18px rgba(115, 95, 255, 0.3);
+  border: 1.5px solid #4cd964;
 
   display: flex;
   flex-direction: column;
@@ -47,13 +45,12 @@ const ModalWrap = styled.div`
 const Title = styled.h2`
   font-size: 2rem;
   font-weight: 800;
-  color: #d7c5ff;
-  text-shadow: 0 0 12px rgba(181, 120, 255, 0.7);
+  color: #4cd964;
   text-align: center;
 `;
 
 const Text = styled.p`
-  color: #e6e0ff;
+  color: #ffffff;
   text-align: center;
   font-size: 1.05rem;
 `;
@@ -64,45 +61,6 @@ const BtnGroup = styled.div`
   flex-direction: column;
   gap: 12px;
   margin-top: 8px;
-`;
-
-const Button = styled.button<{variant?: 'primary' | 'secondary' | 'ghost'}>`
-  width: 100%;
-  padding: 12px 16px;
-  border-radius: 18px;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 700;
-  transition: 0.15s ease-out;
-
-  ${({variant}) =>
-    variant === 'primary'
-      ? `
-    background: linear-gradient(180deg, #8f6bff, #6238e8);
-    color: white;
-    box-shadow: 0 6px 18px rgba(128, 90, 255, 0.35);
-    &:hover {
-      filter: brightness(1.12);
-    }
-  `
-      : variant === 'secondary'
-        ? `
-    background: rgba(255, 255, 255, 0.13);
-    color: #cfc3ff;
-    border: 1px solid rgba(169, 143, 255, 0.4);
-    &:hover {
-      background: rgba(255, 255, 255, 0.18);
-    }
-  `
-        : `
-    background: rgba(255,255,255,0.08);
-    color: #e2d8ff;
-    border: 1px solid rgba(255,255,255,0.1);
-    &:hover {
-      background: rgba(255,255,255,0.12);
-    }
-  `}
 `;
 
 type Props = {
@@ -141,7 +99,7 @@ export function LevelCompleteModal({levelId, onClose}: Props) {
             Volver a niveles
           </Button>
 
-          <Button variant="ghost" onClick={onClose}>
+          <Button variant="tertiary" onClick={() => navigate('/levels')}>
             Cerrar
           </Button>
         </BtnGroup>
