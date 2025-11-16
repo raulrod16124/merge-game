@@ -1,5 +1,108 @@
 // src/ui/components/modals/LevelFailModal.tsx
 import {useNavigate} from 'react-router-dom';
+import styled from 'styled-components';
+
+const Backdrop = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 6, 14, 0.75);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 80;
+`;
+
+const ModalWrap = styled.div`
+  width: 90%;
+  max-width: 420px;
+  padding: 28px;
+  border-radius: 28px;
+  background: rgba(24, 20, 36, 0.92);
+  border: 1.5px solid rgba(255, 115, 115, 0.32);
+  box-shadow:
+    0 0 32px rgba(255, 80, 80, 0.32),
+    inset 0 0 18px rgba(255, 120, 120, 0.25);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+
+  animation: popIn 0.25s ease-out;
+
+  @keyframes popIn {
+    from {
+      opacity: 0;
+      transform: scale(0.86);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+`;
+
+const Title = styled.h2`
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ff9d9d;
+  text-shadow: 0 0 12px rgba(255, 130, 130, 0.65);
+  text-align: center;
+`;
+
+const Text = styled.p`
+  color: #ffe6e6;
+  text-align: center;
+  font-size: 1.05rem;
+`;
+
+const BtnGroup = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+`;
+
+const Button = styled.button<{variant?: 'primary' | 'secondary' | 'ghost'}>`
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+  transition: 0.15s ease-out;
+
+  ${({variant}) =>
+    variant === 'primary'
+      ? `
+    background: linear-gradient(180deg, #ff6b6b, #d73838);
+    color: white;
+    box-shadow: 0 6px 18px rgba(255, 70, 70, 0.35);
+    &:hover {
+      filter: brightness(1.12);
+    }
+  `
+      : variant === 'secondary'
+        ? `
+    background: rgba(255, 255, 255, 0.13);
+    color: #ffcfcf;
+    border: 1px solid rgba(255, 143, 143, 0.4);
+    &:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+  `
+        : `
+    background: rgba(255,255,255,0.08);
+    color: #ffe0e0;
+    border: 1px solid rgba(255,255,255,0.1);
+    &:hover {
+      background: rgba(255,255,255,0.12);
+    }
+  `}
+`;
 
 type Props = {
   levelId: string;
@@ -10,53 +113,27 @@ export function LevelFailModal({levelId, onClose}: Props) {
   const navigate = useNavigate();
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-      <div
-        className="
-          w-[360px] p-8 rounded-3xl shadow-2xl border border-[#bfa57b]
-          bg-[url('/textures/wood-light.png')] bg-cover bg-center
-          flex flex-col items-center gap-5 text-[#3a2c16]
-        ">
-        <h2 className="text-3xl font-extrabold text-red-600 drop-shadow-sm">
-          ¡Has fallado el nivel! 💀
-        </h2>
+    <Backdrop>
+      <ModalWrap>
+        <Title>¡Nivel fallado! 💀</Title>
+        <Text>No has logrado completar el nivel.</Text>
 
-        <p className="text-center text-lg">
-          No has logrado completar el nivel.
-        </p>
-
-        <div className="flex flex-col gap-3 w-full mt-2">
-          <button
-            onClick={() => navigate(`/play/${levelId}`)}
-            className="
-              w-full px-4 py-2 rounded-xl font-semibold
-              bg-[#e7b2b2] hover:bg-[#efc1c1]
-              border border-[#a46969] shadow-sm
-            ">
+        <BtnGroup>
+          <Button
+            variant="primary"
+            onClick={() => navigate(`/play/${levelId}`)}>
             Reintentar nivel
-          </button>
+          </Button>
 
-          <button
-            onClick={() => navigate('/levels')}
-            className="
-              w-full px-4 py-2 rounded-xl font-semibold
-              bg-[#e8d8b9] hover:bg-[#f0e4c6]
-              border border-[#bfa57b] shadow-sm
-            ">
+          <Button variant="secondary" onClick={() => navigate('/levels')}>
             Volver a niveles
-          </button>
+          </Button>
 
-          <button
-            onClick={onClose}
-            className="
-              w-full px-4 py-2 rounded-xl font-semibold
-              bg-[#d2c5ad] hover:bg-[#ded2bd]
-              border border-[#bfa57b] shadow-sm
-            ">
+          <Button variant="ghost" onClick={onClose}>
             Cerrar
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </BtnGroup>
+      </ModalWrap>
+    </Backdrop>
   );
 }
