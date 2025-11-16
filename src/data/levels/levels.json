@@ -14,7 +14,7 @@
       {"type": "dust", "x": 1, "y": 4}
     ],
     "blockedCells": [],
-    "mapAsset": "/assets/cosmic/map01.png",
+    "mapAsset": "/cosmic/map01.png",
     "objective": [{"type": "score", "target": 500}],
     "timerSeconds": 90
   },
@@ -30,7 +30,7 @@
     },
     "initialMap": [{"type": "micro_asteroid", "x": 3, "y": 3}],
     "blockedCells": [],
-    "mapAsset": "/assets/cosmic/map02.png",
+    "mapAsset": "/cosmic/map02.png",
     "objective": [{"type": "score", "target": 900}],
     "timerSeconds": 90
   },
@@ -46,7 +46,7 @@
     },
     "initialMap": [],
     "blockedCells": [],
-    "mapAsset": "/assets/cosmic/map03.png",
+    "mapAsset": "/cosmic/map03.png",
     "objective": [{"type": "create", "subject": "micro_asteroid", "target": 3}],
     "timerSeconds": 100
   },
@@ -62,7 +62,7 @@
     },
     "initialMap": [],
     "blockedCells": [],
-    "mapAsset": "/assets/cosmic/map04.png",
+    "mapAsset": "/cosmic/map04.png",
     "objective": [{"type": "create", "subject": "meteorite", "target": 2}],
     "timerSeconds": 100
   },
@@ -78,7 +78,7 @@
     },
     "initialMap": [],
     "blockedCells": [],
-    "mapAsset": "/assets/cosmic/map05.png",
+    "mapAsset": "/cosmic/map05.png",
     "objective": [{"type": "create", "subject": "star", "target": 1}],
     "timerSeconds": 110
   },
@@ -94,7 +94,7 @@
     },
     "initialMap": [],
     "blockedCells": [],
-    "mapAsset": "/assets/cosmic/map06.png",
+    "mapAsset": "/cosmic/map06.png",
     "objective": [{"type": "score", "target": 1500}],
     "timerSeconds": 120
   },
@@ -110,7 +110,7 @@
     },
     "initialMap": [],
     "blockedCells": [],
-    "mapAsset": "/assets/cosmic/map07.png",
+    "mapAsset": "/cosmic/map07.png",
     "objective": [{"type": "create", "subject": "star_system", "target": 1}],
     "timerSeconds": 120
   },
@@ -126,7 +126,7 @@
     },
     "initialMap": [],
     "blockedCells": [],
-    "mapAsset": "/assets/cosmic/map08.png",
+    "mapAsset": "/cosmic/map08.png",
     "objective": [{"type": "supernova", "target": 1}],
     "timerSeconds": 130
   },
@@ -142,7 +142,7 @@
     },
     "initialMap": [],
     "blockedCells": [],
-    "mapAsset": "/assets/cosmic/map09.png",
+    "mapAsset": "/cosmic/map09.png",
     "objective": [{"type": "create", "subject": "nebula", "target": 1}],
     "timerSeconds": 130
   },
@@ -158,7 +158,7 @@
     },
     "initialMap": [],
     "blockedCells": [],
-    "mapAsset": "/assets/cosmic/map10.png",
+    "mapAsset": "/cosmic/map10.png",
     "objective": [{"type": "score", "target": 3000}],
     "timerSeconds": 140
   },
@@ -174,7 +174,7 @@
     },
     "initialMap": [],
     "blockedCells": [],
-    "mapAsset": "/assets/cosmic/map11.png",
+    "mapAsset": "/cosmic/map11.png",
     "objective": [{"type": "survive_alive", "target": 1}],
     "timerSeconds": 150
   },
@@ -190,7 +190,7 @@
     },
     "initialMap": [],
     "blockedCells": [],
-    "mapAsset": "/assets/cosmic/map12.png",
+    "mapAsset": "/cosmic/map12.png",
     "objective": [{"type": "create", "subject": "galaxy", "target": 1}],
     "timerSeconds": 150
   }
