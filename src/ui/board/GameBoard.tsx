@@ -1,6 +1,6 @@
 // src/ui/board/GameBoard.tsx
 import {useEffect} from 'react';
-import {useGameStore} from '@/state/gameStore';
+import {useGameStore} from '@/state';
 import {Tile} from '@/ui/board/Tile';
 import {FloatingScore} from '@/ui/components/FloatingScore';
 import {AnimatePresence} from 'framer-motion';

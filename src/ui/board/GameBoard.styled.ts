@@ -19,7 +19,7 @@ export const BoardContainer = styled.div`
   overflow: hidden;
 
   /* Fondo del tablero */
-  background-image: url('/src/assets/boards/map1.png');
+  background-image: url('/boards/map1.png');
 `;
 
 export const Grid = styled.div<{cols: number; rows: number}>`

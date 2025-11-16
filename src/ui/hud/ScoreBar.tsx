@@ -1,5 +1,5 @@
 // src/ui/hud/ScoreBar.tsx
-import {useGameStore} from '@/state/gameStore';
+import {useGameStore} from '@/state';
 
 export function ScoreBar() {
   const score = useGameStore(s => s.score);

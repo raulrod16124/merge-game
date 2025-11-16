@@ -1,41 +1,27 @@
 // src/core/fusionRules.ts
-/**
- * Reglas de fusión del juego Stellar Merge:
- * 3 objetos del mismo tipo → 1 objeto superior.
- */
 
 import type {CosmicType} from './types';
 
-// Cadena completa de evolución
-export const FUSION_CHAIN: CosmicType[] = [
-  'dust', // 0
-  'micro_asteroid', // 1
-  'meteorite', // 2
-  'baby_planet', // 3
-  'mature_planet', // 4
-  'star', // 5
-  'star_system', // 6
-  'nebula', // 7
-  'galaxy', // 8 (máximo)
-];
-
-// Mapeo rápido para obtener el siguiente
-export const NEXT_TYPE: Record<CosmicType, CosmicType | null> = {
-  dust: 'micro_asteroid',
-  micro_asteroid: 'meteorite',
-  meteorite: 'baby_planet',
-  baby_planet: 'mature_planet',
-  mature_planet: 'star',
-  star: 'star_system',
-  star_system: 'nebula',
-  nebula: 'galaxy',
-  galaxy: null, // objeto máximo, no fusiona más
-  fragment: null,
+export type FusionRule = {
+  from: CosmicType;
+  to: CosmicType | null;
+  score: number;
 };
 
-// Puntuación otorgada por generar el RESULTADO (no por la acción previa)
-export const FUSION_SCORE: Record<CosmicType, number> = {
-  dust: 0,
+export const FUSION_CHAIN: CosmicType[] = [
+  'dust',
+  'micro_asteroid',
+  'meteorite',
+  'baby_planet',
+  'mature_planet',
+  'star',
+  'star_system',
+  'nebula',
+  'galaxy',
+];
+
+export const SCORE_MAP: Record<CosmicType, number> = {
+  dust: 5,
   micro_asteroid: 10,
   meteorite: 25,
   baby_planet: 50,
@@ -44,21 +30,31 @@ export const FUSION_SCORE: Record<CosmicType, number> = {
   star_system: 200,
   nebula: 300,
   galaxy: 500,
-  fragment: 0,
 };
 
-// Bonus por supernova (cuando un agujero errante acumula 3 fragmentos)
+export const TIME_BONUS: Record<CosmicType, number> = {
+  star: 3,
+  star_system: 5,
+  nebula: 8,
+  dust: 0,
+  micro_asteroid: 0,
+  meteorite: 0,
+  baby_planet: 0,
+  mature_planet: 0,
+  galaxy: 0,
+};
+
+export const getNextType = (type: CosmicType): CosmicType | null => {
+  const index = FUSION_CHAIN.indexOf(type);
+  return index < 0 || index === FUSION_CHAIN.length - 1
+    ? null
+    : FUSION_CHAIN[index + 1];
+};
+
+export const fusionScore = (to: CosmicType | null): number =>
+  to ? (SCORE_MAP[to] ?? 0) : 0;
+
 export const SUPERNOVA_SCORE = {
   base: 150,
   perUpgradedObject: 20,
 };
-
-/** Obtiene el siguiente tipo después de una fusión */
-export function getNextType(current: CosmicType): CosmicType | null {
-  return NEXT_TYPE[current] ?? null;
-}
-
-/** Puntaje de la pieza generada después de fusionar */
-export function getFusionScore(result: CosmicType): number {
-  return FUSION_SCORE[result] ?? 0;
-}

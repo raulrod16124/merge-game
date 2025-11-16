@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 
 import {LEVELS} from '@/data/levels';
-import {useGameStore} from '@/state/gameStore';
+import {useGameStore} from '@/state';
 
 import {HUD} from '@/ui/hud/HUD';
 import {GameBoard} from '@/ui/board/GameBoard';
@@ -31,7 +31,7 @@ export function BoardScreen() {
       return;
     }
 
-    const lvl = (LEVELS as any)[levelId];
+    const lvl = LEVELS.find(l => l.id === levelId);
     if (!lvl) {
       navigate('/levels');
       return;

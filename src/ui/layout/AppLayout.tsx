@@ -2,6 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import {Header} from '../components/Header';
+import {PWAUpdateModal} from '../components/modals/PWAUpdateModal';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -17,7 +18,7 @@ const Content = styled.main`
   width: 100%;
   max-width: 960px;
   margin: 0 auto;
-  padding-top: 72px; /* espacio para el header */
+  padding-top: 72px;
   box-sizing: border-box;
 `;
 
@@ -26,6 +27,7 @@ export function AppLayout({children}: {children: React.ReactNode}) {
     <Wrapper>
       <Header />
       <Content>{children}</Content>
+      <PWAUpdateModal />
     </Wrapper>
   );
 }

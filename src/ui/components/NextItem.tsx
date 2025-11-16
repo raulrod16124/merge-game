@@ -1,4 +1,4 @@
-import {useGameStore} from '@/state/gameStore';
+import {useGameStore} from '@/state';
 import {motion} from 'framer-motion';
 import {COSMIC_ICONS} from '../constants/cosmicData';
 
