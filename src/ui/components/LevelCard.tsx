@@ -8,9 +8,9 @@ import {
   LevelCardHeader,
   Name,
   Pill,
-  PlayBtn,
   Sub,
 } from './LevelCard.styled';
+import {Button} from '@/common/Button';
 
 export function LevelCard({level}: {level: LevelConfig}) {
   const nav = useNavigate();
@@ -53,7 +53,14 @@ export function LevelCard({level}: {level: LevelConfig}) {
         <Pill>{objectiveLabel}</Pill>
       </Info>
 
-      <PlayBtn>Jugar</PlayBtn>
+      <Button
+        variant="secondary"
+        styles={{
+          marginTop: '14px',
+          padding: '10px 14px',
+        }}>
+        Jugar
+      </Button>
     </Card>
   );
 }

@@ -1,13 +1,74 @@
 // src/ui/components/modals/LevelCompleteModal.tsx
 import {useNavigate} from 'react-router-dom';
 import {LEVELS} from '@/data/levels';
+import styled from 'styled-components';
+import {Button} from '@/common/Button';
+
+const Backdrop = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 6, 14, 0.75);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 80;
+`;
+
+const ModalWrap = styled.div`
+  width: 90%;
+  max-width: 420px;
+  padding: 28px;
+  border-radius: 28px;
+  background: rgba(24, 20, 36, 0.92);
+  border: 1.5px solid #4cd964;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+
+  animation: popIn 0.25s ease-out;
+
+  @keyframes popIn {
+    from {
+      opacity: 0;
+      transform: scale(0.86);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+`;
+
+const Title = styled.h2`
+  font-size: 2rem;
+  font-weight: 800;
+  color: #4cd964;
+  text-align: center;
+`;
+
+const Text = styled.p`
+  color: #ffffff;
+  text-align: center;
+  font-size: 1.05rem;
+`;
+
+const BtnGroup = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+`;
 
 type Props = {
   levelId: string;
   onClose: () => void;
 };
 
-export function LevelCompleteModal({levelId, onClose}: Props) {
+export function LevelCompleteModal({levelId}: Props) {
   const navigate = useNavigate();
   const level = (LEVELS as any)[levelId];
 
@@ -18,55 +79,31 @@ export function LevelCompleteModal({levelId, onClose}: Props) {
   })();
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-      <div
-        className="
-          w-[360px] p-8 rounded-3xl shadow-2xl border border-[#bfa57b]
-          bg-[url('/textures/wood-light.png')] bg-cover bg-center
-          flex flex-col items-center gap-5 text-[#3a2c16]
-        ">
-        <h2 className="text-3xl font-extrabold drop-shadow-sm">
-          ¡Nivel completado! 🎉
-        </h2>
-
-        <p className="text-center text-lg">
+    <Backdrop>
+      <ModalWrap>
+        <Title>¡Nivel completado! 🌟</Title>
+        <Text>
           Has superado <strong>{level?.name}</strong>
-        </p>
+        </Text>
 
-        <div className="flex flex-col gap-3 w-full mt-2">
+        <BtnGroup>
           {nextLevelId && (
-            <button
-              onClick={() => navigate(`/play/${nextLevelId}`)}
-              className="
-                w-full px-4 py-2 rounded-xl font-semibold text-[#3a2c16]
-                bg-[#cde8a8] hover:bg-[#d6f0b2]
-                border border-[#8fab6a] shadow-md transition-all
-              ">
+            <Button
+              variant="primary"
+              onClick={() => navigate(`/play/${nextLevelId}`)}>
               Siguiente nivel →
-            </button>
+            </Button>
           )}
 
-          <button
-            onClick={() => navigate('/levels')}
-            className="
-              w-full px-4 py-2 rounded-xl font-semibold
-              bg-[#e8d8b9] hover:bg-[#f0e4c6]
-              border border-[#bfa57b] shadow-sm
-            ">
+          <Button variant="secondary" onClick={() => navigate('/levels')}>
             Volver a niveles
-          </button>
+          </Button>
 
-          <button
-            onClick={onClose}
-            className="
-              w-full px-4 py-2 rounded-xl font-semibold
-              bg-[#d2c5ad] hover:bg-[#ded2bd]
-              border border-[#bfa57b] shadow-sm
-            ">
+          <Button variant="tertiary" onClick={() => navigate('/levels')}>
             Cerrar
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </BtnGroup>
+      </ModalWrap>
+    </Backdrop>
   );
 }

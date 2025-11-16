@@ -18,6 +18,10 @@ export function BoardScreen() {
 
   const loadLevel = useGameStore(s => s.loadLevel);
   const currentLevel = useGameStore(s => s.currentLevel);
+
+  const timeLeft = useGameStore(s => s.timeLeft);
+  const score = useGameStore(s => s.score);
+
   const checkWinLose = useGameStore(s => s.checkWinLose);
 
   const [modalState, setModalState] = useState<null | {
@@ -31,7 +35,10 @@ export function BoardScreen() {
       return;
     }
 
-    const lvl = LEVELS.find(l => l.id === levelId);
+    const lvl = Array.isArray(LEVELS)
+      ? LEVELS.find(l => l.id === levelId)
+      : LEVELS[levelId];
+
     if (!lvl) {
       navigate('/levels');
       return;
@@ -41,13 +48,16 @@ export function BoardScreen() {
       loadLevel(lvl);
       setModalState(null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [levelId]);
 
-  const result = checkWinLose();
   useEffect(() => {
-    if (result === null) return;
-    setModalState(result);
-  }, [result]);
+    const result = checkWinLose?.() ?? null;
+    if (result !== null) {
+      setModalState(result);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeLeft, score]);
 
   return (
     <AppLayout>

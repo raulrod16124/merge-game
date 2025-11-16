@@ -25,9 +25,10 @@ export const createAddItem =
       createdAt: Date.now(),
     };
 
-    set(s => ({
-      items: [...s.items, newItem],
-      moves: s.moves + 1,
+    // 1) Añadir item de forma atómica
+    set(state => ({
+      items: [...state.items, newItem],
+      moves: state.moves + 1,
     }));
 
     get().processMergesAt(pos);
