@@ -43,8 +43,8 @@ export type ObjectiveType = 'score' | 'create' | 'survive' | 'survive_alive';
 
 export interface Objective {
   type: ObjectiveType;
-  subject?: CosmicType; // por ejemplo 'star' para crear una estrella
-  target: number; // objetivo numerico
+  subject?: CosmicType;
+  target: number;
 }
 
 export interface LevelConfig {
@@ -56,13 +56,11 @@ export interface LevelConfig {
   initialMap?: Array<{x: number; y: number; type: CosmicType}>;
   maxHoles?: number;
   objectives?: Objective[];
-  blockedCells?: Pos[]; // celdas bloqueadas por materia oscura
-  timerSeconds?: number; // duración por defecto del nivel
+  blockedCells?: Pos[];
+  timerSeconds?: number;
 }
 
 export interface GameState {
-  // Mantén campos que actualmente tengas en tu store +
-  // añadimos aquí los nuevos que usaremos en fases siguientes.
   items: ItemBase[];
   score: number;
   moves: number;
@@ -73,5 +71,4 @@ export interface GameState {
   holes?: HoleEnemy[];
   powerupUsed?: boolean;
   floatingScores?: Array<{id: string; x: number; y: number; points: number}>;
-  // etc — esta interface sirve de referencia; tu store puede tener más campos.
 }
