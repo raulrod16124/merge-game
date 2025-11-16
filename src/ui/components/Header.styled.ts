@@ -1,85 +1,112 @@
+// src/ui/components/Header.styled.ts
 import styled from 'styled-components';
+import {Link} from 'react-router-dom';
 
-export const HeaderWrapper = styled.header<{isFixed: boolean}>`
-  padding: 0.7rem 1rem;
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(6px);
-  border-radius: 24px;
+export const HeaderBar = styled.header`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 72px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  font-family: 'Fredoka', sans-serif;
-  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.08);
+  justify-content: space-between;
+  padding: 0 18px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.02)
+  );
+  backdrop-filter: blur(8px);
   z-index: 60;
-  @media (max-width: 768px) {
-    position: ${({isFixed}) => (isFixed ? 'fixed' : 'static')};
-    right: 1rem;
-    left: 1rem;
-  }
+  box-shadow: 0 6px 18px rgba(8, 28, 42, 0.04);
+`;
+
+export const Left = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
 `;
 
 export const Logo = styled.div`
-  font-size: 1.4rem;
-  font-weight: 900;
-  color: #245b9e;
-  user-select: none;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 20px;
+
+  a {
+    color: #ffffff;
+    text-decoration: none;
+  }
 `;
 
-export const MenuButton = styled.button`
-  width: 44px;
-  height: 44px;
-  border-radius: 16px;
-  border: none;
-  background: #fff;
-  box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.12);
-  cursor: pointer;
+export const Right = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+
+export const NavPill = styled(Link)`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.6rem;
+  padding: 8px 12px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: #0b2340;
+  background: rgba(255, 255, 255, 0.7);
+  font-weight: 700;
+  margin-right: 8px;
+
+  @media (max-width: 720px) {
+    display: none;
+  }
 `;
 
-export const Overlay = styled.div<{open: boolean}>`
+export const MobileMenuBtn = styled.button`
+  display: none;
+  background: rgba(20, 60, 80, 0.06);
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+
+  @media (max-width: 720px) {
+    display: block;
+  }
+`;
+
+export const Overlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  opacity: ${({open}) => (open ? 1 : 0)};
-  pointer-events: ${({open}) => (open ? 'auto' : 'none')};
-  transition: opacity 220ms ease;
-  z-index: 90;
+  background: rgba(6, 12, 20, 0.45);
+  z-index: 58;
 `;
 
-export const SideMenu = styled.aside<{open: boolean}>`
+export const SidePanel = styled.div<{open: boolean}>`
   position: fixed;
   top: 0;
   right: 0;
+  width: 260px;
   height: 100vh;
-  width: 300px;
-  max-width: 92vw;
-  background: linear-gradient(180deg, #ffffff, #f6f9ff);
-  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.18);
-  padding: 1.25rem;
-  transform: ${({open}) => (open ? 'translateX(0%)' : 'translateX(110%)')};
-  transition: transform 280ms cubic-bezier(0.2, 0.9, 0.3, 1);
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
+  background: linear-gradient(180deg, #fff, #f7fbff);
+  box-shadow: -8px 0 30px rgba(12, 30, 46, 0.12);
+  transform: translateX(${p => (p.open ? '0' : '110%')});
+  transition: transform 220ms ease-out;
+  z-index: 61;
+  padding: 18px;
 `;
 
-/* items del menu */
-export const MenuLink = styled.button`
-  background: transparent;
-  border: none;
-  text-align: left;
-  font-size: 1rem;
-  padding: 0.6rem 0.6rem;
-  border-radius: 10px;
-  cursor: pointer;
-  color: #1f2b46;
-  font-weight: 700;
+export const NavList = styled.nav`
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 
-  &:hover {
-    background: rgba(34, 90, 160, 0.06);
+  a {
+    color: #0b2340;
+    text-decoration: none;
+    font-weight: 700;
+    padding: 10px 6px;
+    display: block;
   }
 `;

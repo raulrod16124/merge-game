@@ -1,22 +1,31 @@
 import {useGameStore} from '@/state/gameStore';
 import {motion} from 'framer-motion';
-import {emoji} from '../constants';
+import {COSMIC_ICONS} from '../constants/cosmicData';
 
 export function NextItem() {
   const next = useGameStore(s => s.nextItem);
 
   return (
-    <div className="flex flex-col items-center mb-4">
-      <div className="text-lg text-slate-300 mb-1">Próximo objeto:</div>
+    <div style={{display: 'flex', flexDirection: 'column', gap: '4px'}}>
+      <span style={{fontSize: '0.75rem', opacity: 0.8}}>Siguiente</span>
 
-      <motion.div
+      <motion.img
         key={next}
-        initial={{scale: 0.3, opacity: 0}}
+        src={COSMIC_ICONS[next as keyof typeof COSMIC_ICONS]}
+        alt={next}
+        initial={{scale: 0.6, opacity: 0}}
         animate={{scale: 1, opacity: 1}}
-        transition={{duration: 0.3}}
-        className="text-5xl p-3 bg-slate-800 rounded-xl border border-slate-600 shadow-lg">
-        {emoji(next)}
-      </motion.div>
+        transition={{duration: 0.2}}
+        draggable={false}
+        style={{
+          width: 56,
+          height: 56,
+          objectFit: 'contain',
+          padding: 6,
+          background: 'rgba(0,0,0,0.2)',
+          borderRadius: 12,
+        }}
+      />
     </div>
   );
 }

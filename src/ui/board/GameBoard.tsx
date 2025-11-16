@@ -1,70 +1,75 @@
 // src/ui/board/GameBoard.tsx
-import {useGameStore} from '@/state/gameStore';
-import {Tile} from './Tile';
-import {FloatingScore} from '../components/FloatingScore';
-import {AnimatePresence} from 'framer-motion';
 import {useEffect} from 'react';
+import {useGameStore} from '@/state/gameStore';
+import {Tile} from '@/ui/board/Tile';
+import {FloatingScore} from '@/ui/components/FloatingScore';
+import {AnimatePresence} from 'framer-motion';
 import {LEVELS} from '@/data/levels';
 
 import {
-  BoardScreenWrapper,
-  MapContainer,
-  GridOverlay,
-  CellLayer,
+  BoardWrapper,
+  BoardContainer,
+  Grid,
+  FloatingLayer,
 } from './GameBoard.styled';
 
 export function GameBoard() {
-  const {state, addItem, floatingScores, removeFloatingScore} = useGameStore();
-  const {cols, rows} = state.boardSize;
+  const items = useGameStore(s => s.items);
+  const boardSize = useGameStore(s => s.boardSize);
+  const floatingScores = useGameStore(s => s.floatingScores);
+  const addItem = useGameStore(s => s.addItem);
+  const removeFloatingScore = useGameStore(s => s.removeFloatingScore);
+
+  const cols = boardSize.cols;
+  const rows = boardSize.rows;
 
   useEffect(() => {
-    const load = () => {
-      const {loadLevel} = useGameStore.getState();
-      loadLevel(LEVELS.level01);
+    const load = async () => {
+      const {loadLevel, currentLevel} = useGameStore.getState();
+      if (!currentLevel) {
+        // casteamos a any para evitar errores de tipo si LEVELS tiene shape distinto al LevelConfig TS
+        const lvl = (LEVELS as any).level01 ?? Object.values(LEVELS)[0];
+        if (lvl) loadLevel(lvl as any);
+      }
     };
     load();
   }, []);
 
-  // Celda se adapta automáticamente al tamaño del contenedor
-  const gridStyle = {
-    gridTemplateColumns: `repeat(${cols}, 1fr)`,
-    gridTemplateRows: `repeat(${rows}, 1fr)`,
-  };
-
   return (
-    <BoardScreenWrapper>
-      <MapContainer>
-        <GridOverlay style={gridStyle}>
+    <BoardWrapper>
+      <BoardContainer>
+        <Grid cols={cols} rows={rows}>
           {Array.from({length: cols * rows}).map((_, index) => {
             const x = index % cols;
             const y = Math.floor(index / cols);
-            const item = state.items.find(i => i.pos.x === x && i.pos.y === y);
+            const item = items.find(i => i.pos.x === x && i.pos.y === y);
 
             return (
-              <CellLayer key={`${x}-${y}`}>
-                <Tile
-                  x={x}
-                  y={y}
-                  item={item}
-                  onClickEmpty={pos => addItem(pos)}
-                />
-              </CellLayer>
+              <Tile
+                key={`${x}-${y}`}
+                x={x}
+                y={y}
+                item={item}
+                onClickEmpty={({x: cx, y: cy}) => addItem({x: cx, y: cy})}
+              />
             );
           })}
-        </GridOverlay>
+        </Grid>
 
-        <AnimatePresence>
-          {floatingScores.map(fs => (
-            <FloatingScore
-              key={fs.id}
-              x={fs.x}
-              y={fs.y}
-              points={fs.points}
-              onDone={() => removeFloatingScore(fs.id)}
-            />
-          ))}
-        </AnimatePresence>
-      </MapContainer>
-    </BoardScreenWrapper>
+        <FloatingLayer>
+          <AnimatePresence>
+            {floatingScores.map(fs => (
+              <FloatingScore
+                key={fs.id}
+                x={fs.x}
+                y={fs.y}
+                points={fs.points}
+                onDone={() => removeFloatingScore(fs.id)}
+              />
+            ))}
+          </AnimatePresence>
+        </FloatingLayer>
+      </BoardContainer>
+    </BoardWrapper>
   );
 }

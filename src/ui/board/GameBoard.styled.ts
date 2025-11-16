@@ -1,53 +1,43 @@
 // src/ui/board/GameBoard.styled.ts
 import styled from 'styled-components';
-import greenland from '@/assets/board/greenland.png';
 
-export const BoardScreenWrapper = styled.div`
+export const BoardWrapper = styled.div`
   width: 100%;
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  background: linear-gradient(180deg, #7cc7ff 0%, #cfeeff 100%);
-  padding: 1rem 1rem 3rem;
-  font-family: 'Fredoka', sans-serif;
-`;
-
-export const MapContainer = styled.div`
-  width: 100%;
-  max-width: 780px;
-  aspect-ratio: 1 / 1;
   display: flex;
   justify-content: center;
-  align-items: center;
+  padding: 12px 0;
+`;
 
-  background-image: url(${greenland});
+export const BoardContainer = styled.div`
+  width: min(92vw, 520px);
+  aspect-ratio: 1 / 1;
+  position: relative;
   background-size: cover;
   background-position: center;
-  border-radius: 28px;
-  box-shadow: 0px 12px 25px rgba(0, 0, 0, 0.25);
+  border-radius: 22px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
 
-  padding: 1rem;
-
-  @media (min-width: 480px) {
-    max-width: 900px;
-  }
+  /* Fondo del tablero */
+  background-image: url('/src/assets/boards/map1.png');
 `;
 
-export const GridOverlay = styled.div`
-  width: 100%;
-  height: 100%;
+export const Grid = styled.div<{cols: number; rows: number}>`
   display: grid;
-  gap: 0;
-`;
-
-export const CellLayer = styled.div`
   width: 100%;
   height: 100%;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: inset 0px 0px 0px 1px rgba(0, 0, 0, 0.15);
+  grid-template-columns: repeat(${props => props.cols}, 1fr);
+  grid-template-rows: repeat(${props => props.rows}, 1fr);
+  padding: 4%;
+  gap: 0px; /* NO GAP: seamless cosmic-map */
+
+  /* Si quieres ver las celdas para debug:
+  outline: 1px solid rgba(255, 255, 255, 0.2); 
+  */
+`;
+
+export const FloatingLayer = styled.div`
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
 `;

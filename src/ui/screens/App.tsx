@@ -3,12 +3,10 @@ import {Routes, Route, Navigate} from 'react-router-dom';
 import {Home} from '@/ui/screens/Home';
 import {Levels} from '@/ui/screens/Levels';
 import {BoardScreen} from '@/ui/screens/BoardScreen';
-import {Header} from '@/ui/components/Header';
 
 export default function App() {
   return (
     <div className="min-h-screen bg-slate-900 text-white">
-      <Header />
       <main className="max-w-5xl mx-auto p-4">
         <Routes>
           <Route path="/" element={<Home />} />

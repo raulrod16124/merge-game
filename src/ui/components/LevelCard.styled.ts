@@ -1,73 +1,82 @@
+// src/ui/components/LevelCard.styled.ts
 import styled from 'styled-components';
 
-export const CardWrapper = styled.div`
-  background: #ffffff;
-  border-radius: 24px;
-  padding: 1.4rem 1.2rem;
+export const CardWrap = styled.div`
+  background: linear-gradient(180deg, #ffffff, #f7fbff);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 10px 24px rgba(12, 38, 56, 0.06);
+  border: 1px solid rgba(10, 30, 45, 0.04);
   display: flex;
   flex-direction: column;
-  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
-  font-family: 'Fredoka', sans-serif;
+  gap: 8px;
 `;
 
-export const CardHeader = styled.div`
+export const Top = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+
+  h3 {
+    margin: 0;
+    font-size: 20px;
+    color: #13344b;
+  }
+
+  .sub {
+    color: #4b6f7f;
+    font-size: 12px;
+    margin-top: 6px;
+  }
 `;
 
-export const CardTitle = styled.h3`
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: #2b3d5c;
-  margin: 0;
+export const IconWrap = styled.div`
+  width: 56px;
+  height: 56px;
+  background: radial-gradient(
+    circle at 30% 20%,
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0.15)
+  );
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  img {
+    width: 70%;
+    height: auto;
+  }
 `;
 
-export const BoardSizeInfo = styled.p`
-  font-size: 0.8rem;
-  color: #6c7a96;
-  margin: 0.2rem 0 0;
+export const Body = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 `;
 
-export const IconPreview = styled.div`
-  font-size: 2.8rem;
-  user-select: none;
-  filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.3));
-`;
-
-export const InfoBlock = styled.div`
-  background: rgba(0, 0, 0, 0.05);
-  padding: 0.8rem 1rem;
-  margin: 1rem 0;
-  border-radius: 16px;
-  color: #2b3d5c;
-  font-size: 0.9rem;
+export const StatPill = styled.div`
+  background: rgba(14, 50, 72, 0.05);
+  color: #1f4960;
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 14px;
 `;
 
 export const PlayButton = styled.button`
-  background: linear-gradient(180deg, #ffd969 0%, #ffbc33 100%);
+  background: linear-gradient(180deg, #ffd66b, #f0b63a);
   border: none;
-  width: 100%;
-  padding: 0.9rem;
-  border-radius: 16px;
-  font-size: 1.1rem;
+  padding: 12px;
+  border-radius: 12px;
   font-weight: 800;
-  color: #3a2c16;
+  color: #2b1910;
+  box-shadow: 0 8px 0 rgba(224, 160, 60, 0.14);
   cursor: pointer;
-  box-shadow: 0px 5px 0px #d39d29;
-  transition: 0.1s;
-
-  &:hover {
-    transform: translateY(-3px);
-  }
-  &:active {
-    transform: translateY(0px) scale(0.97);
-  }
+  font-size: 15px;
 `;
 
-export const FooterInfo = styled.div`
-  margin-top: 0.6rem;
-  font-size: 0.9rem;
-  color: #6c7a96;
+export const Footer = styled.div`
   text-align: right;
+  color: #6e8a98;
+  font-size: 13px;
+  margin-top: 6px;
 `;
