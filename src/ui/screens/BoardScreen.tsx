@@ -11,7 +11,6 @@ import {AppLayout} from '@/ui/layout/AppLayout';
 
 import {LevelCompleteModal} from '@/ui/components/modals/LevelCompleteModal';
 import {LevelFailModal} from '@/ui/components/modals/LevelFailModal';
-import type {LevelConfig} from '@/core/types';
 
 export function BoardScreen() {
   const {levelId} = useParams();

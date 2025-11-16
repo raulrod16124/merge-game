@@ -1,5 +1,4 @@
 // src/ui/screens/Levels.tsx
-import React from 'react';
 import {LEVELS} from '@/data/levels';
 import {LevelCard} from '@/ui/components/LevelCard';
 import {AppLayout} from '@/ui/layout/AppLayout';

@@ -4,6 +4,7 @@ import type {GameStore} from '../index';
 import type {Objective} from '@/core/types';
 
 export const createObjectiveChecker = (
+  //@ts-ignore
   set: Parameters<StateCreator<GameStore>>[0],
   get: () => GameStore,
 ) => ({
