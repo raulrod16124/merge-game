@@ -1,4 +1,4 @@
-// src/ui/components/ScoreBar.tsx
+// src/ui/hud/ScoreBar.tsx
 import {useGameStore} from '@/state/gameStore';
 
 export function ScoreBar() {
@@ -7,17 +7,20 @@ export function ScoreBar() {
 
   return (
     <div
-      className="
-        w-full mt-3 mb-1 flex items-center justify-between
-        px-4 py-2 rounded-xl text-sm
-        bg-[rgba(255,255,255,0.2)] text-[#3a2c16]
-        border border-[#cbb893] shadow-inner
-      ">
+      style={{
+        width: '100%',
+        marginTop: 4,
+        marginBottom: 8,
+        display: 'flex',
+        justifyContent: 'space-between',
+        fontSize: '0.9rem',
+        opacity: 0.85,
+      }}>
       <div>
-        Puntos: <span className="font-bold">{score}</span>
+        Puntos: <strong>{score}</strong>
       </div>
       <div>
-        Movs: <span className="font-bold">{moves}</span>
+        Movs: <strong>{moves}</strong>
       </div>
     </div>
   );

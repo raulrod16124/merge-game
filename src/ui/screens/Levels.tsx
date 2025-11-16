@@ -1,20 +1,32 @@
 // src/ui/screens/Levels.tsx
+import React from 'react';
 import {LEVELS} from '@/data/levels';
 import {LevelCard} from '@/ui/components/LevelCard';
-import {LevelsWrapper, LevelsTitle, LevelsGrid} from './Levels.styled';
+import {AppLayout} from '@/ui/layout/AppLayout';
+import {LevelsWrapper, Grid} from './Levels.styled';
 
 export function Levels() {
   const levels = Object.values(LEVELS);
 
   return (
-    <LevelsWrapper>
-      <LevelsTitle>Selecciona un nivel</LevelsTitle>
+    <AppLayout>
+      <LevelsWrapper>
+        <h2
+          style={{
+            margin: 0,
+            fontFamily: 'var(--font-display)',
+            fontSize: 'clamp(20px, 4vw, 36px)',
+            color: '#0b2340',
+          }}>
+          Selecciona un nivel
+        </h2>
 
-      <LevelsGrid>
-        {levels.map((lvl: any) => (
-          <LevelCard key={lvl.id} level={lvl} />
-        ))}
-      </LevelsGrid>
-    </LevelsWrapper>
+        <Grid>
+          {levels.map((lvl: any) => (
+            <LevelCard key={lvl.id} level={lvl} />
+          ))}
+        </Grid>
+      </LevelsWrapper>
+    </AppLayout>
   );
 }

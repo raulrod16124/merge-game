@@ -1,44 +1,56 @@
 // src/ui/screens/Home.tsx
+import React from 'react';
 import {Link} from 'react-router-dom';
+import {AppLayout} from '@/ui/layout/AppLayout';
 import {
-  HomeWrapper,
-  Title,
-  ContentArea,
+  Hero,
+  HeroTitle,
+  HeroSubtitle,
   Card,
-  Illustration,
-  Description,
-  PrimaryButton,
-  FooterInfo,
+  PreviewBoard,
+  StartButton,
+  Credits,
 } from './Home.styled';
+import {COSMIC_ICONS} from '@/ui/constants/cosmicData';
 
 export function Home() {
   return (
-    <>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;700;900&display=swap"
-        rel="stylesheet"
-      />
+    <AppLayout>
+      <Hero>
+        <HeroTitle>Stellar Merge</HeroTitle>
+        <HeroSubtitle>
+          Coloca partículas cósmicas, combina 3 iguales para crear objetos más
+          complejos y desata la cosmogénesis. ¡Explora, combina y sobrevive!
+        </HeroSubtitle>
 
-      <HomeWrapper>
-        <ContentArea>
-          <Title>Merge Game</Title>
+        <Card>
+          <PreviewBoard aria-hidden>
+            <img
+              src={COSMIC_ICONS.star_system}
+              alt="preview star system"
+              draggable={false}
+            />
+          </PreviewBoard>
 
-          <Card>
-            <Illustration>🌳</Illustration>
+          <div style={{padding: 16}}>
+            <p style={{margin: 0, color: '#143049', fontWeight: 700}}>
+              Comienza tu viaje cósmico
+            </p>
+            <p style={{marginTop: 8, color: '#35586b', fontSize: 14}}>
+              Un juego de lógica espacial con progresión por fusiones y
+              power-ups estratégicos.
+            </p>
 
-            <Description>
-              Combina elementos, crea estructuras nuevas y evita a los osos.
-              ¡Selecciona un nivel y comienza la aventura!
-            </Description>
+            <div style={{marginTop: 18}}>
+              <Link to="/levels">
+                <StartButton>Comenzar →</StartButton>
+              </Link>
+            </div>
+          </div>
+        </Card>
 
-            <Link to="/levels" style={{width: '100%'}}>
-              <PrimaryButton>Comenzar →</PrimaryButton>
-            </Link>
-          </Card>
-
-          <FooterInfo>v1.0</FooterInfo>
-        </ContentArea>
-      </HomeWrapper>
-    </>
+        <Credits>v1.0 — Stellar Merge</Credits>
+      </Hero>
+    </AppLayout>
   );
 }

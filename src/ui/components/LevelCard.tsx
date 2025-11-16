@@ -1,49 +1,62 @@
 // src/ui/components/LevelCard.tsx
-import type {LevelConfig} from '@/core/typesLevel';
-import {emoji} from '../constants';
+import type {LevelConfig} from '@/core/types';
 import {useNavigate} from 'react-router-dom';
 import {
-  CardWrapper,
-  CardHeader,
-  CardTitle,
-  BoardSizeInfo,
-  IconPreview,
-  InfoBlock,
+  CardWrap,
+  Top,
+  IconWrap,
+  Body,
+  StatPill,
   PlayButton,
-  FooterInfo,
+  Footer,
 } from './LevelCard.styled';
+import {COSMIC_ICONS} from '@/ui/constants/cosmicData';
 
 type Props = {
-  level: LevelConfig;
+  level: LevelConfig & Record<string, any>;
 };
 
 export function LevelCard({level}: Props) {
   const nav = useNavigate();
 
-  const previewType = Object.keys(level.itemWeights)[0] ?? 'bush';
-  const initialCount = level.initialMap?.length || 0;
+  const handlePlay = () => {
+    nav(`/play/${level.id}`);
+  };
+
+  const previewType =
+    Object.keys(level.spawnWeights ?? level.itemWeights ?? {dust: 1})[0] ??
+    'dust';
+  const initialCount = (level.initialMap && level.initialMap.length) || 0;
 
   return (
-    <CardWrapper>
-      <CardHeader>
+    <CardWrap>
+      <Top>
         <div>
-          <CardTitle>{level.name}</CardTitle>
-          <BoardSizeInfo>
-            Tablero: {level.boardSize.cols}×{level.boardSize.rows}
-          </BoardSizeInfo>
+          <h3>{level.name}</h3>
+          <div className="sub">
+            Tablero: {level.boardSize?.cols}×{level.boardSize?.rows}
+          </div>
         </div>
 
-        <IconPreview>{emoji(previewType)}</IconPreview>
-      </CardHeader>
+        <IconWrap>
+          <img
+            src={COSMIC_ICONS[previewType as keyof typeof COSMIC_ICONS]}
+            alt={previewType}
+            draggable={false}
+          />
+        </IconWrap>
+      </Top>
 
-      <InfoBlock>
-        Osos máximos: <strong>{level.maxBears}</strong> · Prob. oso:{' '}
-        <strong>{Math.round(level.bearSpawnRate * 100)}%</strong>
-      </InfoBlock>
+      <Body>
+        <StatPill>
+          Osos máximos: <strong>{level.maxBears ?? 0}</strong> · Prob. oso:{' '}
+          <strong>{Math.round((level.bearSpawnRate ?? 0) * 100)}%</strong>
+        </StatPill>
 
-      <PlayButton onClick={() => nav(`/play/${level.id}`)}>Jugar</PlayButton>
+        <PlayButton onClick={handlePlay}>Jugar</PlayButton>
+      </Body>
 
-      <FooterInfo>Inicial: {initialCount}</FooterInfo>
-    </CardWrapper>
+      <Footer>Inicial: {initialCount}</Footer>
+    </CardWrap>
   );
 }

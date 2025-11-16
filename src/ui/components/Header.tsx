@@ -1,82 +1,69 @@
-import {useEffect, useRef, useState} from 'react';
-import {useLocation, useNavigate} from 'react-router-dom';
+// src/ui/components/Header.tsx
+import {useState, useRef, useEffect} from 'react';
+import {Link} from 'react-router-dom';
 import {
-  HeaderWrapper,
+  HeaderBar,
+  Left,
   Logo,
-  MenuButton,
-  SideMenu,
-  MenuLink,
+  Right,
+  NavPill,
+  MobileMenuBtn,
+  SidePanel,
   Overlay,
+  NavList,
 } from './Header.styled';
 
 export function Header() {
-  const {pathname} = useLocation();
   const [open, setOpen] = useState(false);
-  const nav = useNavigate();
-  const menuRef = useRef<HTMLElement | null>(null);
+  const panelRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      if ((window as any).__MERGE_GAME_HEADER_RENDERED) {
-        return;
+    function onDown(e: MouseEvent) {
+      if (!open) return;
+      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+        setOpen(false);
       }
-      (window as any).__MERGE_GAME_HEADER_RENDERED = true;
     }
-  }, []);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
-
-  const handleOverlayClick = () => {
-    setOpen(false);
-  };
+    window.addEventListener('mousedown', onDown);
+    return () => window.removeEventListener('mousedown', onDown);
+  }, [open]);
 
   return (
     <>
-      <HeaderWrapper isFixed={!pathname.includes('/play/')}>
-        <Logo>Merge Game</Logo>
+      <HeaderBar>
+        <Left>
+          <Logo>
+            <Link to="/">Stellar Merge</Link>
+          </Logo>
+        </Left>
 
-        <MenuButton
-          aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
-          onClick={() => setOpen(v => !v)}>
-          {/* simple icon — you can replace with svg */}
-          {open ? '✕' : '☰'}
-        </MenuButton>
-      </HeaderWrapper>
+        <Right>
+          <nav aria-label="Main navigation">
+            <NavPill to="/">Home</NavPill>
+            <NavPill to="/levels">Niveles</NavPill>
+          </nav>
 
-      {/* overlay: darkens background and catches outside clicks */}
-      <Overlay open={open} onClick={handleOverlayClick} />
+          <MobileMenuBtn onClick={() => setOpen(true)} aria-label="Abrir menú">
+            ☰
+          </MobileMenuBtn>
+        </Right>
+      </HeaderBar>
 
-      {/* side menu panel */}
-      <SideMenu
-        role="dialog"
-        aria-hidden={!open}
-        aria-modal={open}
-        open={open}
-        ref={el => {
-          menuRef.current = el;
-        }}>
-        <MenuLink
-          onClick={() => {
-            nav('/');
-            setOpen(false);
-          }}>
-          Home
-        </MenuLink>
-        <MenuLink
-          onClick={() => {
-            nav('/levels');
-            setOpen(false);
-          }}>
-          Niveles
-        </MenuLink>
-        <MenuLink onClick={() => setOpen(false)}>Cerrar</MenuLink>
-      </SideMenu>
+      {open && <Overlay onClick={() => setOpen(false)} />}
+
+      <SidePanel ref={panelRef} open={open}>
+        <NavList>
+          <Link to="/" onClick={() => setOpen(false)}>
+            Inicio
+          </Link>
+          <Link to="/levels" onClick={() => setOpen(false)}>
+            Niveles
+          </Link>
+          <Link to="/about" onClick={() => setOpen(false)}>
+            Acerca
+          </Link>
+        </NavList>
+      </SidePanel>
     </>
   );
 }

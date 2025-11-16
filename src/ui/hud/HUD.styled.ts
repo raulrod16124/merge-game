@@ -1,47 +1,39 @@
-// src/ui/hud/HUD.styled.ts
+// src/ui/components/HUD.styled.ts
 import styled from 'styled-components';
 
-export const HUDContainer = styled.div`
-  max-width: 700px;
-  margin: 0 auto;
-  margin-top: 0.8rem;
-  margin-bottom: 0.8rem;
-  padding: 0.8rem 1rem;
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 18px;
+export const Bar = styled.div`
+  height: 68px;
+  width: 100%;
+
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+
+  background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(6px);
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-  font-family: 'Fredoka', sans-serif;
+  padding: 0 18px;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 `;
 
-export const HUDItem = styled.div`
+export const SideText = styled.div`
+  font-size: 16px;
+  font-weight: 600;
+  opacity: 0.85;
+`;
+
+export const CenterNext = styled.div`
   display: flex;
-  flex-direction: column;
-  text-align: center;
-  font-size: 0.85rem;
-  color: #333;
+  align-items: center;
+  justify-content: center;
 `;
 
-export const HUDValue = styled.div`
-  font-size: 1.3rem;
-  font-weight: 700;
-  margin-top: 0.2rem;
+export const NextInner = styled.div`
+  font-size: 34px;
+  transform: translateY(2px);
 `;
 
-export const HUDButton = styled.button`
-  padding: 0.5rem 1rem;
-  border-radius: 14px;
-  border: none;
-  cursor: pointer;
-  background: #ff6b6b;
-  color: white;
-  font-weight: 700;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
-
-  &:hover {
-    background: #ff4c4c;
-  }
+export const TimerWrapper = styled.div`
+  width: 100%;
+  padding: 8px 0;
 `;
