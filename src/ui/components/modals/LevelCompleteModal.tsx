@@ -68,7 +68,7 @@ type Props = {
   onClose: () => void;
 };
 
-export function LevelCompleteModal({levelId, onClose}: Props) {
+export function LevelCompleteModal({levelId}: Props) {
   const navigate = useNavigate();
   const level = (LEVELS as any)[levelId];
 

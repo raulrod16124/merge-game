@@ -1,5 +1,4 @@
 // src/ui/screens/Home.tsx
-import {Link} from 'react-router-dom';
 import {AppLayout} from '@/ui/layout/AppLayout';
 import {COSMIC_ICONS} from '@/ui/constants/cosmicData';
 import {
@@ -11,7 +10,6 @@ import {
   LeanText,
   OrbLabel,
   PreviewOrb,
-  StartButton,
 } from './Home.styled';
 import {Button} from '@/common/Button';
 

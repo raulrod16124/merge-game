@@ -54,21 +54,3 @@ export const Pill = styled.div`
   border-radius: 10px;
   width: fit-content;
 `;
-
-export const PlayBtn = styled.button`
-  margin-top: 14px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: none;
-  color: #12121f;
-  font-weight: 700;
-  font-size: 14px;
-  background: linear-gradient(180deg, #9efff3, #4bf7d3);
-  cursor: pointer;
-  transition: all 0.15s ease;
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
-
-  &:active {
-    transform: scale(0.96);
-  }
-`;

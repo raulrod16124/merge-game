@@ -8,7 +8,6 @@ import {
   LevelCardHeader,
   Name,
   Pill,
-  PlayBtn,
   Sub,
 } from './LevelCard.styled';
 import {Button} from '@/common/Button';
