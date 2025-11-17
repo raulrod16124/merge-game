@@ -14,7 +14,7 @@ export const BoardWrapper = styled.div`
 
 export const BoardContainer = styled.div`
   width: 100%;
-  max-width: 1200px;
+  max-width: 600px;
   height: 100%;
   display: flex;
   position: relative;

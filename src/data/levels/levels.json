@@ -2,7 +2,10 @@
   {
     "id": "level01",
     "name": "Nebula Rise 1",
-    "boardSize": {"cols": 6, "rows": 6},
+    "boardSize": {
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 6, "rows": 6}
+    },
     "enemyCount": 0,
     "spawnWeights": {
       "dust": 90,
@@ -11,7 +14,7 @@
     },
     "initialMap": [
       {"type": "dust", "x": 2, "y": 2},
-      {"type": "dust", "x": 1, "y": 4}
+      {"type": "dust", "x": 1, "y": 2}
     ],
     "blockedCells": [],
     "mapAsset": "/cosmic/map01.png",
@@ -21,7 +24,10 @@
   {
     "id": "level02",
     "name": "Nebula Rise 2",
-    "boardSize": {"cols": 6, "rows": 6},
+    "boardSize": {
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 6, "rows": 6}
+    },
     "enemyCount": 0,
     "spawnWeights": {
       "dust": 90,
@@ -37,7 +43,10 @@
   {
     "id": "level03",
     "name": "Cosmic Awakening",
-    "boardSize": {"cols": 6, "rows": 6},
+    "boardSize": {
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 6, "rows": 6}
+    },
     "enemyCount": 0,
     "spawnWeights": {
       "dust": 90,
@@ -53,7 +62,10 @@
   {
     "id": "level04",
     "name": "Stellar Buds",
-    "boardSize": {"cols": 6, "rows": 6},
+    "boardSize": {
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 6, "rows": 6}
+    },
     "enemyCount": 0,
     "spawnWeights": {
       "dust": 90,
@@ -69,7 +81,10 @@
   {
     "id": "level05",
     "name": "Proto Star Forge",
-    "boardSize": {"cols": 6, "rows": 6},
+    "boardSize": {
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 6, "rows": 6}
+    },
     "enemyCount": 0,
     "spawnWeights": {
       "dust": 90,
@@ -85,7 +100,10 @@
   {
     "id": "level06",
     "name": "Black Drift",
-    "boardSize": {"cols": 6, "rows": 6},
+    "boardSize": {
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 6, "rows": 6}
+    },
     "enemyCount": 1,
     "spawnWeights": {
       "dust": 80,
@@ -101,7 +119,10 @@
   {
     "id": "level07",
     "name": "Void’s Whisper",
-    "boardSize": {"cols": 6, "rows": 6},
+    "boardSize": {
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 6, "rows": 6}
+    },
     "enemyCount": 1,
     "spawnWeights": {
       "dust": 80,
@@ -117,7 +138,10 @@
   {
     "id": "level08",
     "name": "Singularity Edge",
-    "boardSize": {"cols": 6, "rows": 6},
+    "boardSize": {
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 6, "rows": 6}
+    },
     "enemyCount": 1,
     "spawnWeights": {
       "dust": 80,
@@ -133,7 +157,10 @@
   {
     "id": "level09",
     "name": "Gravity Dance",
-    "boardSize": {"cols": 6, "rows": 6},
+    "boardSize": {
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 6, "rows": 6}
+    },
     "enemyCount": 1,
     "spawnWeights": {
       "dust": 80,
@@ -149,7 +176,10 @@
   {
     "id": "level10",
     "name": "Stellar Trial",
-    "boardSize": {"cols": 6, "rows": 6},
+    "boardSize": {
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 6, "rows": 6}
+    },
     "enemyCount": 1,
     "spawnWeights": {
       "dust": 80,
@@ -165,7 +195,10 @@
   {
     "id": "level11",
     "name": "Binary Collapse",
-    "boardSize": {"cols": 6, "rows": 6},
+    "boardSize": {
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 6, "rows": 6}
+    },
     "enemyCount": 2,
     "spawnWeights": {
       "dust": 60,
@@ -181,7 +214,10 @@
   {
     "id": "level12",
     "name": "Galactic Forge",
-    "boardSize": {"cols": 6, "rows": 6},
+    "boardSize": {
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 6, "rows": 6}
+    },
     "enemyCount": 2,
     "spawnWeights": {
       "dust": 60,

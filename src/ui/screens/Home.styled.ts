@@ -12,6 +12,7 @@ export const Hero = styled.section`
   @media (min-width: 768px) {
     width: auto;
     padding: 72px 32px;
+    margin: 0 auto;
   }
 `;
 

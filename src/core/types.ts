@@ -45,10 +45,15 @@ export interface Objective {
   target: number;
 }
 
+export type ResponsiveBoardSize = {
+  mobile: {cols: number; rows: number};
+  desktop: {cols: number; rows: number};
+};
+
 export type LevelConfig = {
   id: string;
   name: string;
-  boardSize: {cols: number; rows: number};
+  boardSize: ResponsiveBoardSize;
   enemyCount: number;
   spawnWeights: Record<CosmicType, number>;
   initialMap: {type: CosmicType; x: number; y: number}[];

@@ -1,6 +1,7 @@
 // src/ui/components/Header.styled.ts
 import styled from 'styled-components';
 import {Link} from 'react-router-dom';
+import {Button} from '@/common/Button';
 
 export const HeaderBar = styled.header`
   height: 72px;
@@ -135,17 +136,11 @@ export const Right = styled.div`
   gap: 12px;
 `;
 
-export const NavPill = styled(Link)`
+export const NavPill = styled(Button)`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 12px;
-  border-radius: 999px;
-  text-decoration: none;
-  color: #0b2340;
-  background: rgba(255, 255, 255, 0.7);
-  font-weight: 700;
-  margin-right: 8px;
+  margin: 0 10px;
 
   @media (max-width: 720px) {
     display: none;

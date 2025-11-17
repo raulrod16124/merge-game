@@ -12,6 +12,7 @@ import {
   Overlay,
   NavList,
 } from './Header.styled';
+import {Button} from '@/common/Button';
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -39,8 +40,12 @@ export function Header() {
 
         <Right>
           <nav aria-label="Main navigation">
-            <NavPill to="/">Home</NavPill>
-            <NavPill to="/levels">Niveles</NavPill>
+            <NavPill variant="primary" to="/">
+              Home
+            </NavPill>
+            <NavPill variant="secondary" to="/levels">
+              Niveles
+            </NavPill>
           </nav>
 
           <MobileMenuBtn onClick={() => setOpen(true)} aria-label="Abrir menú">

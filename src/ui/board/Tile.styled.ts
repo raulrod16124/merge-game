@@ -13,7 +13,6 @@ export const TileBase = styled.div`
   border-radius: 14px;
   position: relative;
 
-  /* Sutil brillo espacial */
   transition:
     background 0.15s ease-out,
     transform 0.15s ease-out;
@@ -24,8 +23,8 @@ export const TileBase = styled.div`
   }
 
   & img {
-    width: 70%;
-    height: 70%;
+    width: 80%;
+    height: 90%;
     object-fit: contain;
     filter: drop-shadow(0px 3px 4px rgba(0, 0, 0, 0.35));
     pointer-events: none;
@@ -33,8 +32,8 @@ export const TileBase = styled.div`
 
   @media (min-width: 740px) {
     & img {
-      width: 62%;
-      height: 62%;
+      width: 82%;
+      height: 82%;
     }
   }
 `;
