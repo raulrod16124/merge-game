@@ -5,10 +5,8 @@
     "lib": ["ES2023"],
     "module": "ESNext",
     "composite": true,
-    "ignoreDeprecations": "6.0",
     "types": ["node"],
     "skipLibCheck": true,
-    "baseUrl": "src",
     "paths": {
       "@/*": ["./*"]
     },
