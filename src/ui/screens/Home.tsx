@@ -7,7 +7,6 @@ import {
   HeroBanner,
   HeroSubtitle,
   HeroTitle,
-  LeanText,
   OrbLabel,
   PreviewOrb,
 } from './Home.styled';
@@ -17,7 +16,7 @@ export function Home() {
   return (
     <AppLayout>
       <Hero>
-        <HeroTitle>Stellar Merge</HeroTitle>
+        <HeroTitle>Comienza tu viaje cósmico</HeroTitle>
 
         <HeroSubtitle>
           Coloca partículas cósmicas. Fusiona 3 iguales para crear objetos más
@@ -45,26 +44,16 @@ export function Home() {
           </div>
 
           {/* TEXT */}
-          <LeanText>
-            <p style={{margin: '0 0 6px', fontWeight: 800, fontSize: 16}}>
-              Comienza tu viaje cósmico
-            </p>
-
-            <p style={{margin: 0}}>
-              Explora combinaciones, administra recursos y domina el Agujero
-              Errante. Usa power-ups estratégicos para maniobras imposibles.
-            </p>
-            <Button
-              to="/levels"
-              variant="primary"
-              styles={{
-                margin: '24px auto',
-                padding: '12px 24px',
-                fontSize: '1.2rem',
-              }}>
-              Comenzar
-            </Button>
-          </LeanText>
+          <Button
+            to="/levels"
+            variant="primary"
+            styles={{
+              margin: '24px auto',
+              padding: '12px 24px',
+              fontSize: '1.2rem',
+            }}>
+            Comenzar
+          </Button>
         </HeroBanner>
 
         <Credits>v1.0 — Stellar Merge • Vector Cartoon UI</Credits>

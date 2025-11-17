@@ -1,5 +1,6 @@
 // src/ui/components/modals/LevelFailModal.tsx
 import {Button} from '@/common/Button';
+import {useGameStore} from '@/state/game-store';
 import {useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -67,8 +68,14 @@ type Props = {
   onClose: () => void;
 };
 
-export function LevelFailModal({levelId, onClose}: Props) {
+export function LevelFailModal({onClose}: Props) {
   const navigate = useNavigate();
+  const resetLevel = useGameStore(s => s.resetLevel);
+
+  const handleReset = () => {
+    resetLevel();
+    onClose();
+  };
 
   return (
     <Backdrop>
@@ -77,7 +84,7 @@ export function LevelFailModal({levelId, onClose}: Props) {
         <Text>No has logrado completar el nivel.</Text>
 
         <BtnGroup>
-          <Button variant="fail" onClick={() => navigate(`/play/${levelId}`)}>
+          <Button variant="fail" onClick={handleReset}>
             Reintentar nivel
           </Button>
 

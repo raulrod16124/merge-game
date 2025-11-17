@@ -72,11 +72,11 @@ export function LevelCompleteModal({levelId}: Props) {
   const navigate = useNavigate();
   const level = (LEVELS as any)[levelId];
 
-  const nextLevelId = (() => {
-    const num = Number(levelId.replace('level0', ''));
-    const next = `level0${num + 1}`;
-    return (LEVELS as any)[next] ? next : null;
-  })();
+  const levelIndex = LEVELS.findIndex(l => l.id === levelId);
+  const nextLevelId =
+    levelIndex >= 0 && LEVELS[levelIndex + 1]
+      ? LEVELS[levelIndex + 1].id
+      : null;
 
   return (
     <Backdrop>

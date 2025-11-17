@@ -1,6 +1,6 @@
 // src/ui/components/TimerBar.tsx
 import styled from 'styled-components';
-import {useGameStore} from '@/state';
+import {useGameStore} from '@/state/game-store';
 
 const BarWrapper = styled.div`
   width: 100%;

@@ -20,6 +20,7 @@ import {createFloatingScoreActions} from './actions/floatingScores';
 
 import {pickWeighted} from './utils/weighted';
 import {emptyFragments} from './utils/fragments';
+import {getResponsiveBoardSize} from '@/utils/getResponsiveBoardSize';
 
 export type GameStore = {
   items: ItemBase[];
@@ -81,6 +82,8 @@ export const useGameStore = create<GameStore>()(
 
       // ---- Load/reset ----
       loadLevel: lvl => {
+        const size = getResponsiveBoardSize(lvl);
+
         const initial = lvl.initialMap.map((s, idx) => ({
           id: `init_${idx}_${Date.now()}`,
           type: s.type,
@@ -92,8 +95,8 @@ export const useGameStore = create<GameStore>()(
         const holes = Array.from({length: lvl.enemyCount}, () => ({
           id: 'h_' + crypto.randomUUID(),
           pos: {
-            x: Math.floor(Math.random() * lvl.boardSize.cols),
-            y: Math.floor(Math.random() * lvl.boardSize.rows),
+            x: Math.floor(Math.random() * size.cols),
+            y: Math.floor(Math.random() * size.rows),
           },
           fragments: emptyFragments(),
           active: true,
@@ -102,7 +105,7 @@ export const useGameStore = create<GameStore>()(
         set({
           items: initial,
           holes,
-          boardSize: lvl.boardSize,
+          boardSize: size,
           currentLevel: lvl,
           score: 0,
           moves: 0,

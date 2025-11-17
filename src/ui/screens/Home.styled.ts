@@ -1,6 +1,7 @@
-import styled, {keyframes} from 'styled-components';
+import styled from 'styled-components';
 
 export const Hero = styled.section`
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -8,27 +9,11 @@ export const Hero = styled.section`
   text-align: center;
   color: #eef3ff;
 
-  background:
-    radial-gradient(
-      800px 400px at 50% 0%,
-      rgba(110, 45, 255, 0.06),
-      transparent
-    ),
-    radial-gradient(
-      800px 400px at 50% 100%,
-      rgba(0, 220, 200, 0.05),
-      transparent
-    );
-
   @media (min-width: 768px) {
+    width: auto;
     padding: 72px 32px;
+    margin: 0 auto;
   }
-`;
-
-export const glow = keyframes`
-  0% { text-shadow: 0 0 4px rgba(160,130,255,0.85), 0 0 16px rgba(100,50,255,0.25); }
-  50% { text-shadow: 0 0 12px rgba(180,160,255,0.95), 0 0 28px rgba(120,70,255,0.3); }
-  100% { text-shadow: 0 0 4px rgba(160,130,255,0.85), 0 0 16px rgba(100,50,255,0.25); }
 `;
 
 export const HeroTitle = styled.h1`
@@ -37,11 +22,10 @@ export const HeroTitle = styled.h1`
   font-weight: 900;
   letter-spacing: -1px;
   line-height: 0.9;
-  background: linear-gradient(90deg, #fffbff, #c6d9ff 40%, #9efff3 100%);
+  background: linear-gradient(90deg, #fffbff, #7b4dff 40%, #5a2fd4 60%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: ${glow} 3s ease-in-out infinite;
 `;
 
 export const HeroSubtitle = styled.p`
@@ -60,7 +44,6 @@ export const HeroBanner = styled.div`
   margin-top: 36px;
 
   @media (min-width: 768px) {
-    flex-direction: row;
     gap: 24px;
   }
 `;
@@ -93,15 +76,6 @@ export const OrbLabel = styled.div`
   font-weight: 800;
   color: rgba(230, 240, 255, 0.88);
   text-transform: uppercase;
-`;
-
-export const LeanText = styled.div`
-  max-width: 580px;
-  text-align: center;
-
-  @media (min-width: 768px) {
-    text-align: left;
-  }
 `;
 
 export const StartButton = styled.a`

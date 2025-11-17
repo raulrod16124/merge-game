@@ -4,9 +4,9 @@
     "target": "ES2023",
     "lib": ["ES2023"],
     "module": "ESNext",
+    "composite": true,
     "types": ["node"],
     "skipLibCheck": true,
-    "baseUrl": "src",
     "paths": {
       "@/*": ["./*"]
     },

@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 
 import {LEVELS} from '@/data/levels';
-import {useGameStore} from '@/state';
+import {useGameStore} from '@/state/game-store';
 
 import {HUD} from '@/ui/hud/HUD';
 import {GameBoard} from '@/ui/board/GameBoard';
@@ -12,22 +12,22 @@ import {AppLayout} from '@/ui/layout/AppLayout';
 import {LevelCompleteModal} from '@/ui/components/modals/LevelCompleteModal';
 import {LevelFailModal} from '@/ui/components/modals/LevelFailModal';
 
+import {BoardScreenWrapper, HUDColumn, BoardColumn} from './BoardLayout.styled';
+
 export function BoardScreen() {
   const {levelId} = useParams();
   const navigate = useNavigate();
 
   const loadLevel = useGameStore(s => s.loadLevel);
   const currentLevel = useGameStore(s => s.currentLevel);
-
-  const timeLeft = useGameStore(s => s.timeLeft);
-  const score = useGameStore(s => s.score);
-
   const checkWinLose = useGameStore(s => s.checkWinLose);
 
-  const [modalState, setModalState] = useState<null | {
-    status: 'win' | 'fail';
-    levelId: string;
-  }>(null);
+  const [modalState, setModalState] = useState(
+    null as null | {
+      status: 'win' | 'fail';
+      levelId: string;
+    },
+  );
 
   useEffect(() => {
     if (!levelId) {
@@ -35,10 +35,7 @@ export function BoardScreen() {
       return;
     }
 
-    const lvl = Array.isArray(LEVELS)
-      ? LEVELS.find(l => l.id === levelId)
-      : LEVELS[levelId];
-
+    const lvl = LEVELS.find((l: any) => l.id === levelId);
     if (!lvl) {
       navigate('/levels');
       return;
@@ -48,24 +45,25 @@ export function BoardScreen() {
       loadLevel(lvl);
       setModalState(null);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [levelId]);
 
+  const result = checkWinLose();
   useEffect(() => {
-    const result = checkWinLose?.() ?? null;
-    if (result !== null) {
-      setModalState(result);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeLeft, score]);
+    if (result === null) return;
+    setModalState(result);
+  }, [result]);
 
   return (
     <AppLayout>
-      <HUD />
+      <BoardScreenWrapper>
+        <HUDColumn>
+          <HUD />
+        </HUDColumn>
 
-      <div style={{marginTop: '16px'}}>
-        <GameBoard />
-      </div>
+        <BoardColumn>
+          <GameBoard />
+        </BoardColumn>
+      </BoardScreenWrapper>
 
       {modalState?.status === 'win' && (
         <LevelCompleteModal

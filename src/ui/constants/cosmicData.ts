@@ -13,14 +13,14 @@ export type CosmicType =
   | 'fragment_dark';
 
 export const COSMIC_ICONS: Record<CosmicType, string> = {
-  dust: '/cosmic/dust.png',
-  micro_asteroid: '/cosmic/micro_asteroid.png',
-  meteorite: '/cosmic/meteorite.png',
-  baby_planet: '/cosmic/baby_planet.png',
-  mature_planet: '/cosmic/mature_planet.png',
-  star: '/cosmic/star.png',
-  star_system: '/cosmic/star_system.png',
-  nebula: '/cosmic/nebula.png',
-  galaxy: '/cosmic/galaxy.png',
-  fragment_dark: '/cosmic/fragment_dark.png',
+  dust: `${import.meta.env.BASE_URL}cosmic/dust.png`,
+  micro_asteroid: `${import.meta.env.BASE_URL}cosmic/micro_asteroid.png`,
+  meteorite: `${import.meta.env.BASE_URL}cosmic/meteorite.png`,
+  baby_planet: `${import.meta.env.BASE_URL}cosmic/baby_planet.png`,
+  mature_planet: `${import.meta.env.BASE_URL}cosmic/mature_planet.png`,
+  star: `${import.meta.env.BASE_URL}cosmic/star.png`,
+  star_system: `${import.meta.env.BASE_URL}cosmic/star_system.png`,
+  nebula: `${import.meta.env.BASE_URL}cosmic/nebula.png`,
+  galaxy: `${import.meta.env.BASE_URL}cosmic/galaxy.png`,
+  fragment_dark: `${import.meta.env.BASE_URL}cosmic/fragment_dark.png`,
 };

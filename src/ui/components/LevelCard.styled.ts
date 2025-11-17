@@ -35,11 +35,6 @@ export const Name = styled.h3`
   margin: 0;
 `;
 
-export const Sub = styled.div`
-  font-size: 13px;
-  opacity: 0.8;
-`;
-
 export const Info = styled.div`
   margin-top: 12px;
   display: flex;

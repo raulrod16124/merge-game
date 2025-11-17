@@ -1,4 +1,4 @@
-import {useGameStore} from '@/state';
+import {useGameStore} from '@/state/game-store';
 import {motion} from 'framer-motion';
 import {COSMIC_ICONS} from '../constants/cosmicData';
 
@@ -18,8 +18,8 @@ export function NextItem() {
         transition={{duration: 0.2}}
         draggable={false}
         style={{
-          width: 56,
-          height: 56,
+          width: 30,
+          height: 30,
           objectFit: 'contain',
           padding: 6,
           background: 'rgba(0,0,0,0.2)',

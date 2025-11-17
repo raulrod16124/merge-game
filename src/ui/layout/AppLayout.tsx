@@ -16,10 +16,26 @@ const Wrapper = styled.div`
 const Content = styled.main`
   flex: 1;
   width: 100%;
-  max-width: 960px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding-top: 72px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  background:
+    radial-gradient(
+      800px 400px at 50% 0%,
+      rgba(110, 45, 255, 0.06),
+      transparent
+    ),
+    radial-gradient(
+      800px 400px at 50% 100%,
+      rgba(0, 220, 200, 0.05),
+      transparent
+    );
+  @media (max-width: 768px) {
+    flex-direction: column;
+    max-width: 960px;
+  }
 `;
 
 export function AppLayout({children}: {children: React.ReactNode}) {

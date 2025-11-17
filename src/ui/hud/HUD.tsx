@@ -1,45 +1,45 @@
 // src/ui/hud/HUD.tsx
-import {useGameStore} from '@/state';
+import {useState} from 'react';
 import {TimerBar} from '../components/TimeBar';
 import {ScoreBar} from './ScoreBar';
 import {NextItem} from '../components/NextItem';
+import {HUDWrapper, InfoRow, MobileStack, PauseButton} from './HUD.styled';
+import {PauseModal} from '../components/modals/PauseModal';
 
 export function HUD() {
-  const resetLevel = useGameStore(s => s.resetLevel);
+  const [paused, setPaused] = useState(false);
+  const openPause = () => setPaused(true);
+  const closePause = () => setPaused(false);
 
   return (
-    <div
-      style={{
-        padding: '12px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        background: 'rgba(255,255,255,0.15)',
-        borderRadius: '12px',
-        backdropFilter: 'blur(6px)',
-        marginBottom: '12px',
-      }}>
-      {/* Next item */}
-      <NextItem />
-      {/* Score and Time */}
-      <div style={{flexGrow: 1, margin: '0 16px'}}>
-        <ScoreBar />
-        <TimerBar />
-      </div>
+    <>
+      <HUDWrapper>
+        <MobileStack>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              width: '100%',
+            }}>
+            <NextItem />
+            <InfoRow>
+              <ScoreBar />
+            </InfoRow>
+            <PauseButton onClick={openPause}>☼</PauseButton>
+          </div>
 
-      <button
-        onClick={resetLevel}
-        style={{
-          padding: '8px 14px',
-          borderRadius: '10px',
-          background: '#d9534f',
-          border: 'none',
-          color: 'white',
-          fontWeight: 600,
-          boxShadow: '0 3px 5px rgba(0,0,0,0.25)',
-        }}>
-        Reiniciar
-      </button>
-    </div>
+          <TimerBar />
+        </MobileStack>
+
+        <div className="desktop">
+          <NextItem />
+          <ScoreBar />
+          <TimerBar />
+          <PauseButton onClick={openPause}>☼</PauseButton>
+        </div>
+      </HUDWrapper>
+
+      {paused && <PauseModal onClose={closePause} />}
+    </>
   );
 }
