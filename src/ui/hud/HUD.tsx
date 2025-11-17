@@ -3,8 +3,16 @@ import {useState} from 'react';
 import {TimerBar} from '../components/TimeBar';
 import {ScoreBar} from './ScoreBar';
 import {NextItem} from '../components/NextItem';
-import {HUDWrapper, InfoRow, MobileStack, PauseButton} from './HUD.styled';
+import {
+  HUDPauseButton,
+  HUDWrapper,
+  InfoRow,
+  MobileStack,
+  RightContent,
+} from './HUD.styled';
 import {PauseModal} from '../components/modals/PauseModal';
+import {Pause} from 'lucide-react';
+import {COLORS} from '../constants';
 
 export function HUD() {
   const [paused, setPaused] = useState(false);
@@ -17,25 +25,31 @@ export function HUD() {
         <MobileStack>
           <div
             style={{
-              display: 'flex',
-              justifyContent: 'space-between',
+              display: 'grid',
+              gridTemplateColumns: 'auto 1fr auto',
+              alignItems: 'center',
               width: '100%',
             }}>
             <NextItem />
-            <InfoRow>
-              <ScoreBar />
-            </InfoRow>
-            <PauseButton onClick={openPause}>☼</PauseButton>
+            <RightContent>
+              <InfoRow>
+                <ScoreBar />
+              </InfoRow>
+              <TimerBar />
+            </RightContent>
+            <HUDPauseButton onClick={openPause} aria-label="Pausar juego">
+              <Pause size={24} color={COLORS.secondary} />
+            </HUDPauseButton>
           </div>
-
-          <TimerBar />
         </MobileStack>
 
         <div className="desktop">
           <NextItem />
           <ScoreBar />
           <TimerBar />
-          <PauseButton onClick={openPause}>☼</PauseButton>
+          <HUDPauseButton onClick={openPause} aria-label="Pausar juego">
+            <Pause size={24} color="#ffffff" />
+          </HUDPauseButton>
         </div>
       </HUDWrapper>
 

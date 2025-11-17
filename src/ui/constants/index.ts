@@ -1,68 +1,41 @@
-// src/ui/constants.ts
-export function emoji(type: string) {
-  switch (type) {
-    case 'bush':
-      return '🌿';
-    case 'tree':
-      return '🌳';
-    case 'house':
-      return '🏠';
-    case 'mansion':
-      return '🏡';
-    case 'castle':
-      return '🏰';
-    case 'bear':
-      return '🐻';
-    case 'tomb':
-      return '🪦';
-    case 'church':
-      return '⛪';
-    case 'cathedral':
-      return '🏛️';
-    case 'treasure':
-      return '💎';
-    case 'dragon':
-      return '🐉';
-    default:
-      return '❓';
-  }
-}
+// src/ui/constants/cosmicData.ts
 
-// Orden de aparición / progresión
-export const ITEM_ORDER = [
-  'bush',
-  'tree',
-  'house',
-  'mansion',
-  'castle',
-  'bear', // los osos entran en pool como "pieza que puede salir"
-  'tomb',
-  'church',
-  'cathedral',
-  'treasure',
-  'dragon',
-];
+export type CosmicType =
+  | 'dust'
+  | 'micro_asteroid'
+  | 'meteorite'
+  | 'baby_planet'
+  | 'mature_planet'
+  | 'star'
+  | 'star_system'
+  | 'nebula'
+  | 'galaxy'
+  | 'fragment_dark';
 
-export const ITEM_ASSETS: Record<string, {src: string; size?: number}> = {
-  bush: {src: '/assets/items/bush.png', size: 64},
-  tree: {src: '/assets/items/tree.png', size: 72},
-  house: {src: '/assets/items/house.png', size: 72},
-  mansion: {src: '/assets/items/mansion.png', size: 80},
-  bear: {src: '/assets/items/bear.png', size: 72},
-  tomb: {src: '/assets/items/tomb.png', size: 64},
+export const COSMIC_ICONS: Record<CosmicType, string> = {
+  dust: `${import.meta.env.BASE_URL}cosmic/dust.png`,
+  micro_asteroid: `${import.meta.env.BASE_URL}cosmic/micro_asteroid.png`,
+  meteorite: `${import.meta.env.BASE_URL}cosmic/meteorite.png`,
+  baby_planet: `${import.meta.env.BASE_URL}cosmic/baby_planet.png`,
+  mature_planet: `${import.meta.env.BASE_URL}cosmic/mature_planet.png`,
+  star: `${import.meta.env.BASE_URL}cosmic/star.png`,
+  star_system: `${import.meta.env.BASE_URL}cosmic/star_system.png`,
+  nebula: `${import.meta.env.BASE_URL}cosmic/nebula.png`,
+  galaxy: `${import.meta.env.BASE_URL}cosmic/galaxy.png`,
+  fragment_dark: `${import.meta.env.BASE_URL}cosmic/fragment_dark.png`,
 };
 
-// Pesos base para spawn aleatorio (puedes ajustar)
-export const ITEM_WEIGHTS: Record<string, number> = {
-  bush: 60,
-  tree: 25,
-  house: 10,
-  mansion: 3,
-  castle: 1,
-  bear: 6, // osos relativamente raros (ajusta)
-  tomb: 0,
-  church: 0,
-  cathedral: 0,
-  treasure: 0,
-  dragon: 0,
+export const COLORS = {
+  primary: '#ffb844',
+  primaryDark: '#e89227',
+  secondary: '#7b4dff',
+  secondaryDark: '#5a2fd4',
+  tertiary: '#1a1a23',
+  tertiaryDark: '#2a2a35',
+  success: '#4cd964',
+  successDark: '#33b84b',
+  fail: '#ff5c5c',
+  failDark: '#db3838',
+  black: '#121212',
+  white: '#FFFFFF',
 };

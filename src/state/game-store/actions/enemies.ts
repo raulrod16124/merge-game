@@ -1,9 +1,9 @@
 // src/state/gameStore/actions/enemies.ts
 import type {StateCreator} from 'zustand';
 import type {GameStore} from '../index';
-import type {Pos} from '@/core/types';
+import type {Pos} from '../../../core/types';
 
-import {getNextType, SUPERNOVA_SCORE} from '@/core/fusionRules';
+import {getNextType, SUPERNOVA_SCORE} from '../../../core/fusionRules';
 
 export const createEnemies = (
   set: Parameters<StateCreator<GameStore>>[0],

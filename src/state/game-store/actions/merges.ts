@@ -1,8 +1,8 @@
 import type {StateCreator} from 'zustand';
 import type {GameStore} from '../index';
-import type {Pos, CosmicType, ItemBase} from '@/core/types';
+import type {Pos, CosmicType, ItemBase} from '../../../core/types';
 
-import {getNextType, fusionScore, TIME_BONUS} from '@/core/fusionRules';
+import {getNextType, fusionScore, TIME_BONUS} from '../../../core/fusionRules';
 
 function getConnectedCluster(
   start: Pos,

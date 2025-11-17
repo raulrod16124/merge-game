@@ -1,5 +1,6 @@
 // src/ui/hud/HUD.styled.ts
 import styled from 'styled-components';
+import {COLORS} from '../constants';
 
 export const HUDWrapper = styled.div`
   display: flex;
@@ -47,26 +48,34 @@ export const MobileStack = styled.div`
   }
 `;
 
+export const RightContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 export const InfoRow = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
 `;
 
-export const PauseButton = styled.button`
-  min-width: 42px;
-  height: 42px;
-  border-radius: 14px;
-  border: none;
-  cursor: pointer;
-  background: linear-gradient(180deg, #9b7bff, #6b4fdc);
-  color: white;
-  font-size: 1.4rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  transition: 0.18s;
-  margin: auto 0;
+export const HUDPauseButton = styled.button`
+  background: ${COLORS.tertiary};
+  border: 2px solid ${COLORS.secondary};
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  &:hover {
-    transform: scale(1.06);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+
+  &:active {
+    transform: scale(0.92);
   }
 `;

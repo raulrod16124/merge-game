@@ -2,7 +2,7 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {BrowserRouter} from 'react-router-dom';
-import App from '@/ui/screens/App';
+import App from '../src/ui/screens/App';
 import {registerSW} from 'virtual:pwa-register';
 import './index.css';
 

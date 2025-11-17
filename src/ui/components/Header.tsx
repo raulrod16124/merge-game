@@ -12,6 +12,7 @@ import {
   Overlay,
   NavList,
 } from './Header.styled';
+import {Menu, MenuSquare, MenuSquareIcon} from 'lucide-react';
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -48,7 +49,7 @@ export function Header() {
           </nav>
 
           <MobileMenuBtn onClick={() => setOpen(true)} aria-label="Abrir menú">
-            ☰
+            <Menu size={22} color="#FFFFFF" />
           </MobileMenuBtn>
         </Right>
       </HeaderBar>

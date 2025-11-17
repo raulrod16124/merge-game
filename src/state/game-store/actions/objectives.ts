@@ -1,7 +1,7 @@
 // src/state/gameStore/actions/objectives.ts
 import type {StateCreator} from 'zustand';
 import type {GameStore} from '../index';
-import type {Objective} from '@/core/types';
+import type {Objective} from '../../../core/types';
 
 export const createObjectiveChecker = (
   //@ts-ignore

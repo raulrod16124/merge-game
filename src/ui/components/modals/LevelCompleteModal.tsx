@@ -1,8 +1,8 @@
 // src/ui/components/modals/LevelCompleteModal.tsx
 import {useNavigate} from 'react-router-dom';
-import {LEVELS} from '@/data/levels';
+import {LEVELS} from '../../../data/levels';
 import styled from 'styled-components';
-import {Button} from '@/common/Button';
+import {Button} from '../../../common/Button';
 
 const Backdrop = styled.div`
   position: fixed;

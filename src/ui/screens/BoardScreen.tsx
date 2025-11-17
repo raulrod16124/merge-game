@@ -2,15 +2,15 @@
 import {useEffect, useState} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 
-import {LEVELS} from '@/data/levels';
-import {useGameStore} from '@/state/game-store';
+import {LEVELS} from '../../data/levels';
+import {useGameStore} from '../../state/game-store';
 
-import {HUD} from '@/ui/hud/HUD';
-import {GameBoard} from '@/ui/board/GameBoard';
-import {AppLayout} from '@/ui/layout/AppLayout';
+import {HUD} from '../../ui/hud/HUD';
+import {GameBoard} from '../../ui/board/GameBoard';
+import {AppLayout} from '../../ui/layout/AppLayout';
 
-import {LevelCompleteModal} from '@/ui/components/modals/LevelCompleteModal';
-import {LevelFailModal} from '@/ui/components/modals/LevelFailModal';
+import {LevelCompleteModal} from '../../ui/components/modals/LevelCompleteModal';
+import {LevelFailModal} from '../../ui/components/modals/LevelFailModal';
 
 import {BoardScreenWrapper, HUDColumn, BoardColumn} from './BoardLayout.styled';
 

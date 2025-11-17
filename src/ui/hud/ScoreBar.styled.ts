@@ -10,8 +10,7 @@ export const ScoreAndMovesWrapper = styled.div`
   opacity: 0.85;
   @media (max-width: 768px) {
     align-items: center;
-    justify-content: center;
     gap: 30px;
-    margin: 10px 0;
+    margin: 10px 20px;
   }
 `;

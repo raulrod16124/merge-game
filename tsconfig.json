@@ -4,10 +4,6 @@
     "useDefineForClassFields": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    },
 
     "jsx": "preserve",
     "allowSyntheticDefaultImports": true,

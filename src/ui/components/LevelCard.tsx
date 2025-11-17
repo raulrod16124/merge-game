@@ -1,6 +1,6 @@
-import type {LevelConfig} from '@/core/types';
+import type {LevelConfig} from '../../core/types';
 import {useNavigate} from 'react-router-dom';
-import {COSMIC_ICONS} from '@/ui/constants/cosmicData';
+import {COSMIC_ICONS} from '../constants';
 import {
   Card,
   Icon,
@@ -9,7 +9,7 @@ import {
   Name,
   Pill,
 } from './LevelCard.styled';
-import {Button} from '@/common/Button';
+import {Button} from '../../common/Button';
 
 export function LevelCard({level}: {level: LevelConfig}) {
   const nav = useNavigate();
