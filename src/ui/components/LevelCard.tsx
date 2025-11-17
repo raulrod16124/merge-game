@@ -8,7 +8,6 @@ import {
   LevelCardHeader,
   Name,
   Pill,
-  Sub,
 } from './LevelCard.styled';
 import {Button} from '@/common/Button';
 
@@ -36,9 +35,6 @@ export function LevelCard({level}: {level: LevelConfig}) {
       <LevelCardHeader>
         <div>
           <Name>{level.name}</Name>
-          <Sub>
-            Tablero {level.boardSize.cols}×{level.boardSize.rows}
-          </Sub>
         </div>
 
         <Icon

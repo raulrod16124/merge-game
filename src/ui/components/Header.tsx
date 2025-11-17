@@ -12,7 +12,6 @@ import {
   Overlay,
   NavList,
 } from './Header.styled';
-import {Button} from '@/common/Button';
 
 export function Header() {
   const [open, setOpen] = useState(false);

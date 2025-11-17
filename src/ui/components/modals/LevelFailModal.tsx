@@ -68,7 +68,7 @@ type Props = {
   onClose: () => void;
 };
 
-export function LevelFailModal({levelId, onClose}: Props) {
+export function LevelFailModal({onClose}: Props) {
   const navigate = useNavigate();
   const resetLevel = useGameStore(s => s.resetLevel);
 

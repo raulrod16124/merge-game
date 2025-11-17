@@ -21,7 +21,6 @@ import {createFloatingScoreActions} from './actions/floatingScores';
 import {pickWeighted} from './utils/weighted';
 import {emptyFragments} from './utils/fragments';
 import {getResponsiveBoardSize} from '@/utils/getResponsiveBoardSize';
-import React from 'react';
 
 export type GameStore = {
   items: ItemBase[];
