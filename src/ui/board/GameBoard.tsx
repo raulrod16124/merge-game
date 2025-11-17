@@ -1,7 +1,9 @@
 // src/ui/board/GameBoard.tsx
+import {motion} from 'framer-motion';
 import {useEffect} from 'react';
 import {useGameStore} from '@/state';
-import {Tile} from '@/ui/board/Tile';
+
+import {Tile} from './Tile';
 import {FloatingScore} from '@/ui/components/FloatingScore';
 import {AnimatePresence} from 'framer-motion';
 import {LEVELS} from '@/data/levels';
@@ -27,8 +29,7 @@ export function GameBoard() {
     const load = async () => {
       const {loadLevel, currentLevel} = useGameStore.getState();
       if (!currentLevel) {
-        // casteamos a any para evitar errores de tipo si LEVELS tiene shape distinto al LevelConfig TS
-        const lvl = (LEVELS as any).level01 ?? Object.values(LEVELS)[0];
+        const lvl = LEVELS[0];
         if (lvl) loadLevel(lvl as any);
       }
     };
@@ -37,39 +38,48 @@ export function GameBoard() {
 
   return (
     <BoardWrapper>
-      <BoardContainer>
-        <Grid cols={cols} rows={rows}>
-          {Array.from({length: cols * rows}).map((_, index) => {
-            const x = index % cols;
-            const y = Math.floor(index / cols);
-            const item = items.find(i => i.pos.x === x && i.pos.y === y);
+      <motion.div
+        initial={{opacity: 0, scale: 0.92, y: 20}}
+        animate={{opacity: 1, scale: 1, y: 0}}
+        transition={{
+          duration: 0.45,
+          ease: [0.22, 1.05, 0.32, 1],
+        }}
+        style={{width: '100%', height: '100%'}}>
+        <BoardContainer>
+          <Grid cols={cols} rows={rows}>
+            {Array.from({length: cols * rows}).map((_, index) => {
+              const x = index % cols;
+              const y = Math.floor(index / cols);
+              const item = items.find(i => i.pos.x === x && i.pos.y === y);
 
-            return (
-              <Tile
-                key={`${x}-${y}`}
-                x={x}
-                y={y}
-                item={item}
-                onClickEmpty={({x: cx, y: cy}) => addItem({x: cx, y: cy})}
-              />
-            );
-          })}
-        </Grid>
+              return (
+                <Tile
+                  key={`${x}-${y}`}
+                  x={x}
+                  y={y}
+                  item={item}
+                  onClickEmpty={({x: cx, y: cy}) => addItem({x: cx, y: cy})}
+                />
+              );
+            })}
+          </Grid>
 
-        <FloatingLayer>
-          <AnimatePresence>
-            {floatingScores.map(fs => (
-              <FloatingScore
-                key={fs.id}
-                x={fs.x}
-                y={fs.y}
-                points={fs.points}
-                onDone={() => removeFloatingScore(fs.id)}
-              />
-            ))}
-          </AnimatePresence>
-        </FloatingLayer>
-      </BoardContainer>
+          <FloatingLayer>
+            <AnimatePresence>
+              {floatingScores.map(fs => (
+                <FloatingScore
+                  key={fs.id}
+                  x={fs.x}
+                  y={fs.y}
+                  points={fs.points}
+                  onDone={() => removeFloatingScore(fs.id)}
+                />
+              ))}
+            </AnimatePresence>
+          </FloatingLayer>
+        </BoardContainer>
+      </motion.div>
     </BoardWrapper>
   );
 }

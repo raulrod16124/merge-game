@@ -8,15 +8,39 @@ export const TileBase = styled.div`
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  user-select: none;
+
+  border-radius: 14px;
+  position: relative;
+
+  /* Sutil brillo espacial */
+  transition:
+    background 0.15s ease-out,
+    transform 0.15s ease-out;
 
   &.empty:hover {
-    background: rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
+  }
+
+  & img {
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
+    filter: drop-shadow(0px 3px 4px rgba(0, 0, 0, 0.35));
+    pointer-events: none;
+  }
+
+  @media (min-width: 740px) {
+    & img {
+      width: 62%;
+      height: 62%;
+    }
   }
 `;
 
-export const TileEmoji = styled.div`
-  font-size: clamp(2.4rem, 7vw, 4.2rem);
+export const TilePlaceholder = styled.div`
+  opacity: 0.12;
+  font-size: clamp(1.8rem, 6vw, 2.5rem);
   user-select: none;
-  transform: translateY(-4px);
-  filter: drop-shadow(0px 3px 2px rgba(0, 0, 0, 0.25));
 `;

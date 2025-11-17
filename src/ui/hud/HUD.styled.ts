@@ -1,39 +1,73 @@
-// src/ui/components/HUD.styled.ts
+// src/ui/hud/HUD.styled.ts
 import styled from 'styled-components';
 
-export const Bar = styled.div`
-  height: 68px;
-  width: 100%;
-
+export const HUDWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  gap: 14px;
 
+  /* DESKTOP */
+  .desktop {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .desktop {
+      display: flex;
+      flex-direction: column;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 20px;
+      width: 220px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+      gap: 20px;
+    }
+
+    /* MobileStack oculto en desktop */
+    > div:first-child {
+      display: none;
+    }
+  }
+`;
+
+export const MobileStack = styled.div`
+  width: 100%;
+  padding: 12px;
   background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(6px);
-  padding: 0 18px;
-
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-`;
-
-export const SideText = styled.div`
-  font-size: 16px;
-  font-weight: 600;
-  opacity: 0.85;
-`;
-
-export const CenterNext = styled.div`
+  border-radius: 14px;
+  backdrop-filter: blur(8px);
   display: flex;
+  flex-direction: column;
+  gap: 10px;
   align-items: center;
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+`;
+
+export const InfoRow = styled.div`
+  display: flex;
   justify-content: center;
-`;
-
-export const NextInner = styled.div`
-  font-size: 34px;
-  transform: translateY(2px);
-`;
-
-export const TimerWrapper = styled.div`
   width: 100%;
-  padding: 8px 0;
+`;
+
+export const PauseButton = styled.button`
+  min-width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(180deg, #9b7bff, #6b4fdc);
+  color: white;
+  font-size: 1.4rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: 0.18s;
+  margin: auto 0;
+
+  &:hover {
+    transform: scale(1.06);
+  }
 `;
