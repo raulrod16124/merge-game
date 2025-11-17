@@ -21,7 +21,7 @@ export const BoardContainer = styled.div`
   background-size: cover;
   background-position: center;
   overflow: hidden;
-  background-image: url('/boards/map1.png');
+  background-image: url(${import.meta.env.BASE_URL}boards/map1.png);
 
   @media (min-width: 900px) {
     border-radius: 22px;
