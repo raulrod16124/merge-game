@@ -1,4 +1,18 @@
 {
+  "compilerOptions": {
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+
+    "jsx": "preserve",
+    "allowSyntheticDefaultImports": true,
+    "types": ["vite/client"]
+  },
   "files": [],
   "references": [
     {"path": "./tsconfig.app.json"},

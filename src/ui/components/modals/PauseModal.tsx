@@ -1,5 +1,5 @@
 // src/ui/components/modals/PauseModal.tsx
-import {useGameStore} from '@/state';
+import {useGameStore} from '@/state/game-store';
 import {ModalBox, Overlay} from './PauseModal.styled';
 import {Button} from '@/common/Button';
 

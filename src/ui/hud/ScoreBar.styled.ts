@@ -9,8 +9,9 @@ export const ScoreAndMovesWrapper = styled.div`
   font-size: 0.9rem;
   opacity: 0.85;
   @media (max-width: 768px) {
-    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    gap: 30px;
     margin: 10px 0;
   }
 `;

@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 
 import {LEVELS} from '@/data/levels';
-import {useGameStore} from '@/state';
+import {useGameStore} from '@/state/game-store';
 
 import {HUD} from '@/ui/hud/HUD';
 import {GameBoard} from '@/ui/board/GameBoard';

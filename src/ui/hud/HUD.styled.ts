@@ -5,7 +5,6 @@ export const HUDWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
 
   /* DESKTOP */
   .desktop {
@@ -34,7 +33,7 @@ export const HUDWrapper = styled.div`
 
 export const MobileStack = styled.div`
   width: 100%;
-  padding: 12px;
+  padding: 6px 12px;
   background: rgba(255, 255, 255, 0.06);
   border-radius: 14px;
   backdrop-filter: blur(8px);

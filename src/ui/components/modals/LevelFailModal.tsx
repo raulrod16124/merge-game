@@ -1,6 +1,6 @@
 // src/ui/components/modals/LevelFailModal.tsx
 import {Button} from '@/common/Button';
-import {useGameStore} from '@/state';
+import {useGameStore} from '@/state/game-store';
 import {useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
 

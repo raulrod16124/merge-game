@@ -1,7 +1,7 @@
 // src/ui/board/GameBoard.tsx
 import {motion} from 'framer-motion';
 import {useEffect} from 'react';
-import {useGameStore} from '@/state';
+import {useGameStore} from '@/state/game-store';
 
 import {Tile} from './Tile';
 import {FloatingScore} from '@/ui/components/FloatingScore';

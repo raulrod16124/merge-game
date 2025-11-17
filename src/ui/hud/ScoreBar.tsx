@@ -1,5 +1,5 @@
 // src/ui/hud/ScoreBar.tsx
-import {useGameStore} from '@/state';
+import {useGameStore} from '@/state/game-store';
 import {ScoreAndMovesWrapper} from './ScoreBar.styled';
 
 export function ScoreBar() {
