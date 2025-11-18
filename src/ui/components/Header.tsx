@@ -12,7 +12,7 @@ import {
   Overlay,
   NavList,
 } from './Header.styled';
-import {Menu, MenuSquare, MenuSquareIcon} from 'lucide-react';
+import {Menu} from 'lucide-react';
 
 export function Header() {
   const [open, setOpen] = useState(false);

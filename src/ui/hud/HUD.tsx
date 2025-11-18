@@ -21,11 +21,6 @@ export function HUD() {
   const openPause = () => setPaused(true);
   const closePause = () => setPaused(false);
 
-  const handleReset = () => {
-    resetLevel();
-    closePause();
-  };
-
   return (
     <>
       <HUDWrapper>
