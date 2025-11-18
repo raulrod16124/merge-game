@@ -10,7 +10,8 @@ export type CosmicType =
   | 'star_system'
   | 'nebula'
   | 'galaxy'
-  | 'fragment_dark';
+  | 'fragment_dark'
+  | 'black_hole';
 
 export const COSMIC_ICONS: Record<CosmicType, string> = {
   dust: `${import.meta.env.BASE_URL}cosmic/dust.png`,
@@ -23,6 +24,7 @@ export const COSMIC_ICONS: Record<CosmicType, string> = {
   nebula: `${import.meta.env.BASE_URL}cosmic/nebula.png`,
   galaxy: `${import.meta.env.BASE_URL}cosmic/galaxy.png`,
   fragment_dark: `${import.meta.env.BASE_URL}cosmic/fragment_dark.png`,
+  black_hole: `${import.meta.env.BASE_URL}cosmic/black_hole.png`,
 };
 
 export const COLORS = {

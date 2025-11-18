@@ -34,7 +34,7 @@ export const Grid = styled.div<{cols: number; rows: number}>`
   display: grid;
   height: 100%;
   grid-template-columns: repeat(${props => props.cols}, 1fr);
-  grid-template-rows: repeat(${props => props.rows}, 0.5fr);
+  grid-template-rows: repeat(${props => props.rows}, 1fr);
   padding: 4%;
   gap: 0px;
 `;

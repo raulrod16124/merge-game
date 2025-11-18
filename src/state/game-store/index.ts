@@ -18,7 +18,6 @@ import {createTimer} from './actions/timer';
 import {createObjectiveChecker} from './actions/objectives';
 import {createFloatingScoreActions} from './actions/floatingScores';
 
-import {pickWeighted} from './utils/weighted';
 import {emptyFragments} from './utils/fragments';
 import {getResponsiveBoardSize} from '../../utils/getResponsiveBoardSize';
 
@@ -109,13 +108,27 @@ export const useGameStore = create<GameStore>()(
           currentLevel: lvl,
           score: 0,
           moves: 0,
-          nextItem: pickWeighted(lvl.spawnWeights),
+          nextItem: 'dust',
           timeLeft: lvl.timerSeconds ?? 120,
           powerupUsed: false,
           floatingScores: [],
           createdCounts: {},
+          //_enemySpawnProgress: 0,
         });
-
+        // set({
+        //   items: initial,
+        //   holes,
+        //   boardSize: size,
+        //   currentLevel: lvl,
+        //   score: 0,
+        //   moves: 0,
+        //   nextItem: pickWeighted(lvl.spawnWeights),
+        //   timeLeft: lvl.timerSeconds ?? 120,
+        //   powerupUsed: false,
+        //   floatingScores: [],
+        //   createdCounts: {},
+        // });
+        get().spawnNextItem();
         get().stopTimer();
         get().startTimer();
       },

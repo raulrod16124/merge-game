@@ -4,6 +4,7 @@ import type {GameStore} from '../index';
 import type {Pos} from '../../../core/types';
 
 import {getNextType, SUPERNOVA_SCORE} from '../../../core/fusionRules';
+import {emptyFragments} from '../utils/fragments';
 
 export const createEnemies = (
   set: Parameters<StateCreator<GameStore>>[0],
@@ -115,6 +116,39 @@ export const createEnemies = (
         return {...hole, fragments, pos: newPos};
       })
       .filter(h => h.active);
+
+    // after existing enemy movement logic and before set({holes: aliveHoles});
+    const lvl = get().currentLevel;
+    if (lvl) {
+      const target = lvl.enemyCount ?? 0;
+      const current = newHoles.filter(h => h.active !== false).length;
+      // spawn condition: every 6 moves spawn one (until reach target)
+      const moves = get().moves ?? 0;
+      const shouldSpawn = current < target && moves > 0 && moves % 6 === 0;
+      if (shouldSpawn) {
+        // choose random free cell
+        const occupied = get().items.map(i => `${i.pos.x},${i.pos.y}`);
+        const holeOccupied = newHoles.map(h => `${h.pos.x},${h.pos.y}`);
+        const w = get().boardSize.cols;
+        const h = get().boardSize.rows;
+        const freeCells: {x: number; y: number}[] = [];
+        for (let x = 0; x < w; x++)
+          for (let y = 0; y < h; y++) {
+            const key = `${x},${y}`;
+            if (!occupied.includes(key) && !holeOccupied.includes(key))
+              freeCells.push({x, y});
+          }
+        if (freeCells.length) {
+          const c = freeCells[Math.floor(Math.random() * freeCells.length)];
+          newHoles.push({
+            id: 'h_' + crypto.randomUUID(),
+            pos: c,
+            fragments: emptyFragments(),
+            active: true,
+          });
+        }
+      }
+    }
 
     set({holes: newHoles});
   },
