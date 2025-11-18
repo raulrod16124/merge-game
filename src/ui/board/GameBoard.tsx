@@ -1,12 +1,12 @@
 // src/ui/board/GameBoard.tsx
 import {motion} from 'framer-motion';
 import {useEffect} from 'react';
-import {useGameStore} from '@/state/game-store';
+import {useGameStore} from '../../state/game-store';
 
 import {Tile} from './Tile';
-import {FloatingScore} from '@/ui/components/FloatingScore';
+import {FloatingScore} from '../../ui/components/FloatingScore';
 import {AnimatePresence} from 'framer-motion';
-import {LEVELS} from '@/data/levels';
+import {LEVELS} from '../../data/levels';
 
 import {
   BoardWrapper,

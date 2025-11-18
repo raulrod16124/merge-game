@@ -1,8 +1,8 @@
 // src/App.tsx
 import {Routes, Route, Navigate} from 'react-router-dom';
-import {Home} from '@/ui/screens/Home';
-import {Levels} from '@/ui/screens/Levels';
-import {BoardScreen} from '@/ui/screens/BoardScreen';
+import {Home} from '../../ui/screens/Home';
+import {Levels} from '../../ui/screens/Levels';
+import {BoardScreen} from '../../ui/screens/BoardScreen';
 
 export default function App() {
   return (

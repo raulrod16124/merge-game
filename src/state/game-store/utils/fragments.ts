@@ -1,5 +1,5 @@
 // src/state/gameStore/utils/fragments.ts
-import type {CosmicType} from '@/core/types';
+import type {CosmicType} from '../../../core/types';
 
 export const emptyFragments = (): Record<CosmicType, number> =>
   ({

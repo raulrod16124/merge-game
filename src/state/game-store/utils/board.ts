@@ -1,5 +1,5 @@
 // src/state/gameStore/utils/board.ts
-import type {Pos, ItemBase} from '@/core/types';
+import type {Pos, ItemBase} from '../../../core/types';
 
 export const isInside = (pos: Pos, cols: number, rows: number): boolean =>
   pos.x >= 0 && pos.y >= 0 && pos.x < cols && pos.y < rows;

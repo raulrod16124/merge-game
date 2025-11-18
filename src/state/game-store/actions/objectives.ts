@@ -1,7 +1,6 @@
 // src/state/gameStore/actions/objectives.ts
 import type {StateCreator} from 'zustand';
 import type {GameStore} from '../index';
-import type {Objective} from '@/core/types';
 
 export const createObjectiveChecker = (
   //@ts-ignore
@@ -9,33 +8,20 @@ export const createObjectiveChecker = (
   get: () => GameStore,
 ) => ({
   checkWinLose: () => {
-    const s = get();
-    const lvl = s.currentLevel;
-    if (!lvl) return null;
+    const {currentLevel, score, timeLeft} = get();
 
-    // lose by time
-    if (s.timeLeft <= 0) {
-      return {status: 'fail' as const, levelId: lvl.id};
+    if (!currentLevel) return null;
+
+    if (timeLeft <= 0) {
+      return {status: 'fail', levelId: currentLevel.id};
     }
 
-    const objectives = lvl.objective ?? [];
-    if (!objectives.length) return null;
+    const scoreObj = currentLevel.objective?.find(o => o.type === 'score');
 
-    const handlers: Record<Objective['type'], (o: Objective) => boolean> = {
-      score: o => s.score >= o.target,
+    if (scoreObj && score >= scoreObj.target) {
+      return {status: 'win', levelId: currentLevel.id};
+    }
 
-      create: o =>
-        o.subject ? (s.createdCounts[o.subject] ?? 0) >= o.target : false,
-
-      survive: () => true,
-
-      survive_alive: () => s.holes.length > 0,
-
-      supernova: o => (s.createdCounts['supernova'] ?? 0) >= o.target,
-    };
-
-    const allCompleted = objectives.every(o => handlers[o.type]?.(o));
-
-    return allCompleted ? {status: 'win' as const, levelId: lvl.id} : null;
+    return null;
   },
 });

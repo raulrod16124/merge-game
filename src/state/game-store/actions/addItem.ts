@@ -1,7 +1,7 @@
 // src/state/gameStore/actions/addItem.ts
 import type {StateCreator} from 'zustand';
 import type {GameStore} from '../index';
-import type {Pos, ItemBase} from '@/core/types';
+import type {Pos, ItemBase} from '../../../core/types';
 
 export const createAddItem =
   (set: Parameters<StateCreator<GameStore>>[0], get: () => GameStore) =>

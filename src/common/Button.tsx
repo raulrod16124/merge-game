@@ -2,6 +2,7 @@
 import React from 'react';
 import styled, {css} from 'styled-components';
 import {Link} from 'react-router-dom';
+import {COLORS} from '../ui/constants';
 
 type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'success' | 'fail';
 
@@ -17,20 +18,20 @@ type ButtonProps = {
   styles?: React.CSSProperties;
 };
 
-const planetYellow = '#ffb844';
-const planetYellowDark = '#e89227';
+const planetYellow = COLORS.primary;
+const planetYellowDark = COLORS.primaryDark;
 
-const ringPurple = '#7b4dff';
-const ringPurpleDark = '#5a2fd4';
+const ringPurple = COLORS.secondary;
+const ringPurpleDark = COLORS.secondaryDark;
 
-const grayDark = '#1a1a23';
-const grayMedium = '#2a2a35';
+const grayDark = COLORS.tertiary;
+const grayMedium = COLORS.tertiaryDark;
 
-const greenSuccess = '#4cd964';
-const greenSuccessDark = '#33b84b';
+const greenSuccess = COLORS.success;
+const greenSuccessDark = COLORS.successDark;
 
-const redFail = '#ff5c5c';
-const redFailDark = '#db3838';
+const redFail = COLORS.fail;
+const redFailDark = COLORS.failDark;
 
 const variantStyles = {
   primary: css`
@@ -40,7 +41,6 @@ const variantStyles = {
   secondary: css`
     background: linear-gradient(180deg, ${ringPurple}, ${ringPurpleDark});
     color: white;
-    box-shadow: 0 6px 16px rgba(123, 77, 255, 0.32);
   `,
   tertiary: css`
     background: linear-gradient(180deg, ${grayMedium}, ${grayDark});
@@ -50,12 +50,10 @@ const variantStyles = {
   success: css`
     background: linear-gradient(180deg, ${greenSuccess}, ${greenSuccessDark});
     color: #00300f;
-    box-shadow: 0 6px 16px rgba(76, 217, 100, 0.32);
   `,
   fail: css`
     background: linear-gradient(180deg, ${redFail}, ${redFailDark});
     color: #300000;
-    box-shadow: 0 6px 16px rgba(255, 92, 92, 0.35);
   `,
 };
 

@@ -9,7 +9,7 @@ import type {
   ItemBase,
   HoleEnemy,
   CosmicType,
-} from '@/core/types';
+} from '../../core/types';
 
 import {createAddItem} from './actions/addItem';
 import {createMerges} from './actions/merges';
@@ -20,7 +20,7 @@ import {createFloatingScoreActions} from './actions/floatingScores';
 
 import {pickWeighted} from './utils/weighted';
 import {emptyFragments} from './utils/fragments';
-import {getResponsiveBoardSize} from '@/utils/getResponsiveBoardSize';
+import {getResponsiveBoardSize} from '../../utils/getResponsiveBoardSize';
 
 export type GameStore = {
   items: ItemBase[];

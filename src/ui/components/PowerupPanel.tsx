@@ -1,6 +1,6 @@
 // src/ui/components/PowerupPanel.tsx
 import styled from 'styled-components';
-import {useGameStore} from '@/state/game-store';
+import {useGameStore} from '../../state/game-store';
 
 const Wrapper = styled.div`
   padding: 10px 14px;

@@ -34,7 +34,10 @@
       "micro_asteroid": 10,
       "meteorite": 0
     },
-    "initialMap": [{"type": "micro_asteroid", "x": 3, "y": 3}],
+    "initialMap": [
+      {"type": "dust", "x": 2, "y": 2},
+      {"type": "micro_asteroid", "x": 3, "y": 3}
+    ],
     "blockedCells": [],
     "mapAsset": "/cosmic/map02.png",
     "objective": [{"type": "score", "target": 900}],

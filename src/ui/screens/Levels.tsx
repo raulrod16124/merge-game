@@ -1,7 +1,7 @@
 // src/ui/screens/Levels.tsx
-import {LEVELS} from '@/data/levels';
-import {LevelCard} from '@/ui/components/LevelCard';
-import {AppLayout} from '@/ui/layout/AppLayout';
+import {LEVELS} from '../../data/levels';
+import {LevelCard} from '../../ui/components/LevelCard';
+import {AppLayout} from '../../ui/layout/AppLayout';
 import {LevelsWrapper, Grid} from './Levels.styled';
 
 export function Levels() {

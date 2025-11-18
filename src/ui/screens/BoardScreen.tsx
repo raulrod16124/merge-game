@@ -2,17 +2,15 @@
 import {useEffect, useState} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 
-import {LEVELS} from '@/data/levels';
-import {useGameStore} from '@/state/game-store';
+import {LEVELS} from '../../data/levels';
+import {useGameStore} from '../../state/game-store';
 
-import {HUD} from '@/ui/hud/HUD';
-import {GameBoard} from '@/ui/board/GameBoard';
-import {AppLayout} from '@/ui/layout/AppLayout';
-
-import {LevelCompleteModal} from '@/ui/components/modals/LevelCompleteModal';
-import {LevelFailModal} from '@/ui/components/modals/LevelFailModal';
+import {HUD} from '../../ui/hud/HUD';
+import {GameBoard} from '../../ui/board/GameBoard';
+import {AppLayout} from '../../ui/layout/AppLayout';
 
 import {BoardScreenWrapper, HUDColumn, BoardColumn} from './BoardLayout.styled';
+import {Modal} from '../../common/Modal';
 
 export function BoardScreen() {
   const {levelId} = useParams();
@@ -21,6 +19,8 @@ export function BoardScreen() {
   const loadLevel = useGameStore(s => s.loadLevel);
   const currentLevel = useGameStore(s => s.currentLevel);
   const checkWinLose = useGameStore(s => s.checkWinLose);
+  const score = useGameStore(s => s.score);
+  const timeLeft = useGameStore(s => s.timeLeft);
 
   const [modalState, setModalState] = useState(
     null as null | {
@@ -47,11 +47,10 @@ export function BoardScreen() {
     }
   }, [levelId]);
 
-  const result = checkWinLose();
   useEffect(() => {
-    if (result === null) return;
-    setModalState(result);
-  }, [result]);
+    const result = checkWinLose();
+    if (result) setModalState(result);
+  }, [score, timeLeft]);
 
   return (
     <AppLayout>
@@ -66,16 +65,57 @@ export function BoardScreen() {
       </BoardScreenWrapper>
 
       {modalState?.status === 'win' && (
-        <LevelCompleteModal
-          levelId={modalState.levelId}
-          onClose={() => setModalState(null)}
+        <Modal
+          open={modalState?.status === 'win'}
+          title="¡Nivel completado! 🌟"
+          buttons={
+            [
+              modalState.levelId && {
+                label: 'Siguiente nivel',
+                variant: 'primary',
+                onClick: () => navigate(`/play/${modalState.levelId}`),
+              },
+              {
+                label: 'Volver a niveles',
+                variant: 'secondary',
+                to: '/levels',
+                onClick: () => setModalState(null),
+              },
+              {
+                label: 'Cerrar',
+                variant: 'tertiary',
+                onClick: () => setModalState(null),
+              },
+            ].filter(Boolean) as any
+          }
         />
       )}
 
       {modalState?.status === 'fail' && (
-        <LevelFailModal
-          levelId={modalState.levelId}
-          onClose={() => setModalState(null)}
+        <Modal
+          open={modalState?.status === 'fail'}
+          title="¡Nivel fallado! 💀"
+          message="No has logrado completar el nivel."
+          buttons={
+            [
+              {
+                label: 'Reintentar',
+                variant: 'secondary',
+                onClick: () => navigate(`/play/${modalState.levelId}`),
+              },
+              {
+                label: 'Volver a niveles',
+                variant: 'fail',
+                to: '/levels',
+                onClick: () => setModalState(null),
+              },
+              {
+                label: 'Cerrar',
+                variant: 'tertiary',
+                onClick: () => setModalState(null),
+              },
+            ].filter(Boolean) as any
+          }
         />
       )}
     </AppLayout>

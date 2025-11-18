@@ -1,7 +1,7 @@
 // src/ui/board/Tile.tsx
 import {motion} from 'framer-motion';
-import type {ItemBase} from '@/core/types';
-import {COSMIC_ICONS} from '@/ui/constants/cosmicData';
+import type {ItemBase} from '../../core/types';
+import {COSMIC_ICONS} from '../constants';
 import {TileBase, TilePlaceholder} from './Tile.styled';
 
 type TileProps = {

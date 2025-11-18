@@ -1,6 +1,6 @@
 // src/ui/components/Header.styled.ts
 import styled from 'styled-components';
-import {Button} from '@/common/Button';
+import {Button} from '../../common/Button';
 
 export const HeaderBar = styled.header`
   height: 72px;
@@ -38,7 +38,7 @@ export const MobileMenuBtn = styled.button`
   background: rgba(147, 110, 255, 0.1);
   border: 1px solid rgba(147, 110, 255, 0.25);
   padding: 5px 10px;
-  border-radius: 10px;
+  border-radius: 8px;
   font-size: 1.8rem;
   color: #ffffff;
   cursor: pointer;
