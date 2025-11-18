@@ -30,6 +30,8 @@ export const SCORE_MAP: Record<CosmicType, number> = {
   star_system: 200,
   nebula: 300,
   galaxy: 500,
+  fragment: 0,
+  black_hole: 0,
 };
 
 export const TIME_BONUS: Record<CosmicType, number> = {
@@ -42,6 +44,8 @@ export const TIME_BONUS: Record<CosmicType, number> = {
   baby_planet: 0,
   mature_planet: 0,
   galaxy: 0,
+  fragment: 0,
+  black_hole: 0,
 };
 
 export const getNextType = (type: CosmicType): CosmicType | null => {

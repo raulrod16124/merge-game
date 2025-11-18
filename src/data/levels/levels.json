@@ -8,18 +8,19 @@
     },
     "enemyCount": 0,
     "spawnWeights": {
-      "dust": 90,
-      "micro_asteroid": 10,
+      "dust": 95,
+      "micro_asteroid": 5,
       "meteorite": 0
     },
     "initialMap": [
-      {"type": "dust", "x": 2, "y": 2},
-      {"type": "dust", "x": 1, "y": 2}
+      {"type": "dust", "x": 2, "y": 3},
+      {"type": "dust", "x": 3, "y": 3},
+      {"type": "dust", "x": 2, "y": 2}
     ],
     "blockedCells": [],
     "mapAsset": "/cosmic/map01.png",
-    "objective": [{"type": "score", "target": 500}],
-    "timerSeconds": 90
+    "objective": [{"type": "score", "target": 250}],
+    "timerSeconds": 75
   },
   {
     "id": "level02",
@@ -35,13 +36,14 @@
       "meteorite": 0
     },
     "initialMap": [
-      {"type": "dust", "x": 2, "y": 2},
-      {"type": "micro_asteroid", "x": 3, "y": 3}
+      {"type": "dust", "x": 2, "y": 3},
+      {"type": "dust", "x": 3, "y": 3},
+      {"type": "micro_asteroid", "x": 2, "y": 2}
     ],
     "blockedCells": [],
     "mapAsset": "/cosmic/map02.png",
-    "objective": [{"type": "score", "target": 900}],
-    "timerSeconds": 90
+    "objective": [{"type": "score", "target": 450}],
+    "timerSeconds": 85
   },
   {
     "id": "level03",
@@ -52,15 +54,20 @@
     },
     "enemyCount": 0,
     "spawnWeights": {
-      "dust": 90,
-      "micro_asteroid": 10,
+      "dust": 85,
+      "micro_asteroid": 15,
       "meteorite": 0
     },
-    "initialMap": [],
+    "initialMap": [
+      {"type": "dust", "x": 2, "y": 3},
+      {"type": "dust", "x": 3, "y": 3},
+      {"type": "dust", "x": 2, "y": 2},
+      {"type": "micro_asteroid", "x": 3, "y": 2}
+    ],
     "blockedCells": [],
     "mapAsset": "/cosmic/map03.png",
     "objective": [{"type": "create", "subject": "micro_asteroid", "target": 3}],
-    "timerSeconds": 100
+    "timerSeconds": 95
   },
   {
     "id": "level04",
@@ -69,17 +76,22 @@
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
     },
-    "enemyCount": 0,
+    "enemyCount": 1,
     "spawnWeights": {
-      "dust": 90,
-      "micro_asteroid": 10,
-      "meteorite": 0
+      "dust": 80,
+      "micro_asteroid": 18,
+      "meteorite": 2
     },
-    "initialMap": [],
+    "initialMap": [
+      {"type": "micro_asteroid", "x": 2, "y": 3},
+      {"type": "dust", "x": 3, "y": 3},
+      {"type": "dust", "x": 2, "y": 2},
+      {"type": "dust", "x": 1, "y": 3}
+    ],
     "blockedCells": [],
     "mapAsset": "/cosmic/map04.png",
     "objective": [{"type": "create", "subject": "meteorite", "target": 2}],
-    "timerSeconds": 100
+    "timerSeconds": 110
   },
   {
     "id": "level05",
@@ -88,17 +100,22 @@
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
     },
-    "enemyCount": 0,
+    "enemyCount": 1,
     "spawnWeights": {
-      "dust": 90,
-      "micro_asteroid": 10,
-      "meteorite": 0
+      "dust": 72,
+      "micro_asteroid": 22,
+      "meteorite": 6
     },
-    "initialMap": [],
+    "initialMap": [
+      {"type": "meteorite", "x": 2, "y": 3},
+      {"type": "micro_asteroid", "x": 3, "y": 3},
+      {"type": "dust", "x": 2, "y": 2},
+      {"type": "dust", "x": 1, "y": 3}
+    ],
     "blockedCells": [],
     "mapAsset": "/cosmic/map05.png",
     "objective": [{"type": "create", "subject": "star", "target": 1}],
-    "timerSeconds": 110
+    "timerSeconds": 120
   },
   {
     "id": "level06",
@@ -109,15 +126,19 @@
     },
     "enemyCount": 1,
     "spawnWeights": {
-      "dust": 80,
-      "micro_asteroid": 15,
-      "meteorite": 5
+      "dust": 65,
+      "micro_asteroid": 25,
+      "meteorite": 10
     },
-    "initialMap": [],
+    "initialMap": [
+      {"type": "dust", "x": 1, "y": 3},
+      {"type": "micro_asteroid", "x": 3, "y": 3},
+      {"type": "dust", "x": 2, "y": 3}
+    ],
     "blockedCells": [],
     "mapAsset": "/cosmic/map06.png",
-    "objective": [{"type": "score", "target": 1500}],
-    "timerSeconds": 120
+    "objective": [{"type": "score", "target": 1200}],
+    "timerSeconds": 125
   },
   {
     "id": "level07",
@@ -128,15 +149,18 @@
     },
     "enemyCount": 1,
     "spawnWeights": {
-      "dust": 80,
-      "micro_asteroid": 15,
-      "meteorite": 5
+      "dust": 60,
+      "micro_asteroid": 28,
+      "meteorite": 12
     },
-    "initialMap": [],
+    "initialMap": [
+      {"type": "meteorite", "x": 2, "y": 3},
+      {"type": "micro_asteroid", "x": 3, "y": 3}
+    ],
     "blockedCells": [],
     "mapAsset": "/cosmic/map07.png",
     "objective": [{"type": "create", "subject": "star_system", "target": 1}],
-    "timerSeconds": 120
+    "timerSeconds": 135
   },
   {
     "id": "level08",
@@ -147,15 +171,18 @@
     },
     "enemyCount": 1,
     "spawnWeights": {
-      "dust": 80,
-      "micro_asteroid": 15,
-      "meteorite": 5
+      "dust": 55,
+      "micro_asteroid": 30,
+      "meteorite": 15
     },
-    "initialMap": [],
+    "initialMap": [
+      {"type": "meteorite", "x": 2, "y": 3},
+      {"type": "meteorite", "x": 3, "y": 3}
+    ],
     "blockedCells": [],
     "mapAsset": "/cosmic/map08.png",
     "objective": [{"type": "supernova", "target": 1}],
-    "timerSeconds": 130
+    "timerSeconds": 145
   },
   {
     "id": "level09",
@@ -166,15 +193,18 @@
     },
     "enemyCount": 1,
     "spawnWeights": {
-      "dust": 80,
-      "micro_asteroid": 15,
-      "meteorite": 5
+      "dust": 50,
+      "micro_asteroid": 30,
+      "meteorite": 20
     },
-    "initialMap": [],
+    "initialMap": [
+      {"type": "meteorite", "x": 2, "y": 3},
+      {"type": "meteorite", "x": 3, "y": 3}
+    ],
     "blockedCells": [],
     "mapAsset": "/cosmic/map09.png",
     "objective": [{"type": "create", "subject": "nebula", "target": 1}],
-    "timerSeconds": 130
+    "timerSeconds": 150
   },
   {
     "id": "level10",
@@ -183,17 +213,21 @@
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
     },
-    "enemyCount": 1,
+    "enemyCount": 2,
     "spawnWeights": {
-      "dust": 80,
-      "micro_asteroid": 15,
-      "meteorite": 5
+      "dust": 40,
+      "micro_asteroid": 30,
+      "meteorite": 20,
+      "star": 10
     },
-    "initialMap": [],
+    "initialMap": [
+      {"type": "star", "x": 2, "y": 3},
+      {"type": "meteorite", "x": 3, "y": 3}
+    ],
     "blockedCells": [],
     "mapAsset": "/cosmic/map10.png",
-    "objective": [{"type": "score", "target": 3000}],
-    "timerSeconds": 140
+    "objective": [{"type": "score", "target": 2500}],
+    "timerSeconds": 160
   },
   {
     "id": "level11",
@@ -204,15 +238,19 @@
     },
     "enemyCount": 2,
     "spawnWeights": {
-      "dust": 60,
+      "dust": 35,
       "micro_asteroid": 30,
-      "meteorite": 10
+      "meteorite": 20,
+      "star": 15
     },
-    "initialMap": [],
+    "initialMap": [
+      {"type": "star", "x": 2, "y": 3},
+      {"type": "star", "x": 3, "y": 3}
+    ],
     "blockedCells": [],
     "mapAsset": "/cosmic/map11.png",
     "objective": [{"type": "survive_alive", "target": 1}],
-    "timerSeconds": 150
+    "timerSeconds": 160
   },
   {
     "id": "level12",
@@ -223,14 +261,19 @@
     },
     "enemyCount": 2,
     "spawnWeights": {
-      "dust": 60,
+      "dust": 30,
       "micro_asteroid": 30,
-      "meteorite": 10
+      "meteorite": 20,
+      "star": 15,
+      "star_system": 5
     },
-    "initialMap": [],
+    "initialMap": [
+      {"type": "star_system", "x": 2, "y": 3},
+      {"type": "star", "x": 3, "y": 3}
+    ],
     "blockedCells": [],
     "mapAsset": "/cosmic/map12.png",
     "objective": [{"type": "create", "subject": "galaxy", "target": 1}],
-    "timerSeconds": 150
+    "timerSeconds": 175
   }
 ]

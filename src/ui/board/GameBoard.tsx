@@ -14,6 +14,7 @@ import {
   Grid,
   FloatingLayer,
 } from './GameBoard.styled';
+import {BlackHole} from './BlackHole';
 
 export function GameBoard() {
   const items = useGameStore(s => s.items);
@@ -52,6 +53,10 @@ export function GameBoard() {
               const x = index % cols;
               const y = Math.floor(index / cols);
               const item = items.find(i => i.pos.x === x && i.pos.y === y);
+
+              if (item?.type === 'black_hole') {
+                return <BlackHole key={`h_${item.id}`} x={x} y={y} />;
+              }
 
               return (
                 <Tile

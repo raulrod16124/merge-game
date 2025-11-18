@@ -9,7 +9,9 @@ export type CosmicType =
   | 'star'
   | 'star_system'
   | 'nebula'
-  | 'galaxy';
+  | 'galaxy'
+  | 'fragment'
+  | 'black_hole';
 
 export interface Pos {
   x: number;

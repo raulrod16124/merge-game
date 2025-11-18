@@ -3,6 +3,8 @@ import type {GameStore} from '../index';
 import type {Pos, CosmicType, ItemBase} from '../../../core/types';
 
 import {getNextType, fusionScore, TIME_BONUS} from '../../../core/fusionRules';
+import {computeSpawnWeights} from '../utils/spawnHelpers';
+import {pickWeighted} from '../utils/weighted';
 
 function getConnectedCluster(
   start: Pos,
@@ -50,13 +52,14 @@ export const createMerges = (
 ) => ({
   spawnNextItem: () => {
     const lvl = get().currentLevel;
-    if (!lvl) return;
-
-    const first = Object.keys(lvl.spawnWeights ?? {})[0] ?? 'dust';
-
-    set({
-      nextItem: first as CosmicType,
-    });
+    const created = get().createdCounts ?? {};
+    if (!lvl) {
+      set({nextItem: 'dust'});
+      return;
+    }
+    const eff = computeSpawnWeights(lvl.spawnWeights, created, 0.25);
+    const nextKey = pickWeighted(eff as Record<string, number>);
+    set({nextItem: (nextKey as any) ?? 'dust'});
   },
 
   processMergesAt: (pos: Pos) => {
@@ -76,6 +79,11 @@ export const createMerges = (
     }
 
     const removeIds = new Set(cluster.map(c => c.id));
+
+    set(s => ({moves: s.moves + 1}));
+    if ((get().moves + 1) % 2 === 0) {
+      get().stepEnemyMovement();
+    }
 
     set(s => ({
       items: s.items.filter(i => !removeIds.has(i.id)),
