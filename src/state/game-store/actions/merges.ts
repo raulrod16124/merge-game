@@ -1,3 +1,4 @@
+// src/state/game-store/actions/merges.ts
 import type {StateCreator} from 'zustand';
 import type {GameStore} from '../index';
 import type {Pos, CosmicType, ItemBase} from '../../../core/types';
@@ -34,10 +35,9 @@ function getConnectedCluster(
       {x: pos.x, y: pos.y + 1},
       {x: pos.x, y: pos.y - 1},
     ];
-
     for (const n of neighbors) {
-      const ni = findAt(n);
-      if (ni && !visited.has(ni.id) && ni.type === type) {
+      const found = findAt(n);
+      if (found && !visited.has(found.id) && found.type === type) {
         queue.push(n);
       }
     }
@@ -80,11 +80,15 @@ export const createMerges = (
 
     const removeIds = new Set(cluster.map(c => c.id));
 
+    // Increment moves (player action)
     set(s => ({moves: s.moves + 1}));
-    if ((get().moves + 1) % 2 === 0) {
+
+    // Ensure enemies step once per player turn
+    if (typeof get().stepEnemyMovement === 'function') {
       get().stepEnemyMovement();
     }
 
+    // Remove cluster items immediately (atomic remove)
     set(s => ({
       items: s.items.filter(i => !removeIds.has(i.id)),
     }));
@@ -92,33 +96,75 @@ export const createMerges = (
     const nextType = getNextType(placed.type);
     if (!nextType) return;
 
-    const fused = {
-      id: 'f_' + crypto.randomUUID(),
+    const fused: ItemBase = {
+      id:
+        'f_' +
+        (typeof crypto !== 'undefined' && crypto.randomUUID
+          ? crypto.randomUUID()
+          : `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`),
       type: nextType,
-      level: placed.level + 1,
+      level: (placed.level ?? 0) + 1,
       pos: {...pos},
       createdAt: Date.now(),
     };
 
-    set(s => ({
-      items: [...s.items, fused],
-      score: s.score + fusionScore(nextType),
+    // === ATOMIC UPDATE: insert fused item, update score and createdCounts ===
+    set(s => {
+      const newItems = s.items.slice();
+      newItems.push(fused);
 
-      createdCounts: {
-        ...s.createdCounts,
-        [nextType]: (s.createdCounts[nextType] ?? 0) + 1,
-      },
-    }));
+      const newScore = s.score + fusionScore(nextType);
 
-    get().addFloatingScore(pos.x, pos.y, fusionScore(nextType));
+      const cc = {...(s.createdCounts || {})};
+      cc[fused.type] = (cc[fused.type] || 0) + 1;
+
+      return {
+        items: newItems,
+        score: newScore,
+        createdCounts: cc,
+      };
+    });
+
+    // Floating score + time bonus (these can remain as immediate calls)
+    if (typeof get().addFloatingScore === 'function') {
+      get().addFloatingScore(pos.x, pos.y, fusionScore(nextType));
+    }
 
     const bonus = TIME_BONUS[nextType] ?? 0;
     if (bonus > 0) {
       set(s => ({timeLeft: s.timeLeft + bonus}));
     }
 
-    setTimeout(() => {
-      get().processMergesAt(pos);
-    }, 20);
+    // After state is applied, check for win/lose in a microtask so checkWinLose sees stable state
+    Promise.resolve().then(() => {
+      try {
+        if (typeof get().checkWinLose === 'function') {
+          const result = get().checkWinLose();
+          if (result && result.status === 'win') {
+            // Stop timer and record result in store so UI can react deterministically
+            if (typeof get().stopTimer === 'function') {
+              get().stopTimer();
+            }
+            // set the global level result so UI (BoardScreen) sees it immediately
+            get().setLevelResult(result);
+            return; // do not spawn next item nor chain merges
+          }
+        }
+      } catch (e) {
+        // Safety: don't crash if checkWinLose throws
+        // eslint-disable-next-line no-console
+        console.warn('checkWinLose() failed:', e);
+      }
+
+      // If not won, continue normal flow: spawn next and process chain merges
+      if (typeof get().spawnNextItem === 'function') {
+        get().spawnNextItem();
+      }
+
+      // Chain merges: process again at the fused position
+      Promise.resolve().then(() => {
+        get().processMergesAt(pos);
+      });
+    });
   },
 });

@@ -12,7 +12,7 @@ import {
   Overlay,
   NavList,
 } from './Header.styled';
-import {Menu} from 'lucide-react';
+import {CircleX, Menu} from 'lucide-react';
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -57,6 +57,16 @@ export function Header() {
       {open && <Overlay onClick={() => setOpen(false)} />}
 
       <SidePanel ref={panelRef} open={open}>
+        <CircleX
+          size={24}
+          color="#FFFFFF"
+          style={{
+            position: 'absolute',
+            alignSelf: 'flex-end',
+            cursor: 'pointer',
+          }}
+          onClick={() => setOpen(false)}
+        />
         <NavList>
           <Link to="/" onClick={() => setOpen(false)}>
             Inicio

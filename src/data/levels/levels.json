@@ -14,8 +14,7 @@
     },
     "initialMap": [
       {"type": "dust", "x": 2, "y": 3},
-      {"type": "dust", "x": 3, "y": 3},
-      {"type": "dust", "x": 2, "y": 2}
+      {"type": "dust", "x": 3, "y": 3}
     ],
     "blockedCells": [],
     "mapAsset": "/cosmic/map01.png",
@@ -60,8 +59,6 @@
     },
     "initialMap": [
       {"type": "dust", "x": 2, "y": 3},
-      {"type": "dust", "x": 3, "y": 3},
-      {"type": "dust", "x": 2, "y": 2},
       {"type": "micro_asteroid", "x": 3, "y": 2}
     ],
     "blockedCells": [],
@@ -86,7 +83,7 @@
       {"type": "micro_asteroid", "x": 2, "y": 3},
       {"type": "dust", "x": 3, "y": 3},
       {"type": "dust", "x": 2, "y": 2},
-      {"type": "dust", "x": 1, "y": 3}
+      {"type": "micro_asteroid", "x": 1, "y": 3}
     ],
     "blockedCells": [],
     "mapAsset": "/cosmic/map04.png",

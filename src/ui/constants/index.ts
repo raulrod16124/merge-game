@@ -27,6 +27,20 @@ export const COSMIC_ICONS: Record<CosmicType, string> = {
   black_hole: `${import.meta.env.BASE_URL}cosmic/black_hole.png`,
 };
 
+export const COSMIC_TEXT: Record<CosmicType, string> = {
+  dust: 'Dust',
+  micro_asteroid: 'Micro Asteroid',
+  meteorite: 'Meteorite',
+  baby_planet: 'Baby Planet',
+  mature_planet: 'Mature Planet',
+  star: 'Star',
+  star_system: 'Star System',
+  nebula: 'Nebula',
+  galaxy: 'Galaxy',
+  fragment_dark: 'Fragment',
+  black_hole: 'Black Hole',
+};
+
 export const COLORS = {
   primary: '#ffb844',
   primaryDark: '#e89227',

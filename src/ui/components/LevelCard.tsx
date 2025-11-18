@@ -1,6 +1,6 @@
 import type {LevelConfig} from '../../core/types';
 import {useNavigate} from 'react-router-dom';
-import {COSMIC_ICONS} from '../constants';
+import {COSMIC_ICONS, COSMIC_TEXT} from '../constants';
 import {
   Card,
   Icon,
@@ -22,9 +22,10 @@ export function LevelCard({level}: {level: LevelConfig}) {
 
   const objectiveLabel = objective
     ? objective.type === 'score'
-      ? `Objetivo: ${objective.target} puntos`
+      ? `Consigue ${objective.target} puntos`
       : objective.type === 'create'
-        ? `Crear ${objective.target} × ${objective.subject}`
+        ? // @ts-ignore
+          `Crear ${objective.target}   ${COSMIC_TEXT[objective.subject]}`
         : objective.type === 'supernova'
           ? `Generar ${objective.target} supernova`
           : 'Objetivo especial'
@@ -45,7 +46,7 @@ export function LevelCard({level}: {level: LevelConfig}) {
       </LevelCardHeader>
 
       <Info>
-        <Pill>Enemigos: {level.enemyCount}</Pill>
+        {level.enemyCount ? <Pill>Enemigos: {level.enemyCount}</Pill> : null}
         <Pill>{objectiveLabel}</Pill>
       </Info>
 

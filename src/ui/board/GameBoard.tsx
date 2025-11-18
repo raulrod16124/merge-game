@@ -1,12 +1,13 @@
 // src/ui/board/GameBoard.tsx
-import {motion} from 'framer-motion';
-import {useEffect} from 'react';
+
+import {motion, AnimatePresence} from 'framer-motion';
 import {useGameStore} from '../../state/game-store';
 
 import {Tile} from './Tile';
 import {FloatingScore} from '../../ui/components/FloatingScore';
-import {AnimatePresence} from 'framer-motion';
-import {LEVELS} from '../../data/levels';
+import BlackHole from './BlackHole';
+import AbsorbAnimation from './AbsorbAnimation';
+import Supernova from './SuperNova';
 
 import {
   BoardWrapper,
@@ -14,62 +15,125 @@ import {
   Grid,
   FloatingLayer,
 } from './GameBoard.styled';
-import {BlackHole} from './BlackHole';
 
 export function GameBoard() {
-  const items = useGameStore(s => s.items);
-  const boardSize = useGameStore(s => s.boardSize);
-  const floatingScores = useGameStore(s => s.floatingScores);
-  const addItem = useGameStore(s => s.addItem);
-  const removeFloatingScore = useGameStore(s => s.removeFloatingScore);
+  const {
+    items,
+    holes,
+    boardSize,
+    addItem,
+    floatingScores,
+    removeFloatingScore,
+    absorbAnimations,
+    supernovas,
+    removeAbsorbAnimation,
+    removeSupernova,
+  } = useGameStore();
 
-  const cols = boardSize.cols;
-  const rows = boardSize.rows;
+  const cols = boardSize?.cols ?? 6;
+  const rows = boardSize?.rows ?? 6;
 
-  useEffect(() => {
-    const load = async () => {
-      const {loadLevel, currentLevel} = useGameStore.getState();
-      if (!currentLevel) {
-        const lvl = LEVELS[0];
-        if (lvl) loadLevel(lvl as any);
-      }
-    };
-    load();
-  }, []);
+  const onClickEmpty = (pos: {x: number; y: number}) => {
+    addItem(pos);
+  };
 
   return (
     <BoardWrapper>
       <motion.div
-        initial={{opacity: 0, scale: 0.92, y: 20}}
-        animate={{opacity: 1, scale: 1, y: 0}}
-        transition={{
-          duration: 0.45,
-          ease: [0.22, 1.05, 0.32, 1],
-        }}
-        style={{width: '100%', height: '100%'}}>
+        initial={{opacity: 0, y: -8}}
+        animate={{opacity: 1, y: 0}}
+        transition={{duration: 0.28}}>
         <BoardContainer>
-          <Grid cols={cols} rows={rows}>
+          {/* ==== GRID DE CELDAS ==== */}
+          <Grid
+            cols={cols}
+            rows={rows}
+            style={{gridTemplateColumns: `repeat(${cols}, 1fr)`}}>
             {Array.from({length: cols * rows}).map((_, index) => {
               const x = index % cols;
               const y = Math.floor(index / cols);
+
               const item = items.find(i => i.pos.x === x && i.pos.y === y);
 
-              if (item?.type === 'black_hole') {
-                return <BlackHole key={`h_${item.id}`} x={x} y={y} />;
-              }
-
               return (
-                <Tile
+                <div
                   key={`${x}-${y}`}
-                  x={x}
-                  y={y}
-                  item={item}
-                  onClickEmpty={({x: cx, y: cy}) => addItem({x: cx, y: cy})}
-                />
+                  className="game-grid-cell"
+                  ref={el => {
+                    if (!el) return;
+
+                    const rect = el.getBoundingClientRect();
+                    const key = `${x},${y}`;
+                    const prev = useGameStore.getState().cellRects[key];
+
+                    const newRect = {
+                      size: rect.width,
+                      centerX: rect.left + rect.width / 2,
+                      centerY: rect.top + rect.height / 2,
+                    };
+
+                    if (
+                      !prev ||
+                      prev.size !== newRect.size ||
+                      prev.centerX !== newRect.centerX ||
+                      prev.centerY !== newRect.centerY
+                    ) {
+                      useGameStore.getState().setCellRect(key, newRect);
+                    }
+                  }}
+                  style={{width: '100%', height: '100%'}}>
+                  <Tile x={x} y={y} item={item} onClickEmpty={onClickEmpty} />
+                </div>
               );
             })}
           </Grid>
 
+          {/* ==== ENEMIGOS (AGUJEROS NEGROS) ==== */}
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              pointerEvents: 'none',
+            }}>
+            <AnimatePresence>
+              {holes
+                ?.filter(h => h.active)
+                .map(h => (
+                  <BlackHole key={h.id} x={h.pos.x} y={h.pos.y} />
+                ))}
+            </AnimatePresence>
+          </div>
+
+          {/* ==== ANIMACIONES DE ABSORCIÓN ==== */}
+          <AnimatePresence>
+            {absorbAnimations.map(anim => (
+              <AbsorbAnimation
+                key={anim.id}
+                from={anim.from}
+                to={anim.to}
+                size={anim.size}
+                icon={anim.icon}
+                onDone={() => removeAbsorbAnimation(anim.id)}
+              />
+            ))}
+          </AnimatePresence>
+
+          {/* ==== ANIMACIONES DE SUPERNOVA ==== */}
+          <AnimatePresence>
+            {supernovas.map(sv => (
+              <Supernova
+                key={sv.id}
+                x={sv.x}
+                y={sv.y}
+                onDone={() => removeSupernova(sv.id)}
+              />
+            ))}
+          </AnimatePresence>
+
+          {/* ==== SCORES FLOTANTES ==== */}
           <FloatingLayer>
             <AnimatePresence>
               {floatingScores.map(fs => (

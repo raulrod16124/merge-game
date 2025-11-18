@@ -25,6 +25,7 @@ export interface ItemBase {
   pos: Pos;
   createdAt?: number;
   frozen?: boolean;
+  icon?: string;
 }
 
 export interface HoleEnemy {
@@ -77,3 +78,15 @@ export interface GameState {
   powerupUsed?: boolean;
   floatingScores?: Array<{id: string; x: number; y: number; points: number}>;
 }
+export type ModalState = {
+  status: 'win' | 'fail';
+  levelId: string;
+};
+
+export type ModalButton = {
+  label: string;
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'success' | 'fail';
+  onClick?: () => void;
+  to?: string;
+  fullWidth?: boolean;
+};

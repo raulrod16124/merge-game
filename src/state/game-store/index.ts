@@ -1,4 +1,5 @@
 // src/state/gameStore/index.ts
+
 import {create} from 'zustand';
 import {devtools} from 'zustand/middleware';
 
@@ -31,11 +32,48 @@ export type GameStore = {
   nextItem: CosmicType;
   timeLeft: number;
   powerupUsed: boolean;
+
   floatingScores: {id: string; x: number; y: number; points: number}[];
-  createdCounts: Record<string, number>;
+  createdCounts: Record<string, any>;
   _timerId?: number | null;
 
-  // ---- Actions ----
+  // === NUEVOS ESTADOS ===
+  cellRects: Record<string, {size: number; centerX: number; centerY: number}>;
+
+  absorbAnimations: {
+    id: string;
+    from: {x: number; y: number};
+    to: {x: number; y: number};
+    size: number;
+    icon: string;
+  }[];
+
+  supernovas: {id: string; x: number; y: number}[];
+
+  // === Nivel resultado (nuevo) ===
+  levelResult: {status: 'win' | 'fail'; levelId: string} | null;
+  setLevelResult: (r: {status: 'win' | 'fail'; levelId: string} | null) => void;
+
+  // === NUEVAS ACCIONES ===
+  setCellRect: (
+    key: string,
+    rect: {size: number; centerX: number; centerY: number},
+  ) => void;
+
+  addAbsorbAnimation: (anim: {
+    id: string;
+    from: {x: number; y: number};
+    to: {x: number; y: number};
+    size: number;
+    icon: string;
+  }) => void;
+
+  removeAbsorbAnimation: (id: string) => void;
+
+  addSupernova: (sv: {id: string; x: number; y: number}) => void;
+  removeSupernova: (id: string) => void;
+
+  // ---- Actions originales ----
   loadLevel: (lvl: LevelConfig) => void;
   resetLevel: () => void;
   addItem: (pos: Pos) => void;
@@ -56,7 +94,7 @@ export type GameStore = {
 
 export const useGameStore = create<GameStore>()(
   devtools((set, get) => {
-    // Inject actions
+    // Inject reusable action modules
     const addItem = createAddItem(set, get);
     const merges = createMerges(set, get);
     const enemies = createEnemies(set, get);
@@ -65,7 +103,7 @@ export const useGameStore = create<GameStore>()(
     const floats = createFloatingScoreActions(set, get);
 
     return {
-      // --- Estado inicial ---
+      // === Estado inicial ===
       items: [],
       holes: [],
       boardSize: {cols: 6, rows: 6},
@@ -79,7 +117,41 @@ export const useGameStore = create<GameStore>()(
       createdCounts: {},
       _timerId: null,
 
-      // ---- Load/reset ----
+      // === Estado para posicionamiento gráfico ===
+      cellRects: {},
+
+      // === Estado para animaciones ===
+      absorbAnimations: [],
+      supernovas: [],
+
+      // === Nivel resultado (nuevo) ===
+      levelResult: null,
+      setLevelResult: r => set(() => ({levelResult: r})),
+
+      // === NUEVAS ACCIONES ===
+      setCellRect: (key, rect) =>
+        set(s => ({
+          cellRects: {...s.cellRects, [key]: rect},
+        })),
+
+      addAbsorbAnimation: anim =>
+        set(s => ({
+          absorbAnimations: [...s.absorbAnimations, anim],
+        })),
+
+      removeAbsorbAnimation: id =>
+        set(s => ({
+          absorbAnimations: s.absorbAnimations.filter(a => a.id !== id),
+        })),
+
+      addSupernova: sv => set(s => ({supernovas: [...s.supernovas, sv]})),
+
+      removeSupernova: id =>
+        set(s => ({
+          supernovas: s.supernovas.filter(sv => sv.id !== id),
+        })),
+
+      // === Load/reset ===
       loadLevel: lvl => {
         const size = getResponsiveBoardSize(lvl);
 
@@ -92,7 +164,7 @@ export const useGameStore = create<GameStore>()(
         }));
 
         const holes = Array.from({length: lvl.enemyCount}, () => ({
-          id: 'h_' + crypto.randomUUID(),
+          id: 'h_' + (crypto.randomUUID?.() ?? String(Date.now())),
           pos: {
             x: Math.floor(Math.random() * size.cols),
             y: Math.floor(Math.random() * size.rows),
@@ -113,21 +185,12 @@ export const useGameStore = create<GameStore>()(
           powerupUsed: false,
           floatingScores: [],
           createdCounts: {},
-          //_enemySpawnProgress: 0,
+          cellRects: {},
+          absorbAnimations: [],
+          supernovas: [],
+          levelResult: null,
         });
-        // set({
-        //   items: initial,
-        //   holes,
-        //   boardSize: size,
-        //   currentLevel: lvl,
-        //   score: 0,
-        //   moves: 0,
-        //   nextItem: pickWeighted(lvl.spawnWeights),
-        //   timeLeft: lvl.timerSeconds ?? 120,
-        //   powerupUsed: false,
-        //   floatingScores: [],
-        //   createdCounts: {},
-        // });
+
         get().spawnNextItem();
         get().stopTimer();
         get().startTimer();
@@ -138,14 +201,13 @@ export const useGameStore = create<GameStore>()(
         lvl && get().loadLevel(lvl);
       },
 
-      // ---- Delegated Actions ----
+      // === Delegated actions ===
       addItem: addItem,
       processMergesAt: merges.processMergesAt,
       stepEnemyMovement: enemies.stepEnemyMovement,
       spawnNextItem: merges.spawnNextItem,
       activatePowerup: () => !get().powerupUsed && set({powerupUsed: true}),
 
-      // Floating scores
       addFloatingScore: floats.addFloatingScore,
       removeFloatingScore: floats.removeFloatingScore,
 
@@ -154,7 +216,7 @@ export const useGameStore = create<GameStore>()(
 
       checkWinLose: objectives.checkWinLose,
 
-      // ---- Snapshot ----
+      // === Snapshot ===
       getStateSnapshot: () => {
         const s = get();
         return {

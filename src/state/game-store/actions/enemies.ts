@@ -5,6 +5,7 @@ import type {Pos} from '../../../core/types';
 
 import {getNextType, SUPERNOVA_SCORE} from '../../../core/fusionRules';
 import {emptyFragments} from '../utils/fragments';
+import {getItemIcon} from '../../../utils/getItemIcon';
 
 export const createEnemies = (
   set: Parameters<StateCreator<GameStore>>[0],
@@ -12,137 +13,144 @@ export const createEnemies = (
 ) => ({
   stepEnemyMovement: () => {
     const {holes, items, boardSize} = get();
-    if (!holes.length) return;
 
-    const dirs: Pos[] = [
-      {x: 0, y: -1},
-      {x: 0, y: 1},
+    if (!boardSize) return;
+
+    const newHoles = (holes ?? []).map(h => ({...h}));
+    let updatedItems = items ? [...items] : [];
+
+    const DIRS: Pos[] = [
       {x: -1, y: 0},
       {x: 1, y: 0},
+      {x: 0, y: -1},
+      {x: 0, y: 1},
     ];
 
-    const newHoles = holes
-      .map(hole => {
-        const dir = dirs
-          .slice()
-          .sort(() => Math.random() - 0.5)
-          .find(d => {
-            const nx = hole.pos.x + d.x;
-            const ny = hole.pos.y + d.y;
-            const inside =
-              nx >= 0 && ny >= 0 && nx < boardSize.cols && ny < boardSize.rows;
-            const freeOfHole = holes.every(
-              h => h.id === hole.id || h.pos.x !== nx || h.pos.y !== ny,
-            );
-            return inside && freeOfHole;
-          }) ?? {x: 0, y: 0};
+    for (let idx = 0; idx < newHoles.length; idx++) {
+      const hole = newHoles[idx];
+      if (!hole.active) continue;
 
-        const newPos: Pos = {
-          x: hole.pos.x + dir.x,
-          y: hole.pos.y + dir.y,
-        };
+      const shuffled = DIRS.slice().sort(() => Math.random() - 0.5);
 
-        const absorbed = items.filter(
-          it => it.pos.x === newPos.x && it.pos.y === newPos.y,
+      for (const d of shuffled) {
+        const nx = hole.pos.x + d.x;
+        const ny = hole.pos.y + d.y;
+
+        if (nx < 0 || ny < 0 || nx >= boardSize.cols || ny >= boardSize.rows)
+          continue;
+
+        // evitar colision con otros agujeros
+        const coll = newHoles.find(
+          (h2, j) =>
+            j !== idx && h2.active && h2.pos.x === nx && h2.pos.y === ny,
+        );
+        if (coll) continue;
+
+        // mover agujero
+        hole.pos = {x: nx, y: ny};
+
+        // detectar item en esta celda
+        const itemIndex = updatedItems.findIndex(
+          it => it.pos.x === nx && it.pos.y === ny,
         );
 
-        // Eliminar absorbidos
-        if (absorbed.length) {
-          set(s => ({
-            items: s.items.filter(it => !absorbed.some(a => a.id === it.id)),
-          }));
-        }
+        if (itemIndex >= 0) {
+          const it = updatedItems[itemIndex];
 
-        // Acumulación de fragmentos
-        const fragments = absorbed.reduce(
-          (acc, it) => ({...acc, [it.type]: (acc[it.type] ?? 0) + 1}),
-          {...hole.fragments},
-        );
+          // ------------ ABSORCIÓN VISUAL ------------
+          const cellFrom = get().cellRects?.[`${it.pos.x},${it.pos.y}`];
+          const cellTo = get().cellRects?.[`${nx},${ny}`];
 
-        // ¿Supernova?
-        const collapse = Object.entries(fragments).find(([, c]) => c >= 3);
-        if (collapse) {
-          const pos = newPos;
+          if (cellFrom && cellTo) {
+            get().addAbsorbAnimation({
+              id: 'abs_' + (crypto.randomUUID?.() ?? Date.now().toString()),
+              from: {x: cellFrom.centerX, y: cellFrom.centerY},
+              to: {x: cellTo.centerX, y: cellTo.centerY},
+              size: cellFrom.size * 0.85,
+              icon: getItemIcon(it.type),
+            });
+          }
 
-          // puntos base
-          set(s => ({score: s.score + SUPERNOVA_SCORE.base}));
-          get().addFloatingScore(pos.x, pos.y, SUPERNOVA_SCORE.base);
+          // marcar item para borrado (después de animación)
+          updatedItems = updatedItems.filter(i => i.id !== it.id);
 
-          // mejorar adyacentes
-          const adj: Pos[] = [
-            {x: -1, y: 0},
-            {x: 1, y: 0},
-            {x: 0, y: -1},
-            {x: 0, y: 1},
-            {x: -1, y: -1},
-            {x: 1, y: 1},
-            {x: -1, y: 1},
-            {x: 1, y: -1},
-          ];
+          // ------------ AÑADIR FRAGMENTO ------------
+          hole.fragments = {...(hole.fragments ?? {})};
+          hole.fragments[it.type] = (hole.fragments[it.type] ?? 0) + 1;
 
-          const upgraded = adj
-            .map(offset => ({
-              x: pos.x + offset.x,
-              y: pos.y + offset.y,
-            }))
-            .filter(p =>
-              items.some(it => it.pos.x === p.x && it.pos.y === p.y),
-            );
+          // ------------ COLAPSO A SUPERNOVA ------------
+          const collapseEntry = Object.entries(hole.fragments).find(
+            ([, count]) => (count as number) >= 3,
+          );
 
-          upgraded.forEach(p => {
-            const item = get().items.find(
-              it => it.pos.x === p.x && it.pos.y === p.y,
-            );
-            if (!item) return;
+          if (collapseEntry) {
+            // desactivar agujero
+            hole.active = false;
 
-            const next = getNextType(item.type);
-            next &&
-              set(s => ({
-                items: s.items.map(it =>
-                  it.id === item.id ? {...it, type: next} : it,
-                ),
-              }));
-          });
+            const posX = cellTo?.centerX ?? 0;
+            const posY = cellTo?.centerY ?? 0;
 
-          upgraded.length &&
+            // Añadir animación Supernova
+            get().addSupernova({
+              id: 'sv_' + (crypto.randomUUID?.() ?? Date.now().toString()),
+              x: posX,
+              y: posY,
+            });
+
+            // Mejorar piezas adyacentes
+            updatedItems = updatedItems.map(itm => {
+              if (
+                (Math.abs(itm.pos.x - nx) === 1 && itm.pos.y === ny) ||
+                (Math.abs(itm.pos.y - ny) === 1 && itm.pos.x === nx)
+              ) {
+                const nxt = getNextType(itm.type);
+                if (nxt) {
+                  return {...itm, type: nxt};
+                }
+              }
+              return itm;
+            });
+
             set(s => ({
-              score:
-                s.score + upgraded.length * SUPERNOVA_SCORE.perUpgradedObject,
+              score: s.score + SUPERNOVA_SCORE.base,
             }));
-
-          return {...hole, active: false};
+          }
         }
 
-        return {...hole, fragments, pos: newPos};
-      })
-      .filter(h => h.active);
+        break; // movimiento realizado
+      }
 
-    // after existing enemy movement logic and before set({holes: aliveHoles});
+      newHoles[idx] = hole;
+    }
+
+    // --------- SPAWN DE NUEVOS AGUJEROS (si el nivel lo permite) ---------
     const lvl = get().currentLevel;
+    const moves = get().moves ?? 0;
+
     if (lvl) {
       const target = lvl.enemyCount ?? 0;
-      const current = newHoles.filter(h => h.active !== false).length;
-      // spawn condition: every 6 moves spawn one (until reach target)
-      const moves = get().moves ?? 0;
-      const shouldSpawn = current < target && moves > 0 && moves % 6 === 0;
+      const activeCount = newHoles.filter(h => h.active).length;
+
+      const shouldSpawn = activeCount < target && moves > 0 && moves % 6 === 0;
+
       if (shouldSpawn) {
-        // choose random free cell
-        const occupied = get().items.map(i => `${i.pos.x},${i.pos.y}`);
-        const holeOccupied = newHoles.map(h => `${h.pos.x},${h.pos.y}`);
-        const w = get().boardSize.cols;
-        const h = get().boardSize.rows;
-        const freeCells: {x: number; y: number}[] = [];
-        for (let x = 0; x < w; x++)
-          for (let y = 0; y < h; y++) {
-            const key = `${x},${y}`;
-            if (!occupied.includes(key) && !holeOccupied.includes(key))
-              freeCells.push({x, y});
+        const occupied = new Set(
+          updatedItems.map(i => `${i.pos.x},${i.pos.y}`),
+        );
+        newHoles.forEach(h => occupied.add(`${h.pos.x},${h.pos.y}`));
+
+        const free: Pos[] = [];
+        for (let x = 0; x < boardSize.cols; x++) {
+          for (let y = 0; y < boardSize.rows; y++) {
+            if (!occupied.has(`${x},${y}`)) free.push({x, y});
           }
-        if (freeCells.length) {
-          const c = freeCells[Math.floor(Math.random() * freeCells.length)];
+        }
+
+        if (free.length) {
+          const cell = free[Math.floor(Math.random() * free.length)];
           newHoles.push({
-            id: 'h_' + crypto.randomUUID(),
-            pos: c,
+            id: 'h_' + (crypto.randomUUID?.() ?? Date.now().toString()),
+            pos: cell,
             fragments: emptyFragments(),
             active: true,
           });
@@ -150,6 +158,10 @@ export const createEnemies = (
       }
     }
 
-    set({holes: newHoles});
+    // ---------- COMMIT ----------
+    set({
+      items: updatedItems,
+      holes: newHoles,
+    });
   },
 });

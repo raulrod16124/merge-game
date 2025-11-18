@@ -1,18 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import {Button} from './Button';
-
-type ModalButton = {
-  label: string;
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'success' | 'fail';
-  onClick?: () => void;
-  to?: string;
-  fullWidth?: boolean;
-};
+import type {ModalButton} from '../core/types';
 
 type Props = {
   open: boolean;
-  title?: string;
+  title?: string | React.ReactNode;
   message?: string | React.ReactNode;
   buttons: ModalButton[];
 };
@@ -43,6 +36,7 @@ const ModalBox = styled.div`
   border-radius: 24px;
   padding: 28px;
   width: 88%;
+  margin: 0 6%;
   max-width: 420px;
   text-align: center;
   box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
