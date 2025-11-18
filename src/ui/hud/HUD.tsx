@@ -10,14 +10,21 @@ import {
   MobileStack,
   RightContent,
 } from './HUD.styled';
-import {PauseModal} from '../components/modals/PauseModal';
 import {Pause} from 'lucide-react';
 import {COLORS} from '../constants';
+import {Modal} from '../../common/Modal';
+import {useGameStore} from '../../state';
 
 export function HUD() {
+  const resetLevel = useGameStore(s => s.resetLevel);
   const [paused, setPaused] = useState(false);
   const openPause = () => setPaused(true);
   const closePause = () => setPaused(false);
+
+  const handleReset = () => {
+    resetLevel();
+    closePause();
+  };
 
   return (
     <>
@@ -53,7 +60,34 @@ export function HUD() {
         </div>
       </HUDWrapper>
 
-      {paused && <PauseModal onClose={closePause} />}
+      {paused && (
+        <Modal
+          open={paused}
+          title="Juego pausado"
+          buttons={
+            [
+              {
+                label: 'Reanudar',
+                variant: 'primary',
+                onClick: closePause,
+              },
+              {
+                label: 'Reinicar',
+                variant: 'secondary',
+                onClick: () => {
+                  resetLevel();
+                  closePause();
+                },
+              },
+              {
+                label: 'Salir',
+                variant: 'tertiary',
+                to: '/levels',
+              },
+            ].filter(Boolean) as any
+          }
+        />
+      )}
     </>
   );
 }
