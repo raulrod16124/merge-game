@@ -5,8 +5,7 @@ import {COSMIC_TEXT} from '../constants';
 
 const Bar = styled.div`
   width: 100%;
-  padding: 10px 14px;
-  margin-top: 10px;
+  padding: 5px 14px;
   display: flex;
   align-items: center;
   gap: 12px;
