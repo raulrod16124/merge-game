@@ -73,6 +73,12 @@ Please change the parent <Route path="${e}"> to <Route path="${e===`/`?`*`:`${e}
   backdrop-filter: blur(10px);
 
   box-shadow: 0 6px 22px rgba(0, 0, 0, 0.25);
+
+  @supports (-webkit-touch-callout: none) {
+    header {
+      padding-top: env(safe-area-inset-top);
+    }
+  }
 `,Za=F.div`
   font-family: var(--font-display);
   font-weight: 900;
@@ -253,7 +259,7 @@ Please change the parent <Route path="${e}"> to <Route path="${e===`/`?`*`:`${e}
   z-index: 9999;
 `;function Co(){let[e,t]=(0,b.useState)(!1);return(0,b.useEffect)(()=>{let e=()=>t(!0);return window.addEventListener(`pwaUpdateAvailable`,e),()=>window.removeEventListener(`pwaUpdateAvailable`,e)},[]),e?(0,I.jsx)(So,{children:(0,I.jsx)(xo,{open:e,title:`Nueva versión disponible`,message:`Pulsa para actualizar ahora`,onClose:()=>t(!1),buttons:[{label:`Actualizar`,variant:`primary`,onClick:()=>{window.location.reload()}}].filter(Boolean)})}):null}var wo=F.div`
   width: 100%;
-  min-height: 100vh;
+  min-height: 100dvh;
   background: #0a0d13;
   color: white;
   display: flex;
