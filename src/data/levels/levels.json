@@ -3,8 +3,8 @@
     "id": "level01",
     "name": "Nebula Rise 1",
     "boardSize": {
-      "mobile": {"cols": 6, "rows": 6},
-      "desktop": {"cols": 6, "rows": 6}
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 4, "rows": 6}
     },
     "enemyCount": 0,
     "spawnWeights": {
@@ -25,8 +25,8 @@
     "id": "level02",
     "name": "Nebula Rise 2",
     "boardSize": {
-      "mobile": {"cols": 6, "rows": 6},
-      "desktop": {"cols": 6, "rows": 6}
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 4, "rows": 6}
     },
     "enemyCount": 0,
     "spawnWeights": {
@@ -48,8 +48,8 @@
     "id": "level03",
     "name": "Cosmic Awakening",
     "boardSize": {
-      "mobile": {"cols": 6, "rows": 6},
-      "desktop": {"cols": 6, "rows": 6}
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 4, "rows": 6}
     },
     "enemyCount": 0,
     "spawnWeights": {
@@ -70,10 +70,10 @@
     "id": "level04",
     "name": "Stellar Buds",
     "boardSize": {
-      "mobile": {"cols": 6, "rows": 6},
-      "desktop": {"cols": 6, "rows": 6}
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 4, "rows": 6}
     },
-    "enemyCount": 1,
+    "enemyCount": 0,
     "spawnWeights": {
       "dust": 80,
       "micro_asteroid": 18,
@@ -94,10 +94,10 @@
     "id": "level05",
     "name": "Proto Star Forge",
     "boardSize": {
-      "mobile": {"cols": 6, "rows": 6},
-      "desktop": {"cols": 6, "rows": 6}
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 4, "rows": 6}
     },
-    "enemyCount": 1,
+    "enemyCount": 0,
     "spawnWeights": {
       "dust": 72,
       "micro_asteroid": 22,
@@ -118,10 +118,10 @@
     "id": "level06",
     "name": "Black Drift",
     "boardSize": {
-      "mobile": {"cols": 6, "rows": 6},
-      "desktop": {"cols": 6, "rows": 6}
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 4, "rows": 6}
     },
-    "enemyCount": 1,
+    "enemyCount": 0,
     "spawnWeights": {
       "dust": 65,
       "micro_asteroid": 25,
@@ -141,10 +141,10 @@
     "id": "level07",
     "name": "Void’s Whisper",
     "boardSize": {
-      "mobile": {"cols": 6, "rows": 6},
-      "desktop": {"cols": 6, "rows": 6}
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 4, "rows": 6}
     },
-    "enemyCount": 1,
+    "enemyCount": 0,
     "spawnWeights": {
       "dust": 60,
       "micro_asteroid": 28,
@@ -163,10 +163,10 @@
     "id": "level08",
     "name": "Singularity Edge",
     "boardSize": {
-      "mobile": {"cols": 6, "rows": 6},
-      "desktop": {"cols": 6, "rows": 6}
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 4, "rows": 6}
     },
-    "enemyCount": 1,
+    "enemyCount": 0,
     "spawnWeights": {
       "dust": 55,
       "micro_asteroid": 30,
@@ -185,10 +185,10 @@
     "id": "level09",
     "name": "Gravity Dance",
     "boardSize": {
-      "mobile": {"cols": 6, "rows": 6},
-      "desktop": {"cols": 6, "rows": 6}
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 4, "rows": 6}
     },
-    "enemyCount": 1,
+    "enemyCount": 0,
     "spawnWeights": {
       "dust": 50,
       "micro_asteroid": 30,
@@ -207,10 +207,10 @@
     "id": "level10",
     "name": "Stellar Trial",
     "boardSize": {
-      "mobile": {"cols": 6, "rows": 6},
-      "desktop": {"cols": 6, "rows": 6}
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 4, "rows": 6}
     },
-    "enemyCount": 2,
+    "enemyCount": 0,
     "spawnWeights": {
       "dust": 40,
       "micro_asteroid": 30,
@@ -230,10 +230,10 @@
     "id": "level11",
     "name": "Binary Collapse",
     "boardSize": {
-      "mobile": {"cols": 6, "rows": 6},
-      "desktop": {"cols": 6, "rows": 6}
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 4, "rows": 6}
     },
-    "enemyCount": 2,
+    "enemyCount": 0,
     "spawnWeights": {
       "dust": 35,
       "micro_asteroid": 30,
@@ -253,10 +253,10 @@
     "id": "level12",
     "name": "Galactic Forge",
     "boardSize": {
-      "mobile": {"cols": 6, "rows": 6},
-      "desktop": {"cols": 6, "rows": 6}
+      "mobile": {"cols": 4, "rows": 6},
+      "desktop": {"cols": 4, "rows": 6}
     },
-    "enemyCount": 2,
+    "enemyCount": 0,
     "spawnWeights": {
       "dust": 30,
       "micro_asteroid": 30,

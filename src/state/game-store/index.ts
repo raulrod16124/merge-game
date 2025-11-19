@@ -8,23 +8,19 @@ import type {
   LevelConfig,
   Pos,
   ItemBase,
-  HoleEnemy,
   CosmicType,
 } from '../../core/types';
 
 import {createAddItem} from './actions/addItem';
 import {createMerges} from './actions/merges';
-import {createEnemies} from './actions/enemies';
 import {createTimer} from './actions/timer';
 import {createObjectiveChecker} from './actions/objectives';
 import {createFloatingScoreActions} from './actions/floatingScores';
 
-import {emptyFragments} from './utils/fragments';
 import {getResponsiveBoardSize} from '../../utils/getResponsiveBoardSize';
 
 export type GameStore = {
   items: ItemBase[];
-  holes: HoleEnemy[];
   boardSize: {cols: number; rows: number};
   currentLevel: LevelConfig | null;
   score: number;
@@ -48,8 +44,6 @@ export type GameStore = {
     icon: string;
   }[];
 
-  supernovas: {id: string; x: number; y: number}[];
-
   // === Nivel resultado (nuevo) ===
   levelResult: {status: 'win' | 'fail'; levelId: string} | null;
   setLevelResult: (r: {status: 'win' | 'fail'; levelId: string} | null) => void;
@@ -69,9 +63,6 @@ export type GameStore = {
   }) => void;
 
   removeAbsorbAnimation: (id: string) => void;
-
-  addSupernova: (sv: {id: string; x: number; y: number}) => void;
-  removeSupernova: (id: string) => void;
 
   // ---- Actions originales ----
   loadLevel: (lvl: LevelConfig) => void;
@@ -97,7 +88,6 @@ export const useGameStore = create<GameStore>()(
     // Inject reusable action modules
     const addItem = createAddItem(set, get);
     const merges = createMerges(set, get);
-    const enemies = createEnemies(set, get);
     const timer = createTimer(set, get);
     const objectives = createObjectiveChecker(set, get);
     const floats = createFloatingScoreActions(set, get);
@@ -105,7 +95,6 @@ export const useGameStore = create<GameStore>()(
     return {
       // === Estado inicial ===
       items: [],
-      holes: [],
       boardSize: {cols: 6, rows: 6},
       currentLevel: null,
       score: 0,
@@ -122,7 +111,6 @@ export const useGameStore = create<GameStore>()(
 
       // === Estado para animaciones ===
       absorbAnimations: [],
-      supernovas: [],
 
       // === Nivel resultado (nuevo) ===
       levelResult: null,
@@ -144,13 +132,6 @@ export const useGameStore = create<GameStore>()(
           absorbAnimations: s.absorbAnimations.filter(a => a.id !== id),
         })),
 
-      addSupernova: sv => set(s => ({supernovas: [...s.supernovas, sv]})),
-
-      removeSupernova: id =>
-        set(s => ({
-          supernovas: s.supernovas.filter(sv => sv.id !== id),
-        })),
-
       // === Load/reset ===
       loadLevel: lvl => {
         const size = getResponsiveBoardSize(lvl);
@@ -163,19 +144,8 @@ export const useGameStore = create<GameStore>()(
           createdAt: Date.now(),
         }));
 
-        const holes = Array.from({length: lvl.enemyCount}, () => ({
-          id: 'h_' + (crypto.randomUUID?.() ?? String(Date.now())),
-          pos: {
-            x: Math.floor(Math.random() * size.cols),
-            y: Math.floor(Math.random() * size.rows),
-          },
-          fragments: emptyFragments(),
-          active: true,
-        }));
-
         set({
           items: initial,
-          holes,
           boardSize: size,
           currentLevel: lvl,
           score: 0,
@@ -187,7 +157,6 @@ export const useGameStore = create<GameStore>()(
           createdCounts: {},
           cellRects: {},
           absorbAnimations: [],
-          supernovas: [],
           levelResult: null,
         });
 
@@ -204,7 +173,6 @@ export const useGameStore = create<GameStore>()(
       // === Delegated actions ===
       addItem: addItem,
       processMergesAt: merges.processMergesAt,
-      stepEnemyMovement: enemies.stepEnemyMovement,
       spawnNextItem: merges.spawnNextItem,
       activatePowerup: () => !get().powerupUsed && set({powerupUsed: true}),
 
@@ -227,7 +195,6 @@ export const useGameStore = create<GameStore>()(
           boardSize: s.boardSize,
           currentLevel: s.currentLevel!,
           timeLeft: s.timeLeft,
-          holes: s.holes,
           powerupUsed: s.powerupUsed,
           floatingScores: s.floatingScores,
         };

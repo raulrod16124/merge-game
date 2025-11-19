@@ -11,8 +11,10 @@ import {
   PreviewOrb,
 } from './Home.styled';
 import {Button} from '../../common/Button';
+import {usePWAInstall} from '../../hooks/usePWAInstall';
 
 export function Home() {
+  const {canInstall, installApp} = usePWAInstall();
   return (
     <AppLayout>
       <Hero>
@@ -57,6 +59,18 @@ export function Home() {
         </HeroBanner>
 
         <Credits>v1.0 — Stellar Merge • Vector Cartoon UI</Credits>
+        {canInstall && (
+          <Button
+            variant="secondary"
+            onClick={installApp}
+            styles={{
+              margin: '15px auto',
+              padding: '12px 24px',
+              fontSize: '1.2rem',
+            }}>
+            Instalar Stellar Merge
+          </Button>
+        )}
       </Hero>
     </AppLayout>
   );

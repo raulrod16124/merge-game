@@ -28,13 +28,6 @@ export interface ItemBase {
   icon?: string;
 }
 
-export interface HoleEnemy {
-  id: string;
-  pos: Pos;
-  fragments: Record<CosmicType, number>;
-  active: boolean;
-}
-
 export type ObjectiveType =
   | 'score'
   | 'create'
@@ -74,7 +67,6 @@ export interface GameState {
   boardSize: {cols: number; rows: number};
   currentLevel?: LevelConfig;
   timeLeft?: number;
-  holes?: HoleEnemy[];
   powerupUsed?: boolean;
   floatingScores?: Array<{id: string; x: number; y: number; points: number}>;
 }
