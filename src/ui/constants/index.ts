@@ -1,5 +1,7 @@
 // src/ui/constants/cosmicData.ts
 
+export const HEADER_HEIGHT = 72;
+
 export type CosmicType =
   | 'dust'
   | 'micro_asteroid'

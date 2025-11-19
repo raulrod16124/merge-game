@@ -7,7 +7,7 @@ export const HeaderBar = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 18px;
+  padding: 10px 18px;
   z-index: 60;
 
   background: linear-gradient(
@@ -18,6 +18,12 @@ export const HeaderBar = styled.header`
   backdrop-filter: blur(10px);
 
   box-shadow: 0 6px 22px rgba(0, 0, 0, 0.25);
+
+  @supports (-webkit-touch-callout: none) {
+    header {
+      padding-top: env(safe-area-inset-top);
+    }
+  }
 `;
 
 export const Logo = styled.div`

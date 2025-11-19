@@ -20,7 +20,7 @@ export default defineConfig(({command}) => {
 
         manifest: {
           name: 'Stellar Merge',
-          short_name: 'StellarMerge',
+          short_name: 'Stellar Merge',
           description: 'Juego de fusiones cósmicas.',
           theme_color: '#0d0d12',
           background_color: '#0d0d12',

@@ -3,10 +3,13 @@ import React from 'react';
 import styled from 'styled-components';
 import {Header} from '../components/Header';
 import {PWAUpdateModal} from '../components/modals/PWAUpdateModal';
+import {usePWAInstall} from '../../hooks/usePWAInstall';
+import {Button} from '../../common/Button';
 
 const Wrapper = styled.div`
   width: 100%;
-  min-height: 100vh;
+  min-height: 100dvh;
+  height: 100dvh;
   background: #0a0d13;
   color: white;
   display: flex;
@@ -20,7 +23,7 @@ const Content = styled.main`
   margin: 0 auto;
   box-sizing: border-box;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   background:
     radial-gradient(
       800px 400px at 50% 0%,
@@ -39,10 +42,26 @@ const Content = styled.main`
 `;
 
 export function AppLayout({children}: {children: React.ReactNode}) {
+  const {canInstall, installApp} = usePWAInstall();
   return (
     <Wrapper>
       <Header />
-      <Content>{children}</Content>
+      <Content>
+        {children}
+
+        {canInstall && (
+          <Button
+            variant="secondary"
+            onClick={installApp}
+            styles={{
+              margin: '15px auto',
+              padding: '12px 24px',
+              fontSize: '1.2rem',
+            }}>
+            Instalar Stellar Merge
+          </Button>
+        )}
+      </Content>
       <PWAUpdateModal />
     </Wrapper>
   );

@@ -1,13 +1,13 @@
 // src/ui/screens/BoardScreen.styled.ts
 import styled from 'styled-components';
-
-const HEADER_HEIGHT = 72;
+import {HEADER_HEIGHT} from '../constants';
 
 export const BoardScreenWrapper = styled.div`
   height: calc(100dvh - ${HEADER_HEIGHT}px);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 
   @media (min-width: 900px) {
     flex-direction: row;
