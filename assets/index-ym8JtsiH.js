@@ -62,7 +62,7 @@ Please change the parent <Route path="${e}"> to <Route path="${e===`/`?`*`:`${e}
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 18px;
+  padding: 10px 18px;
   z-index: 60;
 
   background: linear-gradient(
@@ -272,7 +272,7 @@ Please change the parent <Route path="${e}"> to <Route path="${e===`/`?`*`:`${e}
   margin: 0 auto;
   box-sizing: border-box;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   background:
     radial-gradient(
       800px 400px at 50% 0%,
@@ -288,7 +288,7 @@ Please change the parent <Route path="${e}"> to <Route path="${e===`/`?`*`:`${e}
     flex-direction: column;
     max-width: 960px;
   }
-`;function Oo({children:e}){let{canInstall:t,installApp:n}=To();return(0,I.jsxs)(Eo,{children:[(0,I.jsx)(R,{}),(0,I.jsx)(Do,{children:e}),(0,I.jsx)(wo,{}),t&&(0,I.jsx)(`button`,{onClick:n,style:{padding:`10px 16px`,background:`#7437ff`,borderRadius:12,marginBottom:10,fontWeight:600,border:`none`,color:`#fff`},children:`Instalar Stellar Merge`})]})}const ko=F.section`
+`;function Oo({children:e}){let{canInstall:t,installApp:n}=To();return(0,I.jsxs)(Eo,{children:[(0,I.jsx)(R,{}),(0,I.jsxs)(Do,{children:[e,t&&(0,I.jsx)(Ya,{variant:`secondary`,onClick:n,styles:{margin:`15px auto`,padding:`12px 24px`,fontSize:`1.2rem`},children:`Instalar Stellar Merge`})]}),(0,I.jsx)(wo,{})]})}const ko=F.section`
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -429,6 +429,7 @@ Please change the parent <Route path="${e}"> to <Route path="${e===`/`?`*`:`${e}
 `;function Wo({level:e}){let t=at(),n=()=>t(`/play/${e.id}`),r=Object.keys(e.spawnWeights)[0],i=e.objective?.[0],a=i?i.type===`score`?`Consigue ${i.target} puntos`:i.type===`create`?`Crear ${i.target}   ${Pa[i.subject]}`:i.type===`supernova`?`Generar ${i.target} supernova`:`Objetivo especial`:`Sin objetivo`;return(0,I.jsxs)(Ro,{onClick:n,children:[(0,I.jsxs)(zo,{children:[(0,I.jsx)(`div`,{children:(0,I.jsx)(Vo,{children:e.name})}),(0,I.jsx)(Bo,{src:Na[r],alt:r,draggable:!1})]}),(0,I.jsxs)(Ho,{children:[e.enemyCount?(0,I.jsxs)(Uo,{children:[`Enemigos: `,e.enemyCount]}):null,(0,I.jsx)(Uo,{children:a})]}),(0,I.jsx)(Ya,{variant:`secondary`,styles:{marginTop:`14px`,padding:`10px 14px`},children:`Jugar`})]})}const Go=F.div`
   width: 100%;
   max-width: 1100px;
+  height: calc(100dvh - ${72}px);
   margin: 28px auto;
   padding: 10px 18px;
   box-sizing: border-box;
@@ -674,7 +675,8 @@ Please change the parent <Route path="${e}"> to <Route path="${e===`/`?`*`:`${e}
   height: calc(100dvh - ${72}px);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 
   @media (min-width: 900px) {
     flex-direction: row;
