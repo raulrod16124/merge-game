@@ -1,26 +1,25 @@
 // src/main.tsx
 import React from 'react';
 import {createRoot} from 'react-dom/client';
+import {registerSW} from 'virtual:pwa-register';
 import {BrowserRouter} from 'react-router-dom';
 import App from '../src/ui/screens/App';
-import {registerSW} from 'virtual:pwa-register';
 import './index.css';
-
-registerSW({
-  immediate: true,
-  onNeedRefresh() {
-    window.dispatchEvent(new CustomEvent('pwaUpdateAvailable'));
-  },
-  onOfflineReady() {
-    console.log('App lista para uso offline');
-  },
-});
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js');
   });
 }
+
+const updateSW = registerSW({
+  onNeedRefresh() {
+    /* opcional: notificar UI */
+  },
+  onOfflineReady() {
+    /* opcional: notificar UI */
+  },
+});
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -29,3 +28,5 @@ createRoot(document.getElementById('root')!).render(
     </BrowserRouter>
   </React.StrictMode>,
 );
+
+export {updateSW};
