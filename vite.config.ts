@@ -27,12 +27,12 @@ export default defineConfig(({command}) => {
           scope: isProd ? '/merge-game/' : '/',
           icons: [
             {
-              src: `${isProd ? '/merge-game/' : '/'}/pwa-192.png`,
+              src: `${isProd ? '/merge-game/' : '/'}pwa-192.png`,
               sizes: '192x192',
               type: 'image/png',
             },
             {
-              src: `${isProd ? '/merge-game/' : '/'}/pwa-512.png`,
+              src: `${isProd ? '/merge-game/' : '/'}pwa-512.png`,
               sizes: '512x512',
               type: 'image/png',
             },
