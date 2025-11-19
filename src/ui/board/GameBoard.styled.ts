@@ -42,7 +42,6 @@ export const Grid = styled.div<{cols: number; rows: number}>`
     ${p => p.rows},
     calc(var(--vh) / ${p => p.rows} - 36px)
   );
-  border: 1px solid green;
 `;
 
 export const FloatingLayer = styled.div`
