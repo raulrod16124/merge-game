@@ -2,12 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import {Button} from './Button';
 import type {ModalButton} from '../core/types';
+import {CircleX} from 'lucide-react';
 
 type Props = {
   open: boolean;
+  buttons: ModalButton[];
+  onClose: () => void;
   title?: string | React.ReactNode;
   message?: string | React.ReactNode;
-  buttons: ModalButton[];
 };
 
 const Overlay = styled.div`
@@ -81,12 +83,23 @@ const BtnGroup = styled.div`
   margin-top: 6px;
 `;
 
-export function Modal({open, title, message, buttons}: Props) {
+export function Modal({open, title, message, buttons, onClose}: Props) {
   if (!open) return;
 
   return (
     <Overlay>
       <ModalBox>
+        <CircleX
+          size={24}
+          color="#FFFFFF"
+          style={{
+            position: 'absolute',
+            alignSelf: 'flex-end',
+            cursor: 'pointer',
+            right: 40,
+          }}
+          onClick={onClose}
+        />
         {title && <Title>{title}</Title>}
         {message && <Text>{message}</Text>}
 

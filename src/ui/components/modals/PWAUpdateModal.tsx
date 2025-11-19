@@ -32,6 +32,7 @@ export function PWAUpdateModal() {
         open={show}
         title="Nueva versión disponible"
         message="Pulsa para actualizar ahora"
+        onClose={() => setShow(false)}
         buttons={
           [
             {

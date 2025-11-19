@@ -57,6 +57,7 @@ export function HUD() {
 
       {paused && (
         <Modal
+          onClose={closePause}
           open={paused}
           title="Juego pausado"
           buttons={

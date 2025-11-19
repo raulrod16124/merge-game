@@ -167,6 +167,7 @@ export function BoardScreen() {
       {/* Modal success */}
       {modalState?.status === 'win' && (
         <Modal
+          onClose={handleCloseModal}
           open={modalState?.status === 'win'}
           title="¡Nivel completado!"
           message={successMessage()}
@@ -177,6 +178,7 @@ export function BoardScreen() {
       {/* Modal fail */}
       {modalState?.status === 'fail' && (
         <Modal
+          onClose={handleCloseModal}
           open={modalState?.status === 'fail'}
           title="Oh!, has perdido."
           message="No has logrado completar el nivel."
