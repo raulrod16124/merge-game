@@ -1,24 +1,43 @@
 // src/ui/screens/BoardScreen.styled.ts
 import styled from 'styled-components';
 
-export const ScreenWrapper = styled.div`
-  width: 100%;
-  min-height: 100dvh;
-  background: linear-gradient(180deg, #84c8ff 0%, #dff3ff 100%);
-  padding-bottom: 2rem;
-  font-family: 'Fredoka', sans-serif;
+const HEADER_HEIGHT = 72;
+
+export const BoardScreenWrapper = styled.div`
+  height: calc(100dvh - ${HEADER_HEIGHT}px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  @media (min-width: 900px) {
+    flex-direction: row;
+    justify-content: center;
+    gap: 32px;
+  }
 `;
 
-export const BoardSection = styled.div`
+export const HUDColumn = styled.div`
   width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 1rem;
+  padding: 12px 18px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+
+  @media (min-width: 900px) {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 `;
 
-export const BoardLimiter = styled.div`
-  width: 95%;
-  max-width: 980px;
+export const BoardColumn = styled.div`
+  flex: 1 1 auto;
   display: flex;
   justify-content: center;
+  align-items: center;
+  overflow: hidden;
+
+  @media (min-width: 900px) {
+    padding-right: 24px;
+  }
 `;

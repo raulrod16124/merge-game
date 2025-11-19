@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
-const HEADER_HEIGHT = 72;
+export const HEADER_HEIGHT = 72;
 
 export const BoardScreenWrapper = styled.div`
-  height: calc(100vh - ${HEADER_HEIGHT}px);
+  height: calc(100dvh - ${HEADER_HEIGHT}px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -35,8 +35,4 @@ export const BoardColumn = styled.div`
   justify-content: center;
   align-items: center;
   overflow: hidden;
-
-  @media (min-width: 900px) {
-    padding-right: 24px;
-  }
 `;

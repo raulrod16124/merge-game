@@ -3,7 +3,7 @@
     "id": "level01",
     "name": "Nebula Rise 1",
     "boardSize": {
-      "mobile": {"cols": 4, "rows": 6},
+      "mobile": {"cols": 6, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
     },
     "enemyCount": 0,
@@ -25,7 +25,7 @@
     "id": "level02",
     "name": "Nebula Rise 2",
     "boardSize": {
-      "mobile": {"cols": 4, "rows": 6},
+      "mobile": {"cols": 6, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
     },
     "enemyCount": 0,
@@ -48,7 +48,7 @@
     "id": "level03",
     "name": "Cosmic Awakening",
     "boardSize": {
-      "mobile": {"cols": 4, "rows": 6},
+      "mobile": {"cols": 6, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
     },
     "enemyCount": 0,
@@ -70,7 +70,7 @@
     "id": "level04",
     "name": "Stellar Buds",
     "boardSize": {
-      "mobile": {"cols": 4, "rows": 6},
+      "mobile": {"cols": 6, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
     },
     "enemyCount": 1,
@@ -94,7 +94,7 @@
     "id": "level05",
     "name": "Proto Star Forge",
     "boardSize": {
-      "mobile": {"cols": 4, "rows": 6},
+      "mobile": {"cols": 6, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
     },
     "enemyCount": 1,
@@ -118,7 +118,7 @@
     "id": "level06",
     "name": "Black Drift",
     "boardSize": {
-      "mobile": {"cols": 4, "rows": 6},
+      "mobile": {"cols": 6, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
     },
     "enemyCount": 1,
@@ -141,7 +141,7 @@
     "id": "level07",
     "name": "Void’s Whisper",
     "boardSize": {
-      "mobile": {"cols": 4, "rows": 6},
+      "mobile": {"cols": 6, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
     },
     "enemyCount": 1,
@@ -163,7 +163,7 @@
     "id": "level08",
     "name": "Singularity Edge",
     "boardSize": {
-      "mobile": {"cols": 4, "rows": 6},
+      "mobile": {"cols": 6, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
     },
     "enemyCount": 1,
@@ -185,7 +185,7 @@
     "id": "level09",
     "name": "Gravity Dance",
     "boardSize": {
-      "mobile": {"cols": 4, "rows": 6},
+      "mobile": {"cols": 6, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
     },
     "enemyCount": 1,
@@ -207,7 +207,7 @@
     "id": "level10",
     "name": "Stellar Trial",
     "boardSize": {
-      "mobile": {"cols": 4, "rows": 6},
+      "mobile": {"cols": 6, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
     },
     "enemyCount": 2,
@@ -230,7 +230,7 @@
     "id": "level11",
     "name": "Binary Collapse",
     "boardSize": {
-      "mobile": {"cols": 4, "rows": 6},
+      "mobile": {"cols": 6, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
     },
     "enemyCount": 2,
@@ -253,7 +253,7 @@
     "id": "level12",
     "name": "Galactic Forge",
     "boardSize": {
-      "mobile": {"cols": 4, "rows": 6},
+      "mobile": {"cols": 6, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
     },
     "enemyCount": 2,

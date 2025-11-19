@@ -6,37 +6,36 @@ export const BoardWrapper = styled.div`
   height: 100%;
   display: flex;
   justify-content: center;
-  @media (max-width: 768px) {
-    display: flex;
-    justify-content: center;
-  }
 `;
 
 export const BoardContainer = styled.div`
   width: 100%;
-  max-width: 600px;
   height: 100%;
-  display: flex;
+
+  aspect-ratio: 1/1;
+  max-width: 100%;
+  max-height: 100%;
+
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   background-size: cover;
   background-position: center;
   overflow: hidden;
   background-image: url(${import.meta.env.BASE_URL}boards/map1.png);
-
-  @media (min-width: 900px) {
-    border-radius: 22px;
-    aspect-ratio: 1 / 1;
-    height: auto;
-  }
 `;
 
 export const Grid = styled.div<{cols: number; rows: number}>`
-  display: grid;
+  position: absolute;
+  inset: 0;
+  width: 100%;
   height: 100%;
-  grid-template-columns: repeat(${props => props.cols}, 1fr);
-  grid-template-rows: repeat(${props => props.rows}, 1fr);
-  padding: 4%;
-  gap: 0px;
+  display: grid;
+
+  grid-template-columns: repeat(${p => p.cols}, 1fr);
+  grid-template-rows: repeat(${p => p.rows}, 1fr);
 `;
 
 export const FloatingLayer = styled.div`

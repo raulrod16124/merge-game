@@ -17,7 +17,7 @@ export function Tile({x, y, item, onClickEmpty}: TileProps) {
   };
 
   return (
-    <TileBase onClick={handleClick} className={item ? '' : 'empty'}>
+    <TileBase onClick={handleClick} className="aspect-square">
       {item ? (
         <motion.img
           key={item.id}
