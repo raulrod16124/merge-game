@@ -4,9 +4,6 @@ import {useGameStore} from '../../state/game-store';
 
 import {Tile} from './Tile';
 import {FloatingScore} from '../../ui/components/FloatingScore';
-import BlackHole from './BlackHole';
-import AbsorbAnimation from './AbsorbAnimation';
-import Supernova from './SuperNova';
 
 import {
   BoardWrapper,
@@ -16,18 +13,8 @@ import {
 } from './GameBoard.styled';
 
 export function GameBoard() {
-  const {
-    items,
-    holes,
-    boardSize,
-    addItem,
-    floatingScores,
-    removeFloatingScore,
-    absorbAnimations,
-    supernovas,
-    removeAbsorbAnimation,
-    removeSupernova,
-  } = useGameStore();
+  const {items, boardSize, addItem, floatingScores, removeFloatingScore} =
+    useGameStore();
 
   const cols = boardSize?.cols ?? 6;
   const rows = boardSize?.rows ?? 6;
@@ -80,41 +67,6 @@ export function GameBoard() {
               );
             })}
           </Grid>
-
-          {/* Black holes */}
-          <AnimatePresence>
-            {holes
-              ?.filter(h => h.active)
-              .map(h => (
-                <BlackHole key={h.id} x={h.pos.x} y={h.pos.y} />
-              ))}
-          </AnimatePresence>
-
-          {/* Absorptions */}
-          <AnimatePresence>
-            {absorbAnimations.map(anim => (
-              <AbsorbAnimation
-                key={anim.id}
-                from={anim.from}
-                to={anim.to}
-                size={anim.size}
-                icon={anim.icon}
-                onDone={() => removeAbsorbAnimation(anim.id)}
-              />
-            ))}
-          </AnimatePresence>
-
-          {/* Supernovas */}
-          <AnimatePresence>
-            {supernovas.map(sv => (
-              <Supernova
-                key={sv.id}
-                x={sv.x}
-                y={sv.y}
-                onDone={() => removeSupernova(sv.id)}
-              />
-            ))}
-          </AnimatePresence>
 
           {/* Floating scores */}
           <FloatingLayer>

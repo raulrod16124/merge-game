@@ -34,6 +34,7 @@ const Overlay = styled.div`
 `;
 
 const ModalBox = styled.div`
+  position: relative;
   background: linear-gradient(180deg, #2b2346, #1a152c);
   border-radius: 24px;
   padding: 28px;

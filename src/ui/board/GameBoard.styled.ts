@@ -9,6 +9,7 @@ export const BoardWrapper = styled.div`
 `;
 
 export const BoardContainer = styled.div`
+  position: relative;
   width: 100%;
   height: 100%;
 
@@ -28,14 +29,20 @@ export const BoardContainer = styled.div`
 `;
 
 export const Grid = styled.div<{cols: number; rows: number}>`
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  width: var(--vw);
+  height: calc(var(--vh) - 220px);
+  overflow: hidden;
   display: grid;
 
-  grid-template-columns: repeat(${p => p.cols}, 1fr);
-  grid-template-rows: repeat(${p => p.rows}, 1fr);
+  grid-template-columns: repeat(
+    ${p => p.cols},
+    calc(var(--vw) / ${p => p.cols})
+  );
+  grid-template-rows: repeat(
+    ${p => p.rows},
+    calc(var(--vh) / ${p => p.rows} - 36px)
+  );
+  border: 1px solid green;
 `;
 
 export const FloatingLayer = styled.div`

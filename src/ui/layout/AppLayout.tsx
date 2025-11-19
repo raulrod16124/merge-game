@@ -3,8 +3,6 @@ import React from 'react';
 import styled from 'styled-components';
 import {Header} from '../components/Header';
 import {PWAUpdateModal} from '../components/modals/PWAUpdateModal';
-import {usePWAInstall} from '../../hooks/usePWAInstall';
-import {Button} from '../../common/Button';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -42,26 +40,10 @@ const Content = styled.main`
 `;
 
 export function AppLayout({children}: {children: React.ReactNode}) {
-  const {canInstall, installApp} = usePWAInstall();
   return (
     <Wrapper>
       <Header />
-      <Content>
-        {children}
-
-        {canInstall && (
-          <Button
-            variant="secondary"
-            onClick={installApp}
-            styles={{
-              margin: '15px auto',
-              padding: '12px 24px',
-              fontSize: '1.2rem',
-            }}>
-            Instalar Stellar Merge
-          </Button>
-        )}
-      </Content>
+      <Content>{children}</Content>
       <PWAUpdateModal />
     </Wrapper>
   );

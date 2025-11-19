@@ -21,25 +21,13 @@ const updateSW = registerSW({
   },
 });
 
-//. let deferredPrompt: any = null;
-//.
-//. window.addEventListener('beforeinstallprompt', e => {
-//.   e.preventDefault();
-//.   deferredPrompt = e;
-//.
-//.   // aquí puedes mostrar un botón “Instalar Stellar Merge”
-//.   showInstallButton();
-//. });
-//.
-//. export function installApp() {
-//.   if (!deferredPrompt) return;
-//.
-//.   deferredPrompt.prompt();
-//.
-//.   deferredPrompt.userChoice.then(() => {
-//.     deferredPrompt = null;
-//.   });
-//. }
+function updateViewportSize() {
+  document.documentElement.style.setProperty('--vw', `${window.innerWidth}px`);
+  document.documentElement.style.setProperty('--vh', `${window.innerHeight}px`);
+}
+
+// Ejecutar al inicio
+updateViewportSize();
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
