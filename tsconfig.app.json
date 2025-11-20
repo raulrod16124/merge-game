@@ -8,8 +8,10 @@
     "types": ["vite/client"],
     "skipLibCheck": true,
     "composite": true,
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["src/*"]
     },
 
     /* Bundler mode */
