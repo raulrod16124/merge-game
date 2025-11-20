@@ -258,7 +258,7 @@ Please change the parent <Route path="${e}"> to <Route path="${e===`/`?`*`:`${e}
   display: grid;
   place-items: center;
   z-index: 9999;
-`;function To(){let[e,t]=(0,b.useState)(!1);return(0,b.useEffect)(()=>{let e=()=>t(!0);return window.addEventListener(`pwaUpdateAvailable`,e),()=>window.removeEventListener(`pwaUpdateAvailable`,e)},[]),e?(0,F.jsx)(wo,{children:(0,F.jsx)(Co,{open:e,title:`Nueva versión disponible`,message:`Pulsa para actualizar ahora`,onClose:()=>t(!1),buttons:[{label:`Actualizar`,variant:`primary`,onClick:()=>{window.location.reload()}}].filter(Boolean)})}):null}var Eo=P.div`
+`;function To(){let[e,t]=(0,b.useState)(!1);return(0,b.useEffect)(()=>{let e=()=>t(!0);return window.addEventListener(`pwaUpdateAvailable`,e),()=>window.removeEventListener(`pwaUpdateAvailable`,e)},[]),e?(0,F.jsx)(wo,{children:(0,F.jsx)(Co,{open:e,title:`Nueva versión disponible`,message:`Pulsa para actualizar ahora`,onClose:()=>t(!1),buttons:[{label:`Actualizar`,variant:`primary`,onClick:()=>{window.location.reload()}}].filter(Boolean)})}):null}const Eo=P.div`
   width: 100%;
   min-height: 100dvh;
   height: 100dvh;
@@ -289,7 +289,7 @@ Please change the parent <Route path="${e}"> to <Route path="${e===`/`?`*`:`${e}
     flex-direction: column;
     max-width: 960px;
   }
-`;function Oo({children:e}){return(0,F.jsxs)(Eo,{children:[(0,F.jsx)(L,{}),(0,F.jsx)(Do,{children:e}),(0,F.jsx)(To,{})]})}const ko=P.section`
+`;function Oo({children:e,hideHeader:t}){return(0,F.jsxs)(Eo,{children:[t?null:(0,F.jsx)(L,{}),(0,F.jsx)(Do,{children:e}),(0,F.jsx)(To,{})]})}const ko=P.section`
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -500,12 +500,11 @@ Please change the parent <Route path="${e}"> to <Route path="${e===`/`?`*`:`${e}
     .desktop {
       display: flex;
       flex-direction: column;
-      background: rgba(255, 255, 255, 0.08);
+      background-color: ${Ia.tertiaryDark};
       border-radius: 18px;
       padding: 20px;
       width: 220px;
       backdrop-filter: blur(10px);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
       gap: 20px;
     }
 
@@ -524,6 +523,7 @@ Please change the parent <Route path="${e}"> to <Route path="${e===`/`?`*`:`${e}
   flex-direction: column;
   gap: 10px;
   align-items: center;
+  background-color: ${Ia.tertiary};
 
   @media (min-width: 768px) {
     display: none;
@@ -611,11 +611,6 @@ Please change the parent <Route path="${e}"> to <Route path="${e===`/`?`*`:`${e}
   display: flex;
   justify-content: center;
   align-items: center;
-
-  background-size: cover;
-  background-position: center;
-  overflow: hidden;
-  background-image: url(${`/merge-game/`}boards/map1.png);
 `,L_=P.div`
   width: var(--vw);
   height: calc(var(--vh) - 220px);
@@ -635,9 +630,14 @@ Please change the parent <Route path="${e}"> to <Route path="${e===`/`?`*`:`${e}
   position: absolute;
   inset: 0;
 `;function z_(){let{items:e,boardSize:t,addItem:n,floatingScores:r,removeFloatingScore:i}=Cs(),a=t?.cols??6,o=t?.rows??6,s=e=>{n(e)};return(0,F.jsx)(F_,{children:(0,F.jsx)(C_.div,{initial:{opacity:0,y:-8},animate:{opacity:1,y:0},transition:{duration:.28},style:{width:`100%`,height:`100%`},children:(0,F.jsxs)(I_,{children:[(0,F.jsx)(L_,{cols:a,rows:o,children:Array.from({length:a*o}).map((t,n)=>{let r=n%a,i=Math.floor(n/a);return(0,F.jsx)(`div`,{ref:e=>{if(!e)return;let t=e.getBoundingClientRect(),n=`${r},${i}`,a=Cs.getState().cellRects[n],o={size:t.width,centerX:t.left+t.width/2,centerY:t.top+t.height/2};(!a||a.size!==o.size||a.centerX!==o.centerX||a.centerY!==o.centerY)&&Cs.getState().setCellRect(n,o)},style:{width:`100%`,height:`100%`},children:(0,F.jsx)(N_,{x:r,y:i,item:e.find(e=>e.pos.x===r&&e.pos.y===i),onClickEmpty:s})},`${r}-${i}`)})}),(0,F.jsx)(R_,{children:(0,F.jsx)(pf,{children:r.map(e=>(0,F.jsx)(P_,{x:e.x,y:e.y,points:e.points,onDone:()=>i(e.id)},e.id))})})]})})})}const B_=P.div`
-  height: calc(100dvh - ${72}px);
+  height: 100dvh;
   display: flex;
   flex-direction: column;
+
+  background-size: cover;
+  background-position: center;
+  background-image: url(${`/merge-game/`}boards/map1.png);
+
   overflow-x: hidden;
   overflow-y: auto;
 
@@ -671,9 +671,10 @@ Please change the parent <Route path="${e}"> to <Route path="${e===`/`?`*`:`${e}
 `;var U_=P.div`
   width: 100%;
   height: 28px;
-  padding: 5px 14px;
+  padding: 5px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 12px;
   backdrop-filter: blur(6px);
 `,W_=P.img`
@@ -685,4 +686,4 @@ Please change the parent <Route path="${e}"> to <Route path="${e===`/`?`*`:`${e}
   font-size: 15px;
   font-weight: 500;
   line-height: 1.3;
-`;function K_(){let{currentLevel:e,createdCounts:t,score:n}=Cs();if(!e)return null;let r=e.objective;if(!r)return null;let i=``,a=``,o=r[0].subject,s=r[0].target,c=r[0].type;if(c===`score`)i=`Alcanza ${s} puntos  (${n}/${s})`;else if(c===`create`){let e=t[o]??0;i=`Crea ${s} ${Fa[o]} (${e}/${s})`,a=`/merge-game/cosmic/${o}.png`}return(0,F.jsxs)(U_,{children:[a?(0,F.jsx)(W_,{src:a,alt:``}):(0,F.jsx)(I,{size:20,color:`#fff`}),(0,F.jsx)(G_,{children:i})]})}function q_(e){let t=e.match(/(level)(\d+)/);if(!t)throw Error(`Invalid level ID format: ${e}`);return`${t[1]}${(parseInt(t[2],10)+1).toString().padStart(2,`0`)}`}function J_(){let{levelId:e}=st(),t=at(),n=Cs(e=>e.loadLevel),r=Cs(e=>e.currentLevel),i=Cs(e=>e.resetLevel),a=Cs(e=>e.levelResult),o=Cs(e=>e.setLevelResult),[s,c]=(0,b.useState)(null);(0,b.useEffect)(()=>{if(!e){t(`/levels`);return}let i=Ro.find(t=>t.id===e);if(!i){t(`/levels`);return}(!r||r.id!==i.id)&&(n(i),c(null))},[e,r,n,t]),(0,b.useEffect)(()=>{a&&c(a)},[a]);let l=()=>{c(null),o(null),i()};return(0,F.jsxs)(Oo,{children:[(0,F.jsxs)(B_,{children:[(0,F.jsxs)(V_,{children:[(0,F.jsx)(K_,{}),(0,F.jsx)(A_,{})]}),(0,F.jsx)(H_,{children:(0,F.jsx)(z_,{})})]}),s?.status===`win`&&(0,F.jsx)(`div`,{style:{position:`fixed`,left:`50%`,top:80,transform:`translateX(-50%)`,zIndex:10050,pointerEvents:`none`},children:`🎉 ¡Nivel completado!`}),s?.status===`win`&&(0,F.jsx)(Co,{onClose:l,open:!0,title:`¡Nivel completado!`,message:`Has logrado el objetivo`,buttons:(e=>{let n=[];if(e.status===`win`){let r=q_(e.levelId);n.push({label:`Siguiente nivel`,variant:`primary`,onClick:()=>t(`/play/${r}`)})}return n.push({label:`Volver a niveles`,variant:`secondary`,to:`/levels`,onClick:l},{label:`Cerrar`,variant:`tertiary`,onClick:l}),n})(s)}),s?.status===`fail`&&(0,F.jsx)(Co,{onClose:l,open:!0,title:`Oh!, has perdido.`,message:`No has logrado completar el nivel.`,buttons:[{label:`Reintentar`,variant:`secondary`,onClick:l},{label:`Volver a niveles`,variant:`fail`,to:`/levels`,onClick:l},{label:`Cerrar`,variant:`tertiary`,onClick:l}]})]})}function Y_(){return(0,F.jsx)(`div`,{className:`min-h-screen bg-slate-900 text-white`,children:(0,F.jsx)(`main`,{className:`max-w-5xl mx-auto p-4`,children:(0,F.jsxs)(Mt,{children:[(0,F.jsx)(At,{path:`/`,element:(0,F.jsx)(Lo,{})}),(0,F.jsx)(At,{path:`/levels`,element:(0,F.jsx)(Jo,{})}),(0,F.jsx)(At,{path:`/play/:levelId`,element:(0,F.jsx)(J_,{})}),(0,F.jsx)(At,{path:`*`,element:(0,F.jsx)(kt,{to:`/`,replace:!0})})]})})})}`serviceWorker`in navigator&&window.addEventListener(`load`,()=>{navigator.serviceWorker.register(`/sw.js`)}),ie({onNeedRefresh(){},onOfflineReady(){}});function X_(){document.documentElement.style.setProperty(`--vw`,`${window.innerWidth}px`),document.documentElement.style.setProperty(`--vh`,`${window.innerHeight}px`)}X_(),(0,y.createRoot)(document.getElementById(`root`)).render((0,F.jsx)(b.StrictMode,{children:(0,F.jsx)(gn,{basename:`/merge-game/`,children:(0,F.jsx)(Y_,{})})}));
+`;function K_(){let{currentLevel:e,createdCounts:t,score:n}=Cs();if(!e)return null;let r=e.objective;if(!r)return null;let i=``,a=``,o=r[0].subject,s=r[0].target,c=r[0].type;if(c===`score`)i=`Alcanza ${s} puntos  (${n}/${s})`;else if(c===`create`){let e=t[o]??0;i=`Crea ${s} ${Fa[o]} (${e}/${s})`,a=`/merge-game/cosmic/${o}.png`}return(0,F.jsxs)(U_,{children:[a?(0,F.jsx)(W_,{src:a,alt:``}):(0,F.jsx)(I,{size:20,color:`#fff`}),(0,F.jsx)(G_,{children:i})]})}function q_(e){let t=e.match(/(level)(\d+)/);if(!t)throw Error(`Invalid level ID format: ${e}`);return`${t[1]}${(parseInt(t[2],10)+1).toString().padStart(2,`0`)}`}function J_(){let{levelId:e}=st(),t=at(),n=Cs(e=>e.loadLevel),r=Cs(e=>e.currentLevel),i=Cs(e=>e.resetLevel),a=Cs(e=>e.levelResult),o=Cs(e=>e.setLevelResult),[s,c]=(0,b.useState)(null);(0,b.useEffect)(()=>{if(!e){t(`/levels`);return}let i=Ro.find(t=>t.id===e);if(!i){t(`/levels`);return}(!r||r.id!==i.id)&&(n(i),c(null))},[e,r,n,t]),(0,b.useEffect)(()=>{a&&c(a)},[a]);let l=()=>{c(null),o(null),i()};return(0,F.jsxs)(Oo,{hideHeader:!0,children:[(0,F.jsxs)(B_,{children:[(0,F.jsxs)(V_,{children:[(0,F.jsx)(K_,{}),(0,F.jsx)(A_,{})]}),(0,F.jsx)(H_,{children:(0,F.jsx)(z_,{})})]}),s?.status===`win`&&(0,F.jsx)(`div`,{style:{position:`fixed`,left:`50%`,top:80,transform:`translateX(-50%)`,zIndex:10050,pointerEvents:`none`},children:`🎉 ¡Nivel completado!`}),s?.status===`win`&&(0,F.jsx)(Co,{onClose:l,open:!0,title:`¡Nivel completado!`,message:`Has logrado el objetivo`,buttons:(e=>{let n=[];if(e.status===`win`){let r=q_(e.levelId);n.push({label:`Siguiente nivel`,variant:`primary`,onClick:()=>t(`/play/${r}`)})}return n.push({label:`Volver a niveles`,variant:`secondary`,to:`/levels`,onClick:l},{label:`Cerrar`,variant:`tertiary`,onClick:l}),n})(s)}),s?.status===`fail`&&(0,F.jsx)(Co,{onClose:l,open:!0,title:`Oh!, has perdido.`,message:`No has logrado completar el nivel.`,buttons:[{label:`Reintentar`,variant:`secondary`,onClick:l},{label:`Volver a niveles`,variant:`fail`,to:`/levels`,onClick:l},{label:`Cerrar`,variant:`tertiary`,onClick:l}]})]})}function Y_(){return(0,F.jsx)(`div`,{className:`min-h-screen bg-slate-900 text-white`,children:(0,F.jsx)(`main`,{className:`max-w-5xl mx-auto p-4`,children:(0,F.jsxs)(Mt,{children:[(0,F.jsx)(At,{path:`/`,element:(0,F.jsx)(Lo,{})}),(0,F.jsx)(At,{path:`/levels`,element:(0,F.jsx)(Jo,{})}),(0,F.jsx)(At,{path:`/play/:levelId`,element:(0,F.jsx)(J_,{})}),(0,F.jsx)(At,{path:`*`,element:(0,F.jsx)(kt,{to:`/`,replace:!0})})]})})})}`serviceWorker`in navigator&&window.addEventListener(`load`,()=>{navigator.serviceWorker.register(`/sw.js`)}),ie({onNeedRefresh(){},onOfflineReady(){}});function X_(){document.documentElement.style.setProperty(`--vw`,`${window.innerWidth}px`),document.documentElement.style.setProperty(`--vh`,`${window.innerHeight}px`)}X_(),(0,y.createRoot)(document.getElementById(`root`)).render((0,F.jsx)(b.StrictMode,{children:(0,F.jsx)(gn,{basename:`/merge-game/`,children:(0,F.jsx)(Y_,{})})}));
