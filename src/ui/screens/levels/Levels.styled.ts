@@ -1,6 +1,6 @@
 // src/ui/screens/Levels.styled.ts
 import styled from 'styled-components';
-import {HEADER_HEIGHT} from '../constants';
+import {HEADER_HEIGHT} from '../../constants';
 
 export const LevelsWrapper = styled.div`
   width: 100%;

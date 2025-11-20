@@ -1,6 +1,6 @@
 // src/ui/screens/Home.tsx
-import {AppLayout} from '../../ui/layout/AppLayout';
-import {COSMIC_ICONS} from '../constants';
+import {AppLayout} from '../../../ui/layout/AppLayout';
+import {COSMIC_ICONS} from '../../constants';
 import {
   Credits,
   Hero,
@@ -10,8 +10,8 @@ import {
   OrbLabel,
   PreviewOrb,
 } from './Home.styled';
-import {Button} from '../../common/Button';
-import {usePWAInstall} from '../../hooks/usePWAInstall';
+import {Button} from '../../../common/Button';
+import {usePWAInstall} from '../../../hooks/usePWAInstall';
 
 export function Home() {
   const {canInstall, installApp} = usePWAInstall();
