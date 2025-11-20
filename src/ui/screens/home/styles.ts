@@ -47,27 +47,7 @@ export const AvatarArea = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 48px;
-
-  .avatar {
-    width: 130px;
-    height: 130px;
-    border-radius: 50%;
-    background: ${COLORS.tertiaryDark};
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: ${COLORS.primary};
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
-  }
-
-  p {
-    margin-top: 16px;
-    font-size: 1.2rem;
-    opacity: 0.85;
-  }
+  margin-bottom: 32px;
 `;
 
 export const PlayArea = styled.div`

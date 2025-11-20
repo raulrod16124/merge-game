@@ -1,4 +1,4 @@
-import {AppLayout} from '@/ui/layout/AppLayout';
+import AppLayout from '@/ui/layout';
 import styled from 'styled-components';
 import {COLORS} from '@/ui/constants';
 

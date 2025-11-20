@@ -8,7 +8,7 @@ interface Props {
   showBack?: boolean;
 }
 
-export function AppLayout({children, title, showBack = true}: Props) {
+export default function AppLayout({children, title, showBack = true}: Props) {
   const navigate = useNavigate();
 
   return (

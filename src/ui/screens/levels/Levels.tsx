@@ -1,5 +1,4 @@
-// src/ui/screens/Levels.tsx
-import {LevelsWrapper, Grid} from './Levels.styled';
+import {LevelsWrapper, Title, Grid} from './styles';
 import {LEVELS} from '@/data/levels';
 import {LevelCard} from '@/ui/components/LevelCard';
 import AppLayout from '@/ui/layout';
@@ -8,17 +7,9 @@ export function Levels() {
   const levels = Object.values(LEVELS);
 
   return (
-    <AppLayout title="Levels">
+    <AppLayout title="Niveles">
       <LevelsWrapper>
-        <h2
-          style={{
-            margin: 0,
-            fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(20px, 4vw, 36px)',
-            color: '#ffffff',
-          }}>
-          Selecciona un nivel
-        </h2>
+        <Title>Selecciona un nivel</Title>
 
         <Grid>
           {levels.map((lvl: any) => (

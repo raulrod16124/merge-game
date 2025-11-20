@@ -7,13 +7,13 @@ import {useGameStore} from '../../../state/game-store';
 
 import {HUD} from '../../hud/HUD';
 import {GameBoard} from '../../board/GameBoard';
-import {AppLayout} from '../../layout/AppLayout';
 
 import {HUDColumn, BoardColumn, BoardScreenWrapper} from './BoardScreen.styled';
 import {Modal} from '../../../common/Modal';
 import {LevelObjectiveBar} from '../../components/LevelObjectiveBar';
 import type {ModalButton, ModalState} from '../../../core/types';
 import {getNextLevelID} from '../../../utils/getNextLevelID';
+import AppLayout from '@/ui/layout';
 
 export function BoardScreen() {
   const {levelId} = useParams();
@@ -85,7 +85,7 @@ export function BoardScreen() {
   };
 
   return (
-    <AppLayout hideHeader={true}>
+    <AppLayout>
       <BoardScreenWrapper>
         <HUDColumn>
           <LevelObjectiveBar />
