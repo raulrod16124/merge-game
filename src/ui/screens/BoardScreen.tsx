@@ -85,7 +85,7 @@ export function BoardScreen() {
   };
 
   return (
-    <AppLayout>
+    <AppLayout hideHeader={true}>
       <BoardScreenWrapper>
         <HUDColumn>
           <LevelObjectiveBar />

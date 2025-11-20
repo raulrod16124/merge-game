@@ -21,11 +21,6 @@ export const BoardContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
-  background-size: cover;
-  background-position: center;
-  overflow: hidden;
-  background-image: url(${import.meta.env.BASE_URL}boards/map1.png);
 `;
 
 export const Grid = styled.div<{cols: number; rows: number}>`

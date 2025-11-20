@@ -1,11 +1,15 @@
 // src/ui/screens/BoardScreen.styled.ts
 import styled from 'styled-components';
-import {HEADER_HEIGHT} from '../constants';
 
 export const BoardScreenWrapper = styled.div`
-  height: calc(100dvh - ${HEADER_HEIGHT}px);
+  height: 100dvh;
   display: flex;
   flex-direction: column;
+
+  background-size: cover;
+  background-position: center;
+  background-image: url(${import.meta.env.BASE_URL}boards/map1.png);
+
   overflow-x: hidden;
   overflow-y: auto;
 

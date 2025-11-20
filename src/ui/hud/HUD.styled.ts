@@ -16,12 +16,11 @@ export const HUDWrapper = styled.div`
     .desktop {
       display: flex;
       flex-direction: column;
-      background: rgba(255, 255, 255, 0.08);
+      background-color: ${COLORS.tertiaryDark};
       border-radius: 18px;
       padding: 20px;
       width: 220px;
       backdrop-filter: blur(10px);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
       gap: 20px;
     }
 
@@ -42,6 +41,7 @@ export const MobileStack = styled.div`
   flex-direction: column;
   gap: 10px;
   align-items: center;
+  background-color: ${COLORS.tertiary};
 
   @media (min-width: 768px) {
     display: none;
