@@ -1,6 +1,6 @@
-import type React from 'react';
 import {Navigate} from 'react-router-dom';
-import {useUserStore} from './../state/user-store';
+import {useUserStore} from '@/state/user-store';
+import type React from 'react';
 
 export default function ProtectedRoute({
   children,
@@ -9,7 +9,5 @@ export default function ProtectedRoute({
 }) {
   const authenticated = useUserStore(s => s.authenticated);
 
-  if (!authenticated) return <Navigate to="/login" />;
-
-  return children;
+  return authenticated ? children : <Navigate to="/login" />;
 }

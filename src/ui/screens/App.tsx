@@ -9,8 +9,16 @@ import ProtectedRoute from '@/router/ProtectedRoute';
 import Profile from './profile';
 import Store from './store';
 import Settings from './settings';
+import {useUserStore} from '@/state/user-store';
+import React from 'react';
 
 export default function App() {
+  const loadFromStorage = useUserStore(s => s.loadFromStorage);
+
+  React.useEffect(() => {
+    loadFromStorage();
+  }, []);
+
   return (
     <div className="min-h-screen bg-slate-900 text-white">
       <main className="max-w-5xl mx-auto p-4">
