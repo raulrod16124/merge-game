@@ -1,77 +1,34 @@
-// src/ui/screens/Home.tsx
-import {AppLayout} from '../../../ui/layout/AppLayout';
-import {COSMIC_ICONS} from '../../constants';
-import {
-  Credits,
-  Hero,
-  HeroBanner,
-  HeroSubtitle,
-  HeroTitle,
-  OrbLabel,
-  PreviewOrb,
-} from './Home.styled';
-import {Button} from '../../../common/Button';
-import {usePWAInstall} from '../../../hooks/usePWAInstall';
+import {useNavigate} from 'react-router-dom';
+import {useUserStore} from '@/state/user-store';
+import {Button} from '@/common/Button';
+import {Container, Header, IconButtons, AvatarArea, PlayArea} from './styles';
 
-export function Home() {
-  const {canInstall, installApp} = usePWAInstall();
+export default function Home() {
+  const navigate = useNavigate();
+  const {name, coins, avatar} = useUserStore();
+
   return (
-    <AppLayout>
-      <Hero>
-        <HeroTitle>Comienza tu viaje cósmico</HeroTitle>
+    <Container>
+      <Header>
+        <div className="coins">💰 {coins}</div>
 
-        <HeroSubtitle>
-          Coloca partículas cósmicas. Fusiona 3 iguales para crear objetos más
-          complejos y desata la cosmogénesis en una aventura neón de lógica y
-          estrategia.
-        </HeroSubtitle>
+        <IconButtons>
+          <button onClick={() => navigate('/profile')}>👤</button>
+          <button onClick={() => navigate('/settings')}>⚙️</button>
+          <button onClick={() => navigate('/store')}>🛒</button>
+        </IconButtons>
+      </Header>
 
-        <HeroBanner>
-          {/* ORB */}
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}>
-            <PreviewOrb>
-              <img
-                src={COSMIC_ICONS.star_system}
-                alt="preview"
-                style={{width: 66, height: 66}}
-                draggable={false}
-              />
-            </PreviewOrb>
-            <OrbLabel>Vista previa</OrbLabel>
-          </div>
+      <AvatarArea>
+        <div className="avatar">{avatar || 'A'}</div>
+        <p>Hola, {name}</p>
+      </AvatarArea>
 
-          {/* TEXT */}
-          <Button
-            to="/levels"
-            variant="primary"
-            styles={{
-              margin: '24px auto',
-              padding: '12px 24px',
-              fontSize: '1.2rem',
-            }}>
-            Comenzar
-          </Button>
-        </HeroBanner>
-
-        <Credits>v1.0 — Stellar Merge • Vector Cartoon UI</Credits>
-        {canInstall && (
-          <Button
-            variant="secondary"
-            onClick={installApp}
-            styles={{
-              margin: '15px auto',
-              padding: '12px 24px',
-              fontSize: '1.2rem',
-            }}>
-            Instalar Stellar Merge
-          </Button>
-        )}
-      </Hero>
-    </AppLayout>
+      <PlayArea>
+        <Button variant="primary" fullWidth={true} to="/levels">
+          Jugar
+        </Button>
+      </PlayArea>
+    </Container>
   );
 }

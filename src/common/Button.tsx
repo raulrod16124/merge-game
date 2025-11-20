@@ -61,7 +61,7 @@ const BaseButton = styled.button<{
   variant: ButtonVariant;
   fullWidth?: boolean;
 }>`
-  padding: 12px 20px;
+  padding: 12px 0;
   border-radius: 16px;
   border: none;
   cursor: pointer;
@@ -74,7 +74,9 @@ const BaseButton = styled.button<{
   gap: 8px;
   text-decoration: none;
 
-  ${({fullWidth}) => fullWidth && 'width: 100%;'}
+  ${({fullWidth}) => (fullWidth ? 'padding: 12px 0;' : 'padding: 12px 16px;')}
+
+  ${({fullWidth}) => (fullWidth ? 'width: 100%;' : 'width: auto;')}
 
   ${({variant}) => variantStyles[variant]}
 

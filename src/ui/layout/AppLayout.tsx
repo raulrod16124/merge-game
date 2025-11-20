@@ -1,20 +1,38 @@
-// src/ui/layout/AppLayout.tsx
-import React from 'react';
-import {Header} from '../components/Header';
-import {PWAUpdateModal} from '../components/modals/PWAUpdateModal';
-import {Content, Wrapper} from './AppLayout.styled';
+import {Wrapper, Header, Content} from './styles';
+import {Button} from '@/common/Button';
+import {useNavigate} from 'react-router-dom';
 
-interface IProps {
+interface Props {
   children: React.ReactNode;
-  hideHeader?: boolean;
+  title?: string;
+  showBack?: boolean;
 }
 
-export function AppLayout({children, hideHeader}: IProps) {
+export function AppLayout({children, title, showBack = true}: Props) {
+  const navigate = useNavigate();
+
   return (
     <Wrapper>
-      {hideHeader ? null : <Header />}
-      <Content>{children}</Content>
-      <PWAUpdateModal />
+      <Content>
+        <Header>
+          <div className="back-btn">
+            {showBack && (
+              <Button
+                variant="tertiary"
+                onClick={() => navigate('/home')}
+                fullWidth>
+                ←
+              </Button>
+            )}
+          </div>
+          {title && <h2>{title}</h2>}
+
+          {/* Espacio para balancear el header visualmente */}
+          <div style={{width: 48}} />
+        </Header>
+
+        {children}
+      </Content>
     </Wrapper>
   );
 }

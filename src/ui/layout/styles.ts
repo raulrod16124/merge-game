@@ -4,10 +4,30 @@ export const Wrapper = styled.div`
   width: 100%;
   min-height: 100dvh;
   height: 100dvh;
-  background: #0a0d13;
   color: white;
   display: flex;
   flex-direction: column;
+  overflow-y: hidden;
+  overflow-x: hidden;
+`;
+
+export const Header = styled.header`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+
+  h2 {
+    flex: 1;
+    text-align: center;
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+
+  .back-btn {
+    width: 48px;
+  }
 `;
 
 export const Content = styled.main`

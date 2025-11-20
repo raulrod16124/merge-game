@@ -1,14 +1,14 @@
 // src/ui/screens/Levels.tsx
-import {AppLayout} from '@/ui/layout/AppLayout';
 import {LevelsWrapper, Grid} from './Levels.styled';
 import {LEVELS} from '@/data/levels';
 import {LevelCard} from '@/ui/components/LevelCard';
+import AppLayout from '@/ui/layout';
 
 export function Levels() {
   const levels = Object.values(LEVELS);
 
   return (
-    <AppLayout>
+    <AppLayout title="Levels">
       <LevelsWrapper>
         <h2
           style={{
