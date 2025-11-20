@@ -15,6 +15,7 @@ type ButtonProps = {
   fullWidth?: boolean;
   loading?: boolean;
   className?: string;
+  selected?: boolean;
   styles?: React.CSSProperties;
 };
 
@@ -105,6 +106,7 @@ export function Button({
   fullWidth,
   loading,
   className,
+  selected,
   styles,
 }: ButtonProps) {
   const content = loading ? 'Cargando...' : children;
@@ -114,7 +116,7 @@ export function Button({
       <BaseButton
         as={Link}
         to={to}
-        variant={variant}
+        variant={selected ? 'secondary' : variant}
         disabled={disabled}
         fullWidth={fullWidth}
         className={className}
@@ -126,7 +128,7 @@ export function Button({
 
   return (
     <BaseButton
-      variant={variant}
+      variant={selected ? 'secondary' : variant}
       disabled={disabled}
       onClick={onClick}
       fullWidth={fullWidth}

@@ -7,7 +7,7 @@ export function Levels() {
   const levels = Object.values(LEVELS);
 
   return (
-    <AppLayout title="Niveles">
+    <AppLayout title="Niveles" prevRoute="/home">
       <LevelsWrapper>
         <Title>Selecciona un nivel</Title>
 

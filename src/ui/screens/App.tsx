@@ -12,6 +12,9 @@ import Settings from './settings';
 import {useUserStore} from '@/state/user-store';
 import React from 'react';
 import styled from 'styled-components';
+import Inventory from './inventory';
+import EditName from './edit-name';
+import EditAvatar from './edit-avatar';
 
 const AppWrapper = styled.div`
   min-height: 100dvh;
@@ -82,6 +85,33 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Store />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/edit-name"
+          element={
+            <ProtectedRoute>
+              <EditName />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/edit-avatar"
+          element={
+            <ProtectedRoute>
+              <EditAvatar />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/inventory"
+          element={
+            <ProtectedRoute>
+              <Inventory />
             </ProtectedRoute>
           }
         />

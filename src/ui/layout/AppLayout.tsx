@@ -1,35 +1,42 @@
-import {Wrapper, Header, Content} from './styles';
-import {Button} from '@/common/Button';
+import {Wrapper, Header, Content, BackButton} from './styles';
+import {ArrowLeft} from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
 
 interface Props {
   children: React.ReactNode;
+  prevRoute?: string;
   title?: string;
   showBack?: boolean;
+  hideHeader?: boolean;
 }
 
-export default function AppLayout({children, title, showBack = true}: Props) {
+export default function AppLayout({
+  children,
+  prevRoute,
+  title,
+  showBack = true,
+  hideHeader = false,
+}: Props) {
   const navigate = useNavigate();
 
   return (
     <Wrapper>
       <Content>
-        <Header>
-          <div className="back-btn">
-            {showBack && (
-              <Button
-                variant="tertiary"
-                onClick={() => navigate('/home')}
-                fullWidth>
-                ←
-              </Button>
+        {!hideHeader && (
+          <Header>
+            {showBack ? (
+              <BackButton onClick={() => navigate(prevRoute || '-1')}>
+                <ArrowLeft size={24} strokeWidth={2.4} />
+              </BackButton>
+            ) : (
+              <div style={{width: 48}} />
             )}
-          </div>
-          {title && <h2>{title}</h2>}
 
-          {/* Espacio para balancear el header visualmente */}
-          <div style={{width: 48}} />
-        </Header>
+            {title && <h2>{title}</h2>}
+
+            <div style={{width: 48}} />
+          </Header>
+        )}
 
         {children}
       </Content>
