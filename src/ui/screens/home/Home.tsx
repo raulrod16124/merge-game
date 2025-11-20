@@ -2,7 +2,7 @@ import {useNavigate} from 'react-router-dom';
 import {useUserStore} from '@/state/user-store';
 import {Button} from '@/common/Button';
 import {Container, Header, IconButtons, AvatarArea, PlayArea} from './styles';
-import {CosmicAvatar} from '@/ui/components/CosmicAvatar';
+import {CosmicAvatar} from '@/ui/components/cosmic-avatar';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -21,7 +21,8 @@ export default function Home() {
       </Header>
 
       <AvatarArea>
-        <CosmicAvatar name={name} />
+        <CosmicAvatar variant={avatar?.variant} />
+        <p>Hola, {name}</p>
       </AvatarArea>
 
       <PlayArea>

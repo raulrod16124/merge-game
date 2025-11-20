@@ -2,6 +2,17 @@ import AppLayout from '@/ui/layout';
 import styled from 'styled-components';
 import {COLORS} from '@/ui/constants';
 import {useUserStore} from '@/state/user-store';
+import {CosmicAvatar} from '@/ui/components/cosmic-avatar';
+import {Button} from '@/common/Button';
+import type {AvatarVariant} from '@/ui/components/cosmic-avatar/types';
+
+const VariantSelector = styled.div`
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+`;
 
 const Box = styled.div`
   padding: 24px;
@@ -27,14 +38,34 @@ const Box = styled.div`
   }
 `;
 
+const variants = [
+  {key: 'abstract', label: 'Abstracto'},
+  {key: 'humanoid', label: 'Humanoide'},
+  {key: 'hybrid', label: 'Híbrido'},
+];
+
 export default function Profile() {
-  const {avatar, name} = useUserStore();
+  const {avatar, name, setAvatarVariant} = useUserStore();
 
   return (
     <AppLayout title="Perfil">
       <Box>
-        <div className="avatar">{avatar}</div>
+        <div className="avatar">
+          <CosmicAvatar variant={avatar?.variant} />
+        </div>
+
         <p>{name}</p>
+
+        <VariantSelector>
+          {variants.map(v => (
+            <Button
+              fullWidth
+              variant={avatar?.variant === v.key ? 'primary' : 'secondary'}
+              onClick={() => setAvatarVariant(v.key as AvatarVariant)}>
+              {v.label}
+            </Button>
+          ))}
+        </VariantSelector>
       </Box>
     </AppLayout>
   );

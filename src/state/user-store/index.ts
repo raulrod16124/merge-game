@@ -1,18 +1,25 @@
+import type {AvatarVariant} from '@/ui/components/cosmic-avatar/types';
 import {create} from 'zustand';
+
+type Avatar = {
+  variant: AvatarVariant;
+};
 
 type UserState = {
   userId: string | null;
   name: string | null;
-  avatar: string | null;
+  avatar: Avatar | null;
   coins: number;
   authenticated: boolean;
 
   authenticate: (name: string) => void;
   logout: () => void;
   loadFromStorage: () => void;
+  setAvatarVariant: (variant: AvatarVariant) => Promise<void>;
+  persistAvatar: (avatar: Avatar) => Promise<void>;
 };
 
-export const useUserStore = create<UserState>(set => ({
+export const useUserStore = create<UserState>((set, get) => ({
   userId: null,
   name: null,
   avatar: null,
@@ -23,7 +30,9 @@ export const useUserStore = create<UserState>(set => ({
     const user = {
       userId: crypto.randomUUID(),
       name,
-      avatar: 'default',
+      avatar: {
+        variant: 'hybrid' as AvatarVariant,
+      },
       coins: 0,
       authenticated: true,
     };
@@ -51,5 +60,17 @@ export const useUserStore = create<UserState>(set => ({
 
     const user = JSON.parse(data);
     set(user);
+  },
+
+  setAvatarVariant: async variant => {
+    const state = get();
+    const newAvatar = {...state.avatar, variant};
+    await state.persistAvatar?.(newAvatar);
+    set({avatar: newAvatar});
+  },
+
+  persistAvatar: async (avatar: Avatar) => {
+    // Aquí luego conectaremos con Firebase
+    return;
   },
 }));
