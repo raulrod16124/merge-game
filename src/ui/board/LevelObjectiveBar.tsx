@@ -7,11 +7,11 @@ const Bar = styled.div`
   width: 100%;
   height: 28px;
   padding: 5px;
+  padding-left: 15px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 12px;
-  backdrop-filter: blur(6px);
 `;
 
 const Icon = styled.img`
@@ -55,8 +55,8 @@ export function LevelObjectiveBar() {
 
   return (
     <Bar>
-      {icon ? <Icon src={icon} alt="" /> : <Trophy size={20} color="#fff" />}
       <Text>{label}</Text>
+      {icon ? <Icon src={icon} alt="" /> : <Trophy size={20} color="#fff" />}
     </Bar>
   );
 }

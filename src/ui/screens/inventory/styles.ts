@@ -5,7 +5,7 @@ import {COLORS} from '@/ui/constants';
 
 export const Container = styled.div`
   padding: 24px;
-  height: 100%;
+  height: calc(100dvh - 20dvh);
   display: flex;
   flex-direction: column;
   color: ${COLORS.white};
@@ -53,7 +53,7 @@ export const Subtitle = styled.p`
 
 export const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 18px;
 
   @media (min-width: 640px) {
@@ -82,10 +82,10 @@ export const Badge = styled.div`
   top: -6px;
   right: -6px;
   background: ${COLORS.primary};
-  color: #1a1a1a;
-  font-weight: 900;
-  font-size: 0.75rem;
-  padding: 4px 6px;
+  color: ${COLORS.tertiaryDark};
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 4px;
   border-radius: 50%;
   min-width: 22px;
   height: 22px;

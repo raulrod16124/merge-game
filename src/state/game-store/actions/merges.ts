@@ -1,11 +1,12 @@
 // src/state/game-store/actions/merges.ts
 import type {StateCreator} from 'zustand';
 import type {GameStore} from '../index';
-import type {Pos, CosmicType, ItemBase} from '../../../core/types';
+import type {Pos, CosmicType, ItemBase} from '@/core/types';
 
-import {getNextType, fusionScore, TIME_BONUS} from '../../../core/fusionRules';
+import {getNextType, fusionScore, TIME_BONUS} from '@/core/fusionRules';
 import {computeSpawnWeights} from '../utils/spawnHelpers';
 import {pickWeighted} from '../utils/weighted';
+import {applyMergeRewards} from './rewards';
 
 function getConnectedCluster(
   start: Pos,
@@ -107,6 +108,13 @@ export const createMerges = (
       pos: {...pos},
       createdAt: Date.now(),
     };
+
+    try {
+      const gained = applyMergeRewards(nextType, fusionScore(nextType));
+      set(s => ({levelCoins: (s.levelCoins ?? 0) + gained}));
+    } catch (e) {
+      console.warn('Error applying merge rewards', e);
+    }
 
     // === ATOMIC UPDATE: insert fused item, update score and createdCounts ===
     set(s => {

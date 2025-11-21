@@ -5,15 +5,16 @@ import {useParams, useNavigate} from 'react-router-dom';
 import {LEVELS} from '../../../data/levels';
 import {useGameStore} from '../../../state/game-store';
 
-import {HUD} from '../../hud/HUD';
+import {HUD} from '../../board/HUD';
+import {GameHeader} from '@/ui/board/GameHeader';
 import {GameBoard} from '../../board/GameBoard';
 
 import {HUDColumn, BoardColumn, BoardScreenWrapper} from './BoardScreen.styled';
 import {Modal} from '../../../common/Modal';
-import {LevelObjectiveBar} from '../../components/LevelObjectiveBar';
-import type {ModalButton, ModalState} from '../../../core/types';
-import {getNextLevelID} from '../../../utils/getNextLevelID';
+import type {ModalState} from '../../../core/types';
 import AppLayout from '@/ui/layout';
+import {PowerupBar} from '@/ui/board/PowerupBar';
+import {LevelCompleteModal} from '@/ui/components/modals/LevelCompleteModal';
 
 export function BoardScreen() {
   const {levelId} = useParams();
@@ -25,8 +26,14 @@ export function BoardScreen() {
 
   const levelResult = useGameStore(s => s.levelResult);
   const setLevelResult = useGameStore(s => s.setLevelResult);
+  const createdCounts = useGameStore(s => s.createdCounts);
+  const levelCoins = useGameStore(s => s.levelCoins);
+  const stopTimer = useGameStore(s => s.stopTimer);
 
   const [modalState, setModalState] = useState<null | ModalState>(null);
+  const [paused, setPaused] = useState(false);
+  const openPause = () => setPaused(true);
+  const closePause = () => setPaused(false);
 
   // Load level
   useEffect(() => {
@@ -52,74 +59,59 @@ export function BoardScreen() {
     if (levelResult) setModalState(levelResult as any);
   }, [levelResult]);
 
+  useEffect(() => {
+    return () => {
+      try {
+        setModalState(null);
+      } catch (e) {}
+      try {
+        setLevelResult(null);
+      } catch (e) {}
+      try {
+        stopTimer && stopTimer();
+        resetLevel();
+      } catch (e) {}
+    };
+    // empty deps so this runs only on unmount
+  }, [setLevelResult, stopTimer]);
+
   const handleCloseModal = () => {
-    setModalState(null);
     setLevelResult(null);
-    resetLevel();
+    setModalState(null);
   };
 
-  const generatedSuccessButtons = (ms: ModalState): ModalButton[] => {
-    let buttons: ModalButton[] = [];
-    if (ms.status === 'win') {
-      const nextLevel = getNextLevelID(ms.levelId);
-      buttons.push({
-        label: 'Siguiente nivel',
-        variant: 'primary',
-        onClick: () => navigate(`/play/${nextLevel}`),
-      });
-    }
-    buttons.push(
-      {
-        label: 'Volver a niveles',
-        variant: 'secondary',
-        to: '/levels',
-        onClick: handleCloseModal,
-      },
-      {
-        label: 'Cerrar',
-        variant: 'tertiary',
-        onClick: handleCloseModal,
-      },
-    );
-    return buttons;
-  };
+  const fusionStats = Object.entries(createdCounts || {}).map(
+    ([type, qty]) => ({
+      type,
+      qty,
+    }),
+  );
 
   return (
     <AppLayout prevRoute="/home" hideHeader={true}>
       <BoardScreenWrapper>
         <HUDColumn>
-          <LevelObjectiveBar />
+          <GameHeader
+            // @ts-ignore
+            objective={currentLevel?.objective?.subject || 'Objetivo'}
+            onPause={() => openPause()}
+          />
           <HUD />
         </HUDColumn>
 
         <BoardColumn>
           <GameBoard />
         </BoardColumn>
-      </BoardScreenWrapper>
 
-      {/* Celebration */}
-      {modalState?.status === 'win' && (
-        <div
-          style={{
-            position: 'fixed',
-            left: '50%',
-            top: 80,
-            transform: 'translateX(-50%)',
-            zIndex: 10050,
-            pointerEvents: 'none',
-          }}>
-          🎉 ¡Nivel completado!
-        </div>
-      )}
+        <PowerupBar />
+      </BoardScreenWrapper>
 
       {/* Modal success */}
       {modalState?.status === 'win' && (
-        <Modal
-          onClose={handleCloseModal}
-          open
-          title="¡Nivel completado!"
-          message="Has logrado el objetivo"
-          buttons={generatedSuccessButtons(modalState)}
+        <LevelCompleteModal
+          coins={levelCoins || 0}
+          fusionStats={fusionStats}
+          onContinue={handleCloseModal}
         />
       )}
 
@@ -134,20 +126,58 @@ export function BoardScreen() {
             {
               label: 'Reintentar',
               variant: 'secondary',
-              onClick: handleCloseModal,
+              onClick: () => {
+                resetLevel();
+                handleCloseModal();
+              },
             },
             {
               label: 'Volver a niveles',
               variant: 'fail',
               to: '/levels',
-              onClick: handleCloseModal,
+              onClick: () => {
+                resetLevel();
+                handleCloseModal();
+              },
             },
             {
               label: 'Cerrar',
               variant: 'tertiary',
-              onClick: handleCloseModal,
+              onClick: () => {
+                resetLevel();
+                handleCloseModal();
+              },
             },
           ]}
+        />
+      )}
+      {paused && (
+        <Modal
+          onClose={closePause}
+          open={paused}
+          title="Juego pausado"
+          buttons={
+            [
+              {
+                label: 'Reanudar',
+                variant: 'primary',
+                onClick: closePause,
+              },
+              {
+                label: 'Reinicar',
+                variant: 'secondary',
+                onClick: () => {
+                  resetLevel();
+                  closePause();
+                },
+              },
+              {
+                label: 'Salir',
+                variant: 'tertiary',
+                to: '/levels',
+              },
+            ].filter(Boolean) as any
+          }
         />
       )}
     </AppLayout>

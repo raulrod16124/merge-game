@@ -14,7 +14,18 @@ export const createTimer = (
       set(s => ({timeLeft: s.timeLeft - 1}));
 
       const r = get().checkWinLose();
-      r?.status === 'fail' && get().stopTimer();
+
+      if (r?.status === 'fail') {
+        try {
+          get().stopTimer();
+        } catch (e) {}
+
+        try {
+          get().setLevelResult({status: 'fail', levelId: r.levelId});
+        } catch (e) {
+          console.warn('ERROR setting level fail result from timer', e);
+        }
+      }
     }, 1000);
 
     set({_timerId: id});

@@ -6,6 +6,8 @@ export const HUDWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  border-radius: 18px;
+  background-color: ${COLORS.tertiary};
 
   /* DESKTOP */
   .desktop {
@@ -32,16 +34,13 @@ export const HUDWrapper = styled.div`
 `;
 
 export const MobileStack = styled.div`
-  width: 100%;
-  padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.06);
+  padding: 1dvh 0;
   border-radius: 14px;
-  backdrop-filter: blur(8px);
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  width: 90%;
   gap: 10px;
   align-items: center;
-  background-color: ${COLORS.tertiary};
 
   @media (min-width: 768px) {
     display: none;
@@ -49,15 +48,9 @@ export const MobileStack = styled.div`
 `;
 
 export const RightContent = styled.div`
+  flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-`;
-
-export const InfoRow = styled.div`
-  display: flex;
-  justify-content: center;
-  width: 100%;
 `;
 
 export const HUDPauseButton = styled.button`

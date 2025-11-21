@@ -25,7 +25,8 @@ export const BoardContainer = styled.div`
 
 export const Grid = styled.div<{cols: number; rows: number}>`
   width: var(--vw);
-  height: calc(var(--vh) - 220px);
+  height: calc(var(--vh) - 20dvh);
+  margin-top: 15dvh;
   overflow: hidden;
   display: grid;
 
@@ -35,7 +36,7 @@ export const Grid = styled.div<{cols: number; rows: number}>`
   );
   grid-template-rows: repeat(
     ${p => p.rows},
-    calc(var(--vh) / ${p => p.rows} - 36px)
+    calc(var(--vh) / ${p => p.rows} - 6vh)
   );
 `;
 

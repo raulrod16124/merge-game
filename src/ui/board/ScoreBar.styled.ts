@@ -5,7 +5,7 @@ export const ScoreAndMovesWrapper = styled.div`
   margin-top: 4;
   margin-bottom: 8;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   font-size: 0.9rem;
   opacity: 0.85;
   @media (max-width: 768px) {

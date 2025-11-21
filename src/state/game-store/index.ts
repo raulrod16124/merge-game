@@ -18,6 +18,7 @@ import {createObjectiveChecker} from './actions/objectives';
 import {createFloatingScoreActions} from './actions/floatingScores';
 
 import {getResponsiveBoardSize} from '../../utils/getResponsiveBoardSize';
+import {createPowerups} from './actions/powerups';
 
 export type GameStore = {
   items: ItemBase[];
@@ -28,6 +29,7 @@ export type GameStore = {
   nextItem: CosmicType;
   timeLeft: number;
   powerupUsed: boolean;
+  levelCoins: number;
 
   floatingScores: {id: string; x: number; y: number; points: number}[];
   createdCounts: Record<string, any>;
@@ -102,6 +104,7 @@ export const useGameStore = create<GameStore>()(
       nextItem: 'dust',
       timeLeft: 0,
       powerupUsed: false,
+      levelCoins: 0,
       floatingScores: [],
       createdCounts: {},
       _timerId: null,
@@ -117,6 +120,8 @@ export const useGameStore = create<GameStore>()(
       setLevelResult: r => set(() => ({levelResult: r})),
 
       // === NUEVAS ACCIONES ===
+      ...createPowerups(set, get),
+
       setCellRect: (key, rect) =>
         set(s => ({
           cellRects: {...s.cellRects, [key]: rect},
@@ -153,6 +158,7 @@ export const useGameStore = create<GameStore>()(
           nextItem: 'dust',
           timeLeft: lvl.timerSeconds ?? 120,
           powerupUsed: false,
+          levelCoins: 0,
           floatingScores: [],
           createdCounts: {},
           cellRects: {},
@@ -174,7 +180,6 @@ export const useGameStore = create<GameStore>()(
       addItem: addItem,
       processMergesAt: merges.processMergesAt,
       spawnNextItem: merges.spawnNextItem,
-      activatePowerup: () => !get().powerupUsed && set({powerupUsed: true}),
 
       addFloatingScore: floats.addFloatingScore,
       removeFloatingScore: floats.removeFloatingScore,

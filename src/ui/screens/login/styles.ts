@@ -10,7 +10,7 @@ export const Wrapper = styled.div`
 
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
   align-items: center;
 
   h1 {
@@ -27,7 +27,7 @@ export const Wrapper = styled.div`
   }
 
   input {
-    padding: 14px 16px;
+    padding: 14px 5px;
     width: 100%;
     max-width: 320px;
     border-radius: 12px;

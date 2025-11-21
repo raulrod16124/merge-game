@@ -3,7 +3,7 @@ import {motion, AnimatePresence} from 'framer-motion';
 import {useGameStore} from '../../state/game-store';
 
 import {Tile} from './Tile';
-import {FloatingScore} from '../../ui/components/FloatingScore';
+import {FloatingScore} from './FloatingScore';
 
 import {
   BoardWrapper,

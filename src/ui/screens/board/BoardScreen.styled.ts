@@ -22,7 +22,12 @@ export const BoardScreenWrapper = styled.div`
 
 export const HUDColumn = styled.div`
   width: 100%;
-  padding: 12px 18px;
+  height: calc(20dvh - 2dvh);
+  max-height: calc(20dvh - 2dvh);
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  padding: 2dvh 18px 0 18px;
   box-sizing: border-box;
   flex-shrink: 0;
 
@@ -35,6 +40,8 @@ export const HUDColumn = styled.div`
 `;
 
 export const BoardColumn = styled.div`
+  height: 70dvh;
+  max-height: 70dvh;
   flex: 1 1 auto;
   display: flex;
   justify-content: center;
