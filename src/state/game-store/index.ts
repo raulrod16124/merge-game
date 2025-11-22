@@ -22,6 +22,13 @@ import {createPowerups} from './actions/powerups';
 import {maybeSpawnBlackHole} from './utils/spawnHelpers';
 import {stepEnemyMovementPure} from './utils/enemyMovement';
 
+export type AbsorbedEffects = {
+  id: string;
+  absorbedType: string;
+  from: {x: number; y: number};
+  to: {x: number; y: number};
+};
+
 export type GameStore = {
   items: ItemBase[];
   boardSize: {cols: number; rows: number};
@@ -49,6 +56,8 @@ export type GameStore = {
     icon: string;
   }[];
 
+  absorbedEffects: AbsorbedEffects[];
+
   // === Nivel resultado (nuevo) ===
   levelResult: {status: 'win' | 'fail'; levelId: string} | null;
   setLevelResult: (r: {status: 'win' | 'fail'; levelId: string} | null) => void;
@@ -69,6 +78,8 @@ export type GameStore = {
     icon: string;
   }) => void;
 
+  addAbsorbedEffect: (effect: any) => void;
+  removeAbsorbedEffect: (id: string) => void;
   removeAbsorbAnimation: (id: string) => void;
 
   // ---- Actions originales ----
@@ -119,17 +130,25 @@ export const useGameStore = create<GameStore>()(
       cellRects: {},
 
       // === Estado para animaciones ===
+      absorbedEffects: [],
       absorbAnimations: [],
 
       // === Nivel resultado (nuevo) ===
       levelResult: null,
       setLevelResult: r => set(() => ({levelResult: r})),
 
+      addAbsorbedEffect: effect =>
+        set(state => ({absorbedEffects: [...state.absorbedEffects, effect]})),
+
+      removeAbsorbedEffect: (id: string) =>
+        set(state => ({
+          absorbedEffects: state.absorbedEffects.filter(e => e.id !== id),
+        })),
+
       // === NUEVAS ACCIONES ===
       ...createPowerups(set, get),
 
       incrementTurn: () => {
-        // incrementamos el contador y, tras ello, intentamos spawnear y moverte enemigos
         const prev = get().turnCounter ?? 0;
         const next = prev + 1;
         set({turnCounter: next});
@@ -149,32 +168,81 @@ export const useGameStore = create<GameStore>()(
           }
         }
 
-        // 2) mover enemigos (FASE 3)
-        const {items: afterMove, pointsGained} = stepEnemyMovementPure(
+        // 2) mover enemigos (FASE 3) y obtener registros de absorciones
+        const movementResult = stepEnemyMovementPure(
           get().items,
           get().boardSize.cols,
           get().boardSize.rows,
           get().currentLevel?.blockedCells,
         );
 
-        // Si hubo cambios, los actualizamos en el store
-        const itemsChanged =
-          afterMove.length !== get().items.length ||
-          afterMove.some(
-            (it, i) =>
-              it.id !== get().items[i]?.id ||
-              it.pos.x !== get().items[i]?.pos.x ||
-              it.pos.y !== get().items[i]?.pos.y,
-          );
+        const afterMoveItems = movementResult.items;
+        const absorbedRecords = movementResult.absorbedRecords;
 
-        if (itemsChanged) {
-          set({items: afterMove});
+        // 3) Si hubo absorciones, generamos efectos visuales (absorbedEffects)
+        if (absorbedRecords.length > 0) {
+          // para cada registro añadimos un efecto y actualizamos store
+          for (const rec of absorbedRecords) {
+            // add absorbedEffect (guardamos las coordenadas en grid, GameBoard mapeará a pixel)
+            get().addAbsorbedEffect({
+              id: `abs_${rec.absorbedId}_${Date.now()}`,
+              absorbedType: rec.absorbedType,
+              from: rec.from,
+              to: rec.to,
+            });
+          }
         }
 
-        // Opcional: si pointsGained > 0, aplicar recompensa (floatingScores / score)
-        if (pointsGained > 0) {
-          // set state to reflect the gained points, por ejemplo:
-          set(state => ({score: (state.score ?? 0) + pointsGained}));
+        // 4) Actualizamos items en store con afterMoveItems
+        set({items: afterMoveItems});
+
+        // 5) Revisión: transformar black holes que tienen absorbed >= 3 en supernova
+        const itemsCopy: ItemBase[] = get().items.slice();
+        const toRemoveBHIds: string[] = [];
+
+        for (const it of itemsCopy) {
+          if (it.type === 'black_hole' && (it.absorbed ?? 0) >= 3) {
+            // transformar: borrar black hole, añadir supernova
+            const pos = {x: it.pos.x, y: it.pos.y};
+            toRemoveBHIds.push(it.id);
+
+            // crear supernova item
+            const supernovaItem: ItemBase = {
+              id: `supernova_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+              type: 'supernova',
+              level: 1,
+              pos,
+              createdAt: Date.now(),
+            };
+
+            // eliminamos el BH y añadimos la supernova
+            set(state => ({
+              items: [
+                ...state.items.filter(i => i.id !== it.id),
+                supernovaItem,
+              ],
+            }));
+
+            // Sumar puntuación por supernova
+            set(state => ({score: (state.score ?? 0) + 150}));
+
+            // Añadir floating score visual si tenemos cellRects (center coords)
+            const key = `${pos.x},${pos.y}`;
+            const rect = get().cellRects?.[key];
+            if (rect) {
+              set(state => ({
+                floatingScores: [
+                  ...(state.floatingScores ?? []),
+                  {
+                    id: `fs_supernova_${Date.now()}`,
+                    x: rect.centerX,
+                    y: rect.centerY,
+                    points: 150,
+                  },
+                ],
+              }));
+            }
+          }
         }
       },
 

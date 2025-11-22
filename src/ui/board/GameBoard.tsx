@@ -4,6 +4,7 @@ import {useGameStore} from '../../state/game-store';
 
 import {Tile} from './Tile';
 import {FloatingScore} from './FloatingScore';
+import {AbsorbedEffect} from './AbsorbedEffect';
 
 import {
   BoardWrapper,
@@ -22,6 +23,7 @@ export function GameBoard() {
     floatingScores,
     cellRects,
     removeFloatingScore,
+    absorbedEffects,
   } = useGameStore();
 
   const cols = boardSize?.cols ?? 6;
@@ -98,7 +100,8 @@ export function GameBoard() {
                     initial={{scale: 0.4, opacity: 0, left, top}}
                     animate={{scale: 1, opacity: 1, left, top}}
                     exit={{opacity: 0, scale: 0.6}}
-                    transition={{duration: 0.15, ease: 'easeInOut'}}
+                    // transition={{duration: 0.15, ease: 'easeInOut'}}
+                    transition={{duration: 0.5, ease: 'easeInOut'}}
                     style={{
                       position: 'fixed',
                       width: rect.size,
@@ -114,6 +117,32 @@ export function GameBoard() {
               })}
             </AnimatePresence>
           </ItemsLayer>
+
+          {/* Aquí renderizamos los absorbedEffects */}
+          <AnimatePresence>
+            {absorbedEffects.map(effect => {
+              const fromKey = `${effect.from.x},${effect.from.y}`;
+              const toKey = `${effect.to.x},${effect.to.y}`;
+              const fromRect = cellRects?.[fromKey];
+              const toRect = cellRects?.[toKey];
+
+              // Si no hay rects aún -> saltamos (se animará cuando rects estén disponibles)
+              if (!fromRect || !toRect) return null;
+
+              return (
+                <AbsorbedEffect
+                  key={effect.id}
+                  id={effect.id}
+                  absorbedType={effect.absorbedType}
+                  fromRect={fromRect}
+                  toRect={toRect}
+                  onDone={id =>
+                    useGameStore.getState().removeAbsorbedEffect(id)
+                  }
+                />
+              );
+            })}
+          </AnimatePresence>
 
           {/* Floating scores */}
           <FloatingLayer>
