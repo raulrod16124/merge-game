@@ -10,11 +10,19 @@ import {
   BoardContainer,
   Grid,
   FloatingLayer,
+  ItemsLayer,
 } from './GameBoard.styled';
+import {COSMIC_ICONS} from '../constants';
 
 export function GameBoard() {
-  const {items, boardSize, addItem, floatingScores, removeFloatingScore} =
-    useGameStore();
+  const {
+    items,
+    boardSize,
+    addItem,
+    floatingScores,
+    cellRects,
+    removeFloatingScore,
+  } = useGameStore();
 
   const cols = boardSize?.cols ?? 6;
   const rows = boardSize?.rows ?? 6;
@@ -67,6 +75,45 @@ export function GameBoard() {
               );
             })}
           </Grid>
+
+          <ItemsLayer aria-hidden>
+            <AnimatePresence>
+              {items.map(item => {
+                const key = `${item.pos.x},${item.pos.y}`;
+                const rect = (cellRects && cellRects[key]) as
+                  | {size: number; centerX: number; centerY: number}
+                  | undefined;
+
+                if (!rect) return null;
+
+                const left = Math.round(rect.centerX - rect.size / 2);
+                const top = Math.round(rect.centerY - rect.size / 2);
+
+                return (
+                  <motion.img
+                    key={item.id}
+                    src={COSMIC_ICONS[item.type as keyof typeof COSMIC_ICONS]}
+                    alt={item.type}
+                    draggable={false}
+                    initial={{scale: 0.4, opacity: 0, left, top}}
+                    animate={{scale: 1, opacity: 1, left, top}}
+                    exit={{opacity: 0, scale: 0.6}}
+                    transition={{duration: 0.15, ease: 'easeInOut'}}
+                    style={{
+                      position: 'fixed',
+                      width: rect.size,
+                      height: rect.size,
+                      left,
+                      top,
+                      transform: 'translate(0,0)',
+                      pointerEvents: 'none',
+                      zIndex: 20,
+                    }}
+                  />
+                );
+              })}
+            </AnimatePresence>
+          </ItemsLayer>
 
           {/* Floating scores */}
           <FloatingLayer>

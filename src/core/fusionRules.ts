@@ -16,6 +16,7 @@ export const FUSION_CHAIN: CosmicType[] = [
   'mature_planet',
   'star',
   'star_system',
+  'supernova',
   'nebula',
   'galaxy',
 ];
@@ -28,6 +29,7 @@ export const SCORE_MAP: Record<CosmicType, number> = {
   mature_planet: 80,
   star: 120,
   star_system: 200,
+  supernova: 250,
   nebula: 300,
   galaxy: 500,
   fragment: 0,
@@ -40,6 +42,7 @@ export const TIME_BONUS: Record<CosmicType, number> = {
   nebula: 8,
   dust: 0,
   micro_asteroid: 0,
+  supernova: 0,
   meteorite: 0,
   baby_planet: 0,
   mature_planet: 0,

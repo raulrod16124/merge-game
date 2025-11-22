@@ -172,6 +172,7 @@ export const createMerges = (
       // Chain merges: process again at the fused position
       Promise.resolve().then(() => {
         get().processMergesAt(pos);
+        get().incrementTurn();
       });
     });
   },

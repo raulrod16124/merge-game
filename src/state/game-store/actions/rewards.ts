@@ -11,6 +11,7 @@ export function coinsForMerge(objectMerged: CosmicType) {
     mature_planet: 85,
     star: 100,
     star_system: 200,
+    supernova: 300,
     nebula: 500,
     galaxy: 850,
     fragment: 5000,

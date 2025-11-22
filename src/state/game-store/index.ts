@@ -19,6 +19,8 @@ import {createFloatingScoreActions} from './actions/floatingScores';
 
 import {getResponsiveBoardSize} from '../../utils/getResponsiveBoardSize';
 import {createPowerups} from './actions/powerups';
+import {maybeSpawnBlackHole} from './utils/spawnHelpers';
+import {stepEnemyMovementPure} from './utils/enemyMovement';
 
 export type GameStore = {
   items: ItemBase[];
@@ -30,6 +32,7 @@ export type GameStore = {
   timeLeft: number;
   powerupUsed: boolean;
   levelCoins: number;
+  turnCounter: number;
 
   floatingScores: {id: string; x: number; y: number; points: number}[];
   createdCounts: Record<string, any>;
@@ -51,6 +54,8 @@ export type GameStore = {
   setLevelResult: (r: {status: 'win' | 'fail'; levelId: string} | null) => void;
 
   // === NUEVAS ACCIONES ===
+  incrementTurn: () => void;
+
   setCellRect: (
     key: string,
     rect: {size: number; centerX: number; centerY: number},
@@ -108,6 +113,7 @@ export const useGameStore = create<GameStore>()(
       floatingScores: [],
       createdCounts: {},
       _timerId: null,
+      turnCounter: 0,
 
       // === Estado para posicionamiento gráfico ===
       cellRects: {},
@@ -121,6 +127,66 @@ export const useGameStore = create<GameStore>()(
 
       // === NUEVAS ACCIONES ===
       ...createPowerups(set, get),
+
+      incrementTurn: () => {
+        // incrementamos el contador y, tras ello, intentamos spawnear y moverte enemigos
+        const prev = get().turnCounter ?? 0;
+        const next = prev + 1;
+        set({turnCounter: next});
+
+        // 1) intentar spawn dinámico (FASE 2)
+        const level = get().currentLevel;
+        if (level) {
+          const spawned = maybeSpawnBlackHole(
+            get().items,
+            get().boardSize.cols,
+            get().boardSize.rows,
+            level,
+            next,
+          );
+          if (spawned !== get().items) {
+            set({items: spawned});
+          }
+        }
+
+        // 2) mover enemigos (FASE 3)
+        const {items: afterMove, pointsGained} = stepEnemyMovementPure(
+          get().items,
+          get().boardSize.cols,
+          get().boardSize.rows,
+          get().currentLevel?.blockedCells,
+        );
+
+        // Si hubo cambios, los actualizamos en el store
+        const itemsChanged =
+          afterMove.length !== get().items.length ||
+          afterMove.some(
+            (it, i) =>
+              it.id !== get().items[i]?.id ||
+              it.pos.x !== get().items[i]?.pos.x ||
+              it.pos.y !== get().items[i]?.pos.y,
+          );
+
+        if (itemsChanged) {
+          set({items: afterMove});
+        }
+
+        // Opcional: si pointsGained > 0, aplicar recompensa (floatingScores / score)
+        if (pointsGained > 0) {
+          // set state to reflect the gained points, por ejemplo:
+          set(state => ({score: (state.score ?? 0) + pointsGained}));
+        }
+      },
+
+      stepEnemyMovement: () => {
+        const {items: afterMove} = stepEnemyMovementPure(
+          get().items,
+          get().boardSize.cols,
+          get().boardSize.rows,
+          get().currentLevel?.blockedCells,
+        );
+        set({items: afterMove});
+      },
 
       setCellRect: (key, rect) =>
         set(s => ({

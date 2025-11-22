@@ -33,5 +33,5 @@ export const createAddItem =
 
     get().processMergesAt(pos);
     get().spawnNextItem();
-    get().stepEnemyMovement();
+    // get().stepEnemyMovement();
   };

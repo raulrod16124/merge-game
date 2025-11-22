@@ -8,6 +8,7 @@ export type CosmicType =
   | 'mature_planet'
   | 'star'
   | 'star_system'
+  | 'supernova'
   | 'nebula'
   | 'galaxy'
   | 'fragment'
@@ -26,6 +27,7 @@ export interface ItemBase {
   createdAt?: number;
   frozen?: boolean;
   icon?: string;
+  absorbed?: number;
 }
 
 export type ObjectiveType =
@@ -54,6 +56,9 @@ export type LevelConfig = {
   spawnWeights: Record<CosmicType, number>;
   initialMap: {type: CosmicType; x: number; y: number}[];
   blockedCells?: Pos[];
+  maxBlackHoles?: number; // máximo simultáneo permitidos en el nivel
+  blackHoleSpawnRate?: number; // cada cuántos turnos intentamos spawnear
+  blackHoleSpawnChance?: number; // probabilidad por intento
   mapAsset: string;
   objective?: Objective[];
   timerSeconds?: number;
