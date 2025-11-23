@@ -63,7 +63,12 @@ export const createMerges = (
     set({nextItem: (nextKey as any) ?? 'dust'});
   },
 
-  processMergesAt: (pos: Pos) => {
+  /**
+   * processMergesAt
+   * - ahora es async y devuelve cuando terminan todas las cadenas de merges
+   * - NO incrementa el turno ni llama a stepEnemyMovement; eso lo gestionará addItem/incrementTurn
+   */
+  processMergesAt: async (pos: Pos): Promise<void> => {
     const state = get();
     const placed = state.items.find(
       i => i.pos.x === pos.x && i.pos.y === pos.y,
@@ -81,13 +86,9 @@ export const createMerges = (
 
     const removeIds = new Set(cluster.map(c => c.id));
 
-    // Increment moves (player action)
+    // Increment moves (player action) — ya se incrementó en addItem al insertar el item,
+    // pero mantenemos aquí el incremento de moves si no se hacía antes.
     set(s => ({moves: s.moves + 1}));
-
-    // Ensure enemies step once per player turn
-    if (typeof get().stepEnemyMovement === 'function') {
-      get().stepEnemyMovement();
-    }
 
     // Remove cluster items immediately (atomic remove)
     set(s => ({
@@ -116,7 +117,7 @@ export const createMerges = (
       console.warn('Error applying merge rewards', e);
     }
 
-    // === ATOMIC UPDATE: insert fused item, update score and createdCounts ===
+    // Insert fused item and update score/createdCounts atomically
     set(s => {
       const newItems = s.items.slice();
       newItems.push(fused);
@@ -133,7 +134,7 @@ export const createMerges = (
       };
     });
 
-    // Floating score + time bonus (these can remain as immediate calls)
+    // Floating score + time bonus
     if (typeof get().addFloatingScore === 'function') {
       get().addFloatingScore(pos.x, pos.y, fusionScore(nextType));
     }
@@ -143,37 +144,35 @@ export const createMerges = (
       set(s => ({timeLeft: s.timeLeft + bonus}));
     }
 
-    // After state is applied, check for win/lose in a microtask so checkWinLose sees stable state
-    Promise.resolve().then(() => {
-      try {
-        if (typeof get().checkWinLose === 'function') {
-          const result = get().checkWinLose();
-          if (result && result.status === 'win') {
-            // Stop timer and record result in store so UI can react deterministically
-            if (typeof get().stopTimer === 'function') {
-              get().stopTimer();
-            }
-            // set the global level result so UI (BoardScreen) sees it immediately
-            get().setLevelResult(result);
-            return; // do not spawn next item nor chain merges
+    // Wait a microtask so the store is stable before checking win/lose and continuing flow
+    await Promise.resolve();
+
+    try {
+      if (typeof get().checkWinLose === 'function') {
+        const result = get().checkWinLose();
+        if (result && result.status === 'win') {
+          if (typeof get().stopTimer === 'function') {
+            get().stopTimer();
           }
+          get().setLevelResult(result);
+          return; // do not spawn next item nor chain merges
         }
-      } catch (e) {
-        // Safety: don't crash if checkWinLose throws
-        // eslint-disable-next-line no-console
-        console.warn('checkWinLose() failed:', e);
       }
+    } catch (e) {
+      console.warn('checkWinLose() failed:', e);
+    }
 
-      // If not won, continue normal flow: spawn next and process chain merges
-      if (typeof get().spawnNextItem === 'function') {
-        get().spawnNextItem();
-      }
+    // If not won, continue normal flow: spawn next and process chain merges
+    if (typeof get().spawnNextItem === 'function') {
+      get().spawnNextItem();
+    }
 
-      // Chain merges: process again at the fused position
-      Promise.resolve().then(() => {
-        get().processMergesAt(pos);
-        get().incrementTurn();
-      });
-    });
+    // Allow microtask scheduling before processing chain merges
+    await Promise.resolve();
+
+    // Chain merges: process again at the fused position recursively (await)
+    await get().processMergesAt(pos);
+
+    // finished when recursion unwinds
   },
 });

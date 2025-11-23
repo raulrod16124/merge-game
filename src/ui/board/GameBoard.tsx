@@ -4,6 +4,8 @@ import {useGameStore} from '../../state/game-store';
 
 import {Tile} from './Tile';
 import {FloatingScore} from './FloatingScore';
+import {BlackHoleVisual} from './BlackHoleVisual';
+import {HUDBlackHoleCounter} from './HUDBlackHoleCounter';
 import {AbsorbedEffect} from './AbsorbedEffect';
 
 import {
@@ -23,6 +25,7 @@ export function GameBoard() {
     floatingScores,
     cellRects,
     removeFloatingScore,
+    visualEnemyPlans,
     absorbedEffects,
   } = useGameStore();
 
@@ -78,14 +81,54 @@ export function GameBoard() {
             })}
           </Grid>
 
+          {/* Items layer: absolute rendered items for smooth animation */}
           <ItemsLayer aria-hidden>
             <AnimatePresence>
               {items.map(item => {
-                const key = `${item.pos.x},${item.pos.y}`;
-                const rect = (cellRects && cellRects[key]) as
-                  | {size: number; centerX: number; centerY: number}
-                  | undefined;
+                // Ocultar agujeros negros estáticos si están siendo animados
+                const isBH = item.type === 'black_hole';
+                const isBHAnimating = visualEnemyPlans.some(
+                  p => p.bhId === item.id,
+                );
 
+                if (isBH) {
+                  // si está animándose, NO renderizamos el BH estático
+                  if (isBHAnimating) return null;
+
+                  // si NO está animándose, renderizar BH estático
+                  const key = `${item.pos.x},${item.pos.y}`;
+                  const rect = cellRects?.[key];
+                  if (!rect) return null;
+
+                  const left = Math.round(rect.centerX - rect.size / 2);
+                  const top = Math.round(rect.centerY - rect.size / 2);
+
+                  return (
+                    <motion.img
+                      key={item.id}
+                      src={COSMIC_ICONS.black_hole}
+                      alt={item.type}
+                      draggable={false}
+                      initial={{scale: 0.7, opacity: 0}}
+                      animate={{scale: 1, opacity: 1, left, top}}
+                      exit={{opacity: 0, scale: 0.6}}
+                      transition={{duration: 0.22}}
+                      style={{
+                        position: 'fixed',
+                        width: rect.size,
+                        height: rect.size,
+                        left,
+                        top,
+                        pointerEvents: 'none',
+                        zIndex: 20,
+                      }}
+                    />
+                  );
+                }
+
+                // Items normales (no agujeros negros)
+                const key = `${item.pos.x},${item.pos.y}`;
+                const rect = cellRects?.[key];
                 if (!rect) return null;
 
                 const left = Math.round(rect.centerX - rect.size / 2);
@@ -97,18 +140,16 @@ export function GameBoard() {
                     src={COSMIC_ICONS[item.type as keyof typeof COSMIC_ICONS]}
                     alt={item.type}
                     draggable={false}
-                    initial={{scale: 0.4, opacity: 0, left, top}}
-                    animate={{scale: 1, opacity: 1, left, top}}
+                    initial={{scale: 0.4, opacity: 0}}
+                    animate={{scale: 0.8, opacity: 1, left, top}}
                     exit={{opacity: 0, scale: 0.6}}
-                    // transition={{duration: 0.15, ease: 'easeInOut'}}
-                    transition={{duration: 0.5, ease: 'easeInOut'}}
+                    transition={{duration: 0.22}}
                     style={{
                       position: 'fixed',
                       width: rect.size,
                       height: rect.size,
                       left,
                       top,
-                      transform: 'translate(0,0)',
                       pointerEvents: 'none',
                       zIndex: 20,
                     }}
@@ -116,33 +157,59 @@ export function GameBoard() {
                 );
               })}
             </AnimatePresence>
+
+            {/* Render BH visual plans */}
+            <AnimatePresence>
+              {visualEnemyPlans.map(plan => {
+                const fromKey = `${plan.from.x},${plan.from.y}`;
+                const toKey = `${plan.to.x},${plan.to.y}`;
+                const fromRect = cellRects?.[fromKey];
+                const toRect = cellRects?.[toKey];
+                if (!fromRect || !toRect) return null;
+
+                return (
+                  <BlackHoleVisual
+                    key={`bh_visual_${plan.bhId}_${plan.to.x}_${plan.to.y}`}
+                    plan={plan as any}
+                    fromRect={fromRect}
+                    toRect={toRect}
+                    onDone={() => {
+                      useGameStore
+                        .getState()
+                        .removeVisualEnemyPlan(plan.bhId, plan.to);
+                    }}
+                  />
+                );
+              })}
+            </AnimatePresence>
+
+            {/* Absorbed effects: object shrinking + moving */}
+            <AnimatePresence>
+              {absorbedEffects.map(effect => {
+                const fromKey = `${effect.from.x},${effect.from.y}`;
+                const toKey = `${effect.to.x},${effect.to.y}`;
+                const fromRect = cellRects?.[fromKey];
+                const toRect = cellRects?.[toKey];
+                if (!fromRect || !toRect) return null;
+
+                return (
+                  <AbsorbedEffect
+                    key={effect.id}
+                    id={effect.id}
+                    absorbedType={effect.absorbedType}
+                    fromRect={fromRect}
+                    toRect={toRect}
+                    onDone={id => {
+                      useGameStore.getState().removeAbsorbedEffect(id);
+                    }}
+                  />
+                );
+              })}
+            </AnimatePresence>
           </ItemsLayer>
 
-          {/* Aquí renderizamos los absorbedEffects */}
-          <AnimatePresence>
-            {absorbedEffects.map(effect => {
-              const fromKey = `${effect.from.x},${effect.from.y}`;
-              const toKey = `${effect.to.x},${effect.to.y}`;
-              const fromRect = cellRects?.[fromKey];
-              const toRect = cellRects?.[toKey];
-
-              // Si no hay rects aún -> saltamos (se animará cuando rects estén disponibles)
-              if (!fromRect || !toRect) return null;
-
-              return (
-                <AbsorbedEffect
-                  key={effect.id}
-                  id={effect.id}
-                  absorbedType={effect.absorbedType}
-                  fromRect={fromRect}
-                  toRect={toRect}
-                  onDone={id =>
-                    useGameStore.getState().removeAbsorbedEffect(id)
-                  }
-                />
-              );
-            })}
-          </AnimatePresence>
+          {/* HUD counters above BHs */}
+          <HUDBlackHoleCounter />
 
           {/* Floating scores */}
           <FloatingLayer>

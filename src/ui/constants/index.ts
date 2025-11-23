@@ -24,7 +24,7 @@ export const COSMIC_ICONS: Record<CosmicType, string> = {
   mature_planet: `${import.meta.env.BASE_URL}cosmic/mature_planet.png`,
   star: `${import.meta.env.BASE_URL}cosmic/star.png`,
   star_system: `${import.meta.env.BASE_URL}cosmic/star_system.png`,
-  supernova: `${import.meta.env.BASE_URL}cosmic/star.png`, // TODO: create supernova.png
+  supernova: `${import.meta.env.BASE_URL}cosmic/supernova.png`,
   nebula: `${import.meta.env.BASE_URL}cosmic/nebula.png`,
   galaxy: `${import.meta.env.BASE_URL}cosmic/galaxy.png`,
   fragment_dark: `${import.meta.env.BASE_URL}cosmic/fragment_dark.png`,

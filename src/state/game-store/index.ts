@@ -1,5 +1,4 @@
-// src/state/gameStore/index.ts
-
+// src/state/game-store/index.ts
 import {create} from 'zustand';
 import {devtools} from 'zustand/middleware';
 
@@ -20,7 +19,7 @@ import {createFloatingScoreActions} from './actions/floatingScores';
 import {getResponsiveBoardSize} from '../../utils/getResponsiveBoardSize';
 import {createPowerups} from './actions/powerups';
 import {maybeSpawnBlackHole} from './utils/spawnHelpers';
-import {stepEnemyMovementPure} from './utils/enemyMovement';
+import {computeEnemyMovePlans, type EnemyMovePlan} from './utils/enemyMovement';
 
 export type AbsorbedEffects = {
   id: string;
@@ -45,9 +44,10 @@ export type GameStore = {
   createdCounts: Record<string, any>;
   _timerId?: number | null;
 
-  // === NUEVOS ESTADOS ===
+  // positioning
   cellRects: Record<string, {size: number; centerX: number; centerY: number}>;
 
+  // animations
   absorbAnimations: {
     id: string;
     from: {x: number; y: number};
@@ -58,11 +58,14 @@ export type GameStore = {
 
   absorbedEffects: AbsorbedEffects[];
 
-  // === Nivel resultado (nuevo) ===
+  // Visual movement plans (BH animations) - new
+  visualEnemyPlans: EnemyMovePlan[];
+
+  // level result
   levelResult: {status: 'win' | 'fail'; levelId: string} | null;
   setLevelResult: (r: {status: 'win' | 'fail'; levelId: string} | null) => void;
 
-  // === NUEVAS ACCIONES ===
+  // actions
   incrementTurn: () => void;
 
   setCellRect: (
@@ -82,11 +85,19 @@ export type GameStore = {
   removeAbsorbedEffect: (id: string) => void;
   removeAbsorbAnimation: (id: string) => void;
 
-  // ---- Actions originales ----
+  addVisualEnemyPlan: (plan: EnemyMovePlan) => void;
+  removeVisualEnemyPlan: (bhId: string, to?: {x: number; y: number}) => void;
+  confirmEnemyMove: (
+    bhId: string,
+    to: {x: number; y: number},
+    absorbedId?: string,
+  ) => void;
+
+  // ---- Legacy actions and original API ----
   loadLevel: (lvl: LevelConfig) => void;
   resetLevel: () => void;
   addItem: (pos: Pos) => void;
-  processMergesAt: (pos: Pos) => void;
+  processMergesAt: (pos: Pos) => Promise<void>;
   stepEnemyMovement: () => void;
   spawnNextItem: () => void;
   activatePowerup: () => void;
@@ -111,7 +122,7 @@ export const useGameStore = create<GameStore>()(
     const floats = createFloatingScoreActions(set, get);
 
     return {
-      // === Estado inicial ===
+      // === initial state ===
       items: [],
       boardSize: {cols: 6, rows: 6},
       currentLevel: null,
@@ -126,14 +137,17 @@ export const useGameStore = create<GameStore>()(
       _timerId: null,
       turnCounter: 0,
 
-      // === Estado para posicionamiento gráfico ===
+      // positioning
       cellRects: {},
 
-      // === Estado para animaciones ===
+      // animations
       absorbedEffects: [],
       absorbAnimations: [],
 
-      // === Nivel resultado (nuevo) ===
+      // visual BH plans
+      visualEnemyPlans: [],
+
+      // level result
       levelResult: null,
       setLevelResult: r => set(() => ({levelResult: r})),
 
@@ -145,15 +159,16 @@ export const useGameStore = create<GameStore>()(
           absorbedEffects: state.absorbedEffects.filter(e => e.id !== id),
         })),
 
-      // === NUEVAS ACCIONES ===
+      // === Compose modules ===
       ...createPowerups(set, get),
 
+      // === incrementTurn: now generates visual plans and triggers UI animation ===
       incrementTurn: () => {
         const prev = get().turnCounter ?? 0;
         const next = prev + 1;
         set({turnCounter: next});
 
-        // 1) intentar spawn dinámico (FASE 2)
+        // 1) spawn dynamic BH if level allows
         const level = get().currentLevel;
         if (level) {
           const spawned = maybeSpawnBlackHole(
@@ -168,94 +183,117 @@ export const useGameStore = create<GameStore>()(
           }
         }
 
-        // 2) mover enemigos (FASE 3) y obtener registros de absorciones
-        const movementResult = stepEnemyMovementPure(
+        // 2) compute movement plans (do NOT mutate items)
+        const plans = computeEnemyMovePlans(
           get().items,
           get().boardSize.cols,
           get().boardSize.rows,
           get().currentLevel?.blockedCells,
         );
 
-        const afterMoveItems = movementResult.items;
-        const absorbedRecords = movementResult.absorbedRecords;
+        if (plans.length === 0) {
+          // nothing to animate — keep legacy fallback: optionally move directly (no animation)
+          return;
+        }
 
-        // 3) Si hubo absorciones, generamos efectos visuales (absorbedEffects)
-        if (absorbedRecords.length > 0) {
-          // para cada registro añadimos un efecto y actualizamos store
-          for (const rec of absorbedRecords) {
-            // add absorbedEffect (guardamos las coordenadas en grid, GameBoard mapeará a pixel)
+        // 3) for each plan: create visual plan and create absorbedEffects if any
+        for (const p of plans) {
+          // add visual plan -> UI will pick it up and animate
+          get().addVisualEnemyPlan(p);
+
+          // if target absorbed an item -> create the absorb visual (UI uses cellRects to animate)
+          if (p.absorbedId) {
             get().addAbsorbedEffect({
-              id: `abs_${rec.absorbedId}_${Date.now()}`,
-              absorbedType: rec.absorbedType,
-              from: rec.from,
-              to: rec.to,
+              id: `abs_${p.absorbedId}_${Date.now()}`,
+              absorbedType: p.absorbedType!,
+              from: p.from,
+              to: p.to,
             });
           }
         }
 
-        // 4) Actualizamos items en store con afterMoveItems
-        set({items: afterMoveItems});
-
-        // 5) Revisión: transformar black holes que tienen absorbed >= 3 en supernova
-        const itemsCopy: ItemBase[] = get().items.slice();
-        const toRemoveBHIds: string[] = [];
-
-        for (const it of itemsCopy) {
-          if (it.type === 'black_hole' && (it.absorbed ?? 0) >= 3) {
-            // transformar: borrar black hole, añadir supernova
-            const pos = {x: it.pos.x, y: it.pos.y};
-            toRemoveBHIds.push(it.id);
-
-            // crear supernova item
-            const supernovaItem: ItemBase = {
-              id: `supernova_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-              type: 'supernova',
-              level: 1,
-              pos,
-              createdAt: Date.now(),
-            };
-
-            // eliminamos el BH y añadimos la supernova
-            set(state => ({
-              items: [
-                ...state.items.filter(i => i.id !== it.id),
-                supernovaItem,
-              ],
-            }));
-
-            // Sumar puntuación por supernova
-            set(state => ({score: (state.score ?? 0) + 150}));
-
-            // Añadir floating score visual si tenemos cellRects (center coords)
-            const key = `${pos.x},${pos.y}`;
-            const rect = get().cellRects?.[key];
-            if (rect) {
-              set(state => ({
-                floatingScores: [
-                  ...(state.floatingScores ?? []),
-                  {
-                    id: `fs_supernova_${Date.now()}`,
-                    x: rect.centerX,
-                    y: rect.centerY,
-                    points: 150,
-                  },
-                ],
-              }));
-            }
-          }
-        }
+        // Items remain unchanged here. The UI will call confirmEnemyMove() once the animation ends.
       },
 
+      // Legacy direct step (keeps previous behavior if someone calls it)
       stepEnemyMovement: () => {
-        const {items: afterMove} = stepEnemyMovementPure(
+        const plans = computeEnemyMovePlans(
           get().items,
           get().boardSize.cols,
           get().boardSize.rows,
           get().currentLevel?.blockedCells,
         );
-        set({items: afterMove});
+
+        if (!plans || plans.length === 0) {
+          return;
+        }
+
+        // operate on a snapshot to apply all plans deterministically
+        let newItems = get().items.slice();
+        const floatingToAdd: {
+          id: string;
+          x: number;
+          y: number;
+          points: number;
+        }[] = [];
+        let scoreDelta = 0;
+
+        for (const p of plans) {
+          const bhIndex = newItems.findIndex(it => it.id === p.bhId);
+
+          // if BH not found, skip
+          if (bhIndex === -1) continue;
+
+          const bh = {...newItems[bhIndex]};
+          bh.pos = {x: p.to.x, y: p.to.y};
+          bh.absorbed =
+            (typeof bh.absorbed === 'number' ? bh.absorbed : 0) +
+            (p.absorbedId ? 1 : 0);
+
+          // remove the absorbed item (if any) and remove the original BH entry; we'll re-add updated BH or supernova
+          newItems = newItems.filter(
+            it => it.id !== p.absorbedId && it.id !== bh.id,
+          );
+
+          // If BH reached threshold -> transform to supernova
+          if ((bh.absorbed ?? 0) >= 3) {
+            const supernovaItem: ItemBase = {
+              id: `supernova_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+              type: 'supernova',
+              level: 1,
+              pos: {x: p.to.x, y: p.to.y},
+              createdAt: Date.now(),
+            };
+
+            // add floating score if rect exists
+            const key = `${p.to.x},${p.to.y}`;
+            const rect = get().cellRects?.[key];
+            if (rect) {
+              floatingToAdd.push({
+                id: `fs_supernova_${Date.now()}`,
+                x: rect.centerX,
+                y: rect.centerY,
+                points: 150,
+              });
+              scoreDelta += 150;
+            }
+
+            newItems.push(supernovaItem);
+          } else {
+            // re-add updated BH
+            newItems.push(bh);
+          }
+        }
+
+        // commit items and any floating scores / score changes
+        set(state => ({
+          items: newItems,
+          floatingScores: [...(state.floatingScores ?? []), ...floatingToAdd],
+          score: (state.score ?? 0) + scoreDelta,
+        }));
       },
 
+      // Positioning helpers
       setCellRect: (key, rect) =>
         set(s => ({
           cellRects: {...s.cellRects, [key]: rect},
@@ -270,6 +308,108 @@ export const useGameStore = create<GameStore>()(
         set(s => ({
           absorbAnimations: s.absorbAnimations.filter(a => a.id !== id),
         })),
+
+      // Visual plan helpers
+      addVisualEnemyPlan: plan =>
+        set(s => ({visualEnemyPlans: [...s.visualEnemyPlans, plan]})),
+
+      removeVisualEnemyPlan: (bhId: string, to) =>
+        set(s => ({
+          visualEnemyPlans: s.visualEnemyPlans.filter(
+            p =>
+              !(
+                p.bhId === bhId &&
+                (!to || (p.to.x === to.x && p.to.y === to.y))
+              ),
+          ),
+        })),
+
+      /**
+       * confirmEnemyMove
+       * Called by UI when the animated BH finished its animation.
+       * Commits the move to the store: updates BH pos, increments absorbed,
+       * removes absorbed item, and transforms to supernova if absorbed >= 3.
+       */
+      confirmEnemyMove: (
+        bhId: string,
+        to: {x: number; y: number},
+        absorbedId?: string,
+      ) => {
+        // operate on a snapshot to avoid mid-update inconsistencies
+        const itemsSnapshot = get().items.slice();
+
+        const bhIndex = itemsSnapshot.findIndex(it => it.id === bhId);
+
+        // If BH not found, just remove any visual plan and return
+        if (bhIndex === -1) {
+          set(state => ({
+            visualEnemyPlans: state.visualEnemyPlans.filter(
+              p => p.bhId !== bhId,
+            ),
+          }));
+          return;
+        }
+
+        const bh = {...itemsSnapshot[bhIndex]};
+        bh.pos = {x: to.x, y: to.y};
+        bh.absorbed =
+          (typeof bh.absorbed === 'number' ? bh.absorbed : 0) +
+          (absorbedId ? 1 : 0);
+
+        // remove the absorbed item if present
+        let newItems = itemsSnapshot.filter(it => it.id !== absorbedId);
+
+        // replace BH entry
+        const existingIdx = newItems.findIndex(it => it.id === bhId);
+        if (existingIdx !== -1) {
+          newItems[existingIdx] = bh;
+        } else {
+          newItems.push(bh);
+        }
+
+        // commit items
+        set({items: newItems});
+
+        // If BH reached threshold -> transform to supernova
+        if ((bh.absorbed ?? 0) >= 3) {
+          set(state => {
+            const filtered = state.items.filter(i => i.id !== bhId);
+            const supernovaItem: ItemBase = {
+              id: `supernova_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+              type: 'supernova',
+              level: 1,
+              pos: {x: to.x, y: to.y},
+              createdAt: Date.now(),
+            };
+
+            // add floating score if rect exists
+            const key = `${to.x},${to.y}`;
+            const rect = state.cellRects?.[key];
+            const floating = rect
+              ? [
+                  ...(state.floatingScores ?? []),
+                  {
+                    id: `fs_supernova_${Date.now()}`,
+                    x: rect.centerX,
+                    y: rect.centerY,
+                    points: 150,
+                  },
+                ]
+              : (state.floatingScores ?? []);
+
+            return {
+              items: [...filtered, supernovaItem],
+              floatingScores: floating,
+              score: (state.score ?? 0) + 150,
+            };
+          });
+        }
+
+        // cleanup visual plan for this BH
+        set(state => ({
+          visualEnemyPlans: state.visualEnemyPlans.filter(p => p.bhId !== bhId),
+        }));
+      },
 
       // === Load/reset ===
       loadLevel: lvl => {
