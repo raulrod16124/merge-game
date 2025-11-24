@@ -87,6 +87,20 @@ export type GameStore = {
     rect: {size: number; centerX: number; centerY: number},
   ) => void;
 
+  destroyAnimations: {
+    id: string;
+    x: number;
+    y: number;
+    icon: string;
+  }[];
+  addDestroyAnimation: (anim: {
+    id: string;
+    x: number;
+    y: number;
+    icon: string;
+  }) => void;
+  removeDestroyAnimation: (id: string) => void;
+
   addAbsorbAnimation: (anim: {
     id: string;
     from: {x: number; y: number};
@@ -157,6 +171,7 @@ export const useGameStore = create<GameStore>()(
       // animations
       absorbedEffects: [],
       absorbAnimations: [],
+      destroyAnimations: [],
 
       // visual BH plans
       visualEnemyPlans: [],
@@ -266,6 +281,47 @@ export const useGameStore = create<GameStore>()(
           return;
         }
 
+        // === Powerup: DESTROY ===
+        if (ap === 'destroy') {
+          const itemsSnapshot = get().items.slice();
+          const idx = itemsSnapshot.findIndex(
+            i => i.pos.x === pos.x && i.pos.y === pos.y,
+          );
+
+          if (idx === -1) {
+            set(() => ({activePowerup: null, selectedCell: null}));
+            return;
+          }
+
+          const item = itemsSnapshot[idx];
+          const newItems = itemsSnapshot.filter((_, i) => i !== idx);
+
+          const animId = `destroy_${Date.now()}`;
+          const key = `${pos.x},${pos.y}`;
+          const rect = get().cellRects[key];
+
+          if (rect) {
+            get().addDestroyAnimation({
+              id: animId,
+              x: rect.centerX,
+              y: rect.centerY,
+              icon: item.type,
+            });
+
+            setTimeout(() => {
+              get().removeDestroyAnimation(animId);
+            }, 300);
+          }
+
+          set(() => ({
+            items: newItems,
+            activePowerup: null,
+            selectedCell: null,
+          }));
+
+          return;
+        }
+
         // Other powerups: simply set selectedCell (their logic handled later)
         set(() => ({selectedCell: pos}));
       },
@@ -276,6 +332,16 @@ export const useGameStore = create<GameStore>()(
       removeAbsorbedEffect: (id: string) =>
         set(state => ({
           absorbedEffects: state.absorbedEffects.filter(e => e.id !== id),
+        })),
+
+      addDestroyAnimation: anim =>
+        set(state => ({
+          destroyAnimations: [...state.destroyAnimations, anim],
+        })),
+
+      removeDestroyAnimation: id =>
+        set(state => ({
+          destroyAnimations: state.destroyAnimations.filter(a => a.id !== id),
         })),
 
       // === Compose modules ===

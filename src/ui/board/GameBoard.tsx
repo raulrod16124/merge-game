@@ -16,6 +16,8 @@ import {
   ItemsLayer,
 } from './GameBoard.styled';
 import {COSMIC_ICONS} from '../constants';
+import {DestroyAnimation} from './animations/DestroyAnimation';
+import React from 'react';
 
 export function GameBoard() {
   const {
@@ -29,6 +31,11 @@ export function GameBoard() {
     absorbedEffects,
   } = useGameStore();
 
+  const boardRef = React.useRef<HTMLDivElement>(null);
+  const boardRect = boardRef.current?.getBoundingClientRect();
+
+  const destroyAnimations = useGameStore(s => s.destroyAnimations);
+
   const cols = boardSize?.cols ?? 6;
   const rows = boardSize?.rows ?? 6;
 
@@ -37,7 +44,7 @@ export function GameBoard() {
   };
 
   return (
-    <BoardWrapper>
+    <BoardWrapper ref={boardRef}>
       <motion.div
         initial={{opacity: 0, y: -8}}
         animate={{opacity: 1, y: 0}}
@@ -80,6 +87,16 @@ export function GameBoard() {
               );
             })}
           </Grid>
+
+          {destroyAnimations.map(a => (
+            <DestroyAnimation
+              key={a.id}
+              x={a.x}
+              y={a.y}
+              icon={a.icon}
+              boardRect={boardRect}
+            />
+          ))}
 
           {/* Items layer: absolute rendered items for smooth animation */}
           <ItemsLayer aria-hidden>
