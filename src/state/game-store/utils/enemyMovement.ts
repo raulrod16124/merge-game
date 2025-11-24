@@ -50,6 +50,14 @@ export function computeEnemyMovePlans(
   for (const bh of blackHoles) {
     // si está congelado -> saltar este BH
     if (bh.freezeTurns && bh.freezeTurns > 0) {
+      plans.push({
+        bhId: bh.id,
+        from: {...bh.pos},
+        to: {...bh.pos},
+        absorbedId: undefined,
+        absorbedType: undefined,
+        items,
+      });
       continue;
     }
 

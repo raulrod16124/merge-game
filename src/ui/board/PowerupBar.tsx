@@ -4,7 +4,7 @@ import {useUserStore} from '@/state/user-store';
 import {useGameStore} from '@/state/game-store';
 import {COLORS} from '@/ui/constants';
 import {STORE_ITEMS} from '@/data/store/store-items';
-import {Store, Zap, X} from 'lucide-react';
+import {Store, X} from 'lucide-react';
 
 const Wrapper = styled.div`
   height: calc(15dvh - 24px);

@@ -82,6 +82,8 @@ export type GameStore = {
   // actions
   incrementTurn: () => void;
 
+  getEffectiveNextItem(): CosmicType;
+
   setCellRect: (
     key: string,
     rect: {size: number; centerX: number; centerY: number},
@@ -322,6 +324,47 @@ export const useGameStore = create<GameStore>()(
           return;
         }
 
+        // === SUPERNOVA powerup ===
+        if (ap === 'supernova') {
+          const items = get().items;
+          const existing = items.find(
+            i => i.pos.x === pos.x && i.pos.y === pos.y,
+          );
+
+          // remove existing object if present
+          let newItems = items.filter(
+            i => !(i.pos.x === pos.x && i.pos.y === pos.y),
+          );
+
+          // add supernova
+          newItems.push({
+            id: `supernova_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+            type: 'supernova',
+            level: 1,
+            pos: {x: pos.x, y: pos.y},
+            createdAt: Date.now(),
+          });
+
+          // scoring
+          const key = `${pos.x},${pos.y}`;
+          const rect = get().cellRects[key];
+          if (rect) {
+            get().addFloatingScore(rect.centerX, rect.centerY, 150);
+          }
+
+          set({
+            items: newItems,
+            activePowerup: null,
+            selectedCell: null,
+          });
+
+          setTimeout(() => {
+            get().processMergesAt(pos);
+          }, 0);
+
+          return;
+        }
+
         // === Powerup: FREEZE BLACK HOLE ===
         if (ap === 'freeze_bh') {
           const itemsSnapshot = get().items.slice();
@@ -405,16 +448,18 @@ export const useGameStore = create<GameStore>()(
         if (level) {
           const maxBH = level.maxBlackHoles ?? 0;
 
-          // count BH in items
           const inItems = get().items.filter(
             i => i.type === 'black_hole',
           ).length;
-
-          // count BH in visual animations (active movement)
           const inVisual = new Set(get().visualEnemyPlans.map(p => p.bhId))
             .size;
 
-          const totalBH = inItems + inVisual;
+          const frozenBH = get().items.filter(
+            i => i.type === 'black_hole' && i.freezeTurns && i.freezeTurns > 0,
+          ).length;
+
+          // total reales incluidos congelados
+          const totalBH = inItems + inVisual + frozenBH;
           const bhSpawned = get().blackHolesSpawned;
 
           if (bhSpawned < inItems) {
@@ -466,6 +511,12 @@ export const useGameStore = create<GameStore>()(
         }
 
         // Items remain unchanged here. The UI will call confirmEnemyMove() once the animation ends.
+      },
+
+      getEffectiveNextItem: () => {
+        const state = get();
+        if (state.activePowerup === 'supernova') return 'supernova';
+        return state.nextItem;
       },
 
       // Legacy direct step (keeps previous behavior if someone calls it)

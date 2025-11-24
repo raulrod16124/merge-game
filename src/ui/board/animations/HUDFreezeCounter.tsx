@@ -36,7 +36,7 @@ export function HUDFreezeCounter() {
         if (!rect) return null;
 
         const left = rect.centerX - 13;
-        const top = rect.centerY - rect.size / 2 - 20;
+        const top = rect.centerY + rect.size / 2 - 15;
 
         return (
           <Bubble

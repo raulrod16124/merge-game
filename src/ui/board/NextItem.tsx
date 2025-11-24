@@ -3,7 +3,7 @@ import {motion} from 'framer-motion';
 import {COSMIC_ICONS} from '../constants';
 
 export function NextItem() {
-  const next = useGameStore(s => s.nextItem);
+  const next = useGameStore(s => s.getEffectiveNextItem());
 
   return (
     <div style={{display: 'flex', flexDirection: 'column', gap: '4px'}}>

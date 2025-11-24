@@ -10,6 +10,7 @@ export const emptyFragments = (): Record<CosmicType, number> =>
     mature_planet: 0,
     star: 0,
     star_system: 0,
+    supernova: 0,
     nebula: 0,
     galaxy: 0,
   }) as Record<CosmicType, number>;
