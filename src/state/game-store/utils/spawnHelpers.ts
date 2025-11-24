@@ -172,12 +172,11 @@ export function maybeSpawnBlackHole(
   boardRows: number,
   level: LevelConfig,
   turnCounter: number,
+  totalBH: number,
 ): ItemBase[] {
-  const existing = items.filter(i => i.type === 'black_hole').length;
-  if ((level.maxBlackHoles ?? 0) <= existing) return items;
+  if ((level.maxBlackHoles ?? 0) <= totalBH) return items;
 
-  if (shouldSpawnBlackHole(level, turnCounter, existing)) {
-    // spawn solo 1 en cada intento para mantener sentido de sorpresa.
+  if (shouldSpawnBlackHole(level, turnCounter, totalBH)) {
     return spawnBlackHole(items, boardCols, boardRows);
   }
 

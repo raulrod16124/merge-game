@@ -39,6 +39,7 @@ export type GameStore = {
   powerupUsed: boolean;
   levelCoins: number;
   turnCounter: number;
+  blackHolesSpawned: number;
 
   floatingScores: {id: string; x: number; y: number; points: number}[];
   createdCounts: Record<string, any>;
@@ -136,6 +137,7 @@ export const useGameStore = create<GameStore>()(
       createdCounts: {},
       _timerId: null,
       turnCounter: 0,
+      blackHolesSpawned: 0,
 
       // positioning
       cellRects: {},
@@ -171,15 +173,36 @@ export const useGameStore = create<GameStore>()(
         // 1) spawn dynamic BH if level allows
         const level = get().currentLevel;
         if (level) {
-          const spawned = maybeSpawnBlackHole(
-            get().items,
-            get().boardSize.cols,
-            get().boardSize.rows,
-            level,
-            next,
-          );
-          if (spawned !== get().items) {
-            set({items: spawned});
+          const maxBH = level.maxBlackHoles ?? 0;
+
+          // count BH in items
+          const inItems = get().items.filter(
+            i => i.type === 'black_hole',
+          ).length;
+
+          // count BH in visual animations (active movement)
+          const inVisual = new Set(get().visualEnemyPlans.map(p => p.bhId))
+            .size;
+
+          const totalBH = inItems + inVisual;
+          const bhSpawned = get().blackHolesSpawned;
+
+          if (bhSpawned < inItems) {
+            set({blackHolesSpawned: inItems});
+          }
+          if (totalBH < maxBH && bhSpawned < maxBH) {
+            const spawned = maybeSpawnBlackHole(
+              get().items,
+              get().boardSize.cols,
+              get().boardSize.rows,
+              level,
+              next,
+              totalBH,
+            );
+
+            if (spawned !== get().items) {
+              set({items: spawned});
+            }
           }
         }
 

@@ -35,6 +35,10 @@ export function BoardScreen() {
   const openPause = () => setPaused(true);
   const closePause = () => setPaused(false);
 
+  useEffect(() => {
+    setModalState(null);
+  }, []);
+
   // Load level
   useEffect(() => {
     if (!levelId) {

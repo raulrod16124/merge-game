@@ -141,7 +141,6 @@ export function GameBoard() {
                     alt={item.type}
                     draggable={false}
                     initial={{scale: 0.4, opacity: 0}}
-                    animate={{scale: 0.8, opacity: 1, left, top}}
                     exit={{opacity: 0, scale: 0.6}}
                     transition={{duration: 0.22}}
                     style={{

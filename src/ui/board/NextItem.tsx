@@ -15,7 +15,7 @@ export function NextItem() {
         key={next}
         src={COSMIC_ICONS[next as keyof typeof COSMIC_ICONS]}
         alt={next}
-        initial={{scale: 0.6, opacity: 0}}
+        initial={{scale: 1, opacity: 0}}
         animate={{scale: 1, opacity: 1}}
         transition={{duration: 0.2}}
         draggable={false}
@@ -23,7 +23,6 @@ export function NextItem() {
           width: 40,
           height: 40,
           objectFit: 'contain',
-          padding: 6,
           background: 'rgba(0,0,0,0.2)',
           borderRadius: 12,
         }}

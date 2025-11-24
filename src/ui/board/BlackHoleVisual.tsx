@@ -34,7 +34,7 @@ export function BlackHoleVisual({plan, fromRect, toRect, onDone}: Props) {
   return (
     <BHImg
       src={COSMIC_ICONS.black_hole}
-      initial={{left: fromLeft, top: fromTop, scale: 0.7, opacity: 0}}
+      initial={{left: fromLeft, top: fromTop, scale: 1, opacity: 0}}
       animate={{left: toLeft, top: toTop, scale: 1, opacity: 1}}
       transition={{
         delay: 0.15,
