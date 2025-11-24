@@ -1,24 +1,34 @@
-// src/state/game-store/actions/powerups.ts
 import type {StateCreator} from 'zustand';
 import type {GameStore} from '../index';
+import type {PowerupType} from '@/core/types';
 
 export const createPowerups = (
   set: Parameters<StateCreator<GameStore>>[0],
   get: () => GameStore,
 ) => ({
   /**
-   * MVP: activar powerup. Más adelante añadiremos efectos reales.
+   * Activar powerup: ahora marca el powerup activo en el store
+   * (antes solo marcaba powerupUsed: true y no habilitaba el modo).
    */
-  activatePowerup: (id: string) => {
+  activatePowerup: (id: PowerupType) => {
     const state = get();
 
-    console.log('Powerup activado:', id);
+    console.log('Powerup activado (createPowerups):', id);
 
-    // === MVP basic behaviour ===
-    // 1) Marcar el powerup como usado en este turno
+    // 1) Marcar el powerup como usado en este turno (si necesitas)
     set({powerupUsed: true});
 
-    // 2) En un MVP no se altera el tablero todavía
-    // En la siguiente fase añadiremos efectos (bomba, extra tile, wand, etc.)
+    // 2) Establecer el modo activo en el store para que la UI responda
+    set(() => ({
+      activePowerup: id,
+      selectedCell: null,
+    }));
   },
+
+  // Opcional: añadir cancelPowerup aquí si quieres centralizarlo
+  cancelPowerup: () =>
+    set(() => ({
+      activePowerup: null,
+      selectedCell: null,
+    })),
 });

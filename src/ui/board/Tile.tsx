@@ -25,8 +25,24 @@ type TileProps = {
 };
 
 export function Tile({x, y, item, onClickEmpty}: TileProps) {
+  const {activePowerup, selectedCell, selectCell} = useGameStore(s => s);
   const handleClick = () => {
-    if (!item) onClickEmpty({x, y});
+    // 1) Si un powerup está activo -> SOLO selectCell
+    if (activePowerup) {
+      selectCell({x, y});
+      return;
+    }
+
+    // 2) Si NO hay powerup activo:
+    // Si la celda está vacía -> acción normal
+    if (!item) {
+      onClickEmpty({x, y});
+      return;
+    }
+
+    // 3) Si hay item y no hay powerup,
+    // deja el comportamiento normal del juego (merge/add)
+    selectCell({x, y});
   };
 
   // Access visualEnemyPlans to know si hay un movimiento visual de BH activo
@@ -37,7 +53,22 @@ export function Tile({x, y, item, onClickEmpty}: TileProps) {
     Boolean(visualEnemyPlans.find(p => p?.bhId === item.id));
 
   return (
-    <TileBase onClick={handleClick} className="aspect-square">
+    <TileBase
+      onClick={handleClick}
+      className="aspect-square"
+      style={
+        activePowerup === 'move' &&
+        selectedCell &&
+        selectedCell.x === x &&
+        selectedCell.y === y
+          ? {
+              outline: '3px solid #4ade80', // verde suave
+              outlineOffset: '-3px',
+              borderRadius: '10px',
+              background: 'rgba(74, 222, 128, 0.15)',
+            }
+          : undefined
+      }>
       {item && !isBHMoving ? (
         <motion.img
           key={item.id}

@@ -1,7 +1,8 @@
+import type {PowerupType} from '@/core/types';
 import {HelpCircle, Snowflake, Flame, Move} from 'lucide-react';
 
 export type StoreItem = {
-  id: string;
+  id: PowerupType;
   type: string;
   name: string;
   description: string;
@@ -27,7 +28,7 @@ export const STORE_ITEMS: StoreItem[] = [
     icon: Flame,
   },
   {
-    id: 'freeze_blackhole',
+    id: 'freeze_bh',
     type: 'powerup',
     name: 'Congelar Agujero Negro',
     description: 'Evita que el agujero negro se mueva durante 1 turno.',

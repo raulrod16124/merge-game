@@ -87,7 +87,7 @@ export function PowerupBar() {
             return;
           }
           try {
-            activatePowerup();
+            activatePowerup(item.id);
           } catch (e) {
             console.warn('activatePowerup failed', e);
           }

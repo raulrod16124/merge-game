@@ -30,6 +30,8 @@ export interface ItemBase {
   absorbed?: number;
 }
 
+export type PowerupType = 'move' | 'destroy' | 'freeze_bh' | 'supernova';
+
 export type ObjectiveType =
   | 'score'
   | 'create'

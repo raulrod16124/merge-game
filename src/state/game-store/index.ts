@@ -8,6 +8,7 @@ import type {
   Pos,
   ItemBase,
   CosmicType,
+  PowerupType,
 } from '../../core/types';
 
 import {createAddItem} from './actions/addItem';
@@ -59,6 +60,18 @@ export type GameStore = {
 
   absorbedEffects: AbsorbedEffects[];
 
+  // powerups
+  activePowerup: null | PowerupType;
+  selectedCell: null | Pos;
+
+  // powerup / direct actions
+  moveItem: (from: Pos, to: Pos) => void;
+
+  // powerups methods
+  activatePowerup: (type: PowerupType) => void;
+  cancelPowerup: () => void;
+  selectCell: (pos: Pos) => void;
+
   // Visual movement plans (BH animations) - new
   visualEnemyPlans: EnemyMovePlan[];
 
@@ -101,7 +114,6 @@ export type GameStore = {
   processMergesAt: (pos: Pos) => Promise<void>;
   stepEnemyMovement: () => void;
   spawnNextItem: () => void;
-  activatePowerup: () => void;
 
   addFloatingScore: (x: number, y: number, p: number) => void;
   removeFloatingScore: (id: string) => void;
@@ -149,9 +161,114 @@ export const useGameStore = create<GameStore>()(
       // visual BH plans
       visualEnemyPlans: [],
 
+      // powerups
+      activePowerup: null,
+      selectedCell: null,
+
       // level result
       levelResult: null,
       setLevelResult: r => set(() => ({levelResult: r})),
+
+      // === move action + selectCell handling for powerups ===
+      moveItem: (from, to) => {
+        const itemsSnapshot = get().items.slice();
+        // find origin item
+        const idx = itemsSnapshot.findIndex(
+          it => it.pos.x === from.x && it.pos.y === from.y,
+        );
+        if (idx === -1) return; // nothing to move
+
+        // ensure destination empty
+        const occupied = itemsSnapshot.some(
+          it => it.pos.x === to.x && it.pos.y === to.y,
+        );
+        if (occupied) return; // cannot move to occupied cell
+
+        // perform move immutably
+        const moving = {...itemsSnapshot[idx], pos: {x: to.x, y: to.y}};
+        const newItems = itemsSnapshot
+          .filter((_, i) => i !== idx)
+          .concat(moving);
+        set(() => ({
+          items: newItems,
+        }));
+      },
+
+      selectCell: pos => {
+        const state = get();
+        const ap = state.activePowerup;
+        const sel = state.selectedCell;
+
+        // If no powerup active, behave as a normal select (store the selected cell)
+        if (!ap) {
+          set(() => ({selectedCell: pos}));
+          return;
+        }
+
+        // Powerup: MOVE -> two-step: source then destination
+        if (ap === 'move') {
+          // If no source selected yet -> set this pos as source
+          if (!sel) {
+            set(() => ({selectedCell: pos}));
+            return;
+          }
+
+          // We have a source already -> attempt to move
+          const from = sel;
+          const to = pos;
+
+          const itemsSnapshot = get().items.slice();
+
+          const originIndex = itemsSnapshot.findIndex(
+            i => i.pos.x === from.x && i.pos.y === from.y,
+          );
+          if (originIndex === -1) {
+            // origin disappeared: reset powerup
+            set(() => ({activePowerup: null, selectedCell: null}));
+            return;
+          }
+
+          const destOccupied = itemsSnapshot.some(
+            i => i.pos.x === to.x && i.pos.y === to.y,
+          );
+          if (destOccupied) {
+            // if destination occupied, treat click as re-selecting source (allows user to change source)
+            set(() => ({selectedCell: pos}));
+            return;
+          }
+
+          // Commit move and exit powerup mode
+          set(state => {
+            const itemsCopy = state.items.map(it => ({...it}));
+            const movingIdx = itemsCopy.findIndex(
+              i => i.pos.x === from.x && i.pos.y === from.y,
+            );
+            if (movingIdx === -1) {
+              return {activePowerup: null, selectedCell: null};
+            }
+            itemsCopy[movingIdx] = {
+              ...itemsCopy[movingIdx],
+              pos: {x: to.x, y: to.y},
+            };
+
+            return {
+              items: itemsCopy,
+              activePowerup: null,
+              selectedCell: null,
+            };
+          });
+
+          // Después de aplicar el movimiento:
+          setTimeout(() => {
+            get().processMergesAt(to);
+          }, 0);
+
+          return;
+        }
+
+        // Other powerups: simply set selectedCell (their logic handled later)
+        set(() => ({selectedCell: pos}));
+      },
 
       addAbsorbedEffect: effect =>
         set(state => ({absorbedEffects: [...state.absorbedEffects, effect]})),
