@@ -3,10 +3,10 @@ import {motion, AnimatePresence} from 'framer-motion';
 import {useGameStore} from '../../state/game-store';
 
 import {Tile} from './Tile';
-import {FloatingScore} from './FloatingScore';
-import {BlackHoleVisual} from './BlackHoleVisual';
-import {HUDBlackHoleCounter} from './HUDBlackHoleCounter';
-import {AbsorbedEffect} from './AbsorbedEffect';
+import {FloatingScore} from './animations/FloatingScore';
+import {BlackHoleVisual} from './animations/BlackHoleVisual';
+import {HUDBlackHoleCounter} from './animations/HUDBlackHoleCounter';
+import {AbsorbedEffect} from './animations/AbsorbedEffect';
 
 import {
   BoardWrapper,
@@ -18,6 +18,8 @@ import {
 import {COSMIC_ICONS} from '../constants';
 import {DestroyAnimation} from './animations/DestroyAnimation';
 import React from 'react';
+import {HUDFreezeCounter} from './animations/HUDFreezeCounter';
+import {FreezeOverlay} from './animations/FreezeOverlay';
 
 export function GameBoard() {
   const {
@@ -109,10 +111,42 @@ export function GameBoard() {
                 );
 
                 if (isBH) {
-                  // si está animándose, NO renderizamos el BH estático
+                  // ⛔ 1) NO mostrar animación si está congelado
+                  if (item.freezeTurns && item.freezeTurns > 0) {
+                    // mostrar BH estático pero NO animación visual
+                    const key = `${item.pos.x},${item.pos.y}`;
+                    const rect = cellRects?.[key];
+                    if (!rect) return null;
+
+                    const left = Math.round(rect.centerX - rect.size / 2);
+                    const top = Math.round(rect.centerY - rect.size / 2);
+
+                    return (
+                      <motion.img
+                        key={item.id}
+                        src={COSMIC_ICONS.black_hole}
+                        alt={item.type}
+                        draggable={false}
+                        initial={{scale: 1, opacity: 1}}
+                        animate={{scale: 1, opacity: 1, left, top}}
+                        transition={{duration: 0}}
+                        style={{
+                          position: 'fixed',
+                          width: rect.size,
+                          height: rect.size,
+                          left,
+                          top,
+                          pointerEvents: 'none',
+                          zIndex: 20,
+                        }}
+                      />
+                    );
+                  }
+
+                  // 2) si el BH está animándose, NO renderizar el estático
                   if (isBHAnimating) return null;
 
-                  // si NO está animándose, renderizar BH estático
+                  // 3) si NO está congelado ni animándose → render normal
                   const key = `${item.pos.x},${item.pos.y}`;
                   const rect = cellRects?.[key];
                   if (!rect) return null;
@@ -174,6 +208,34 @@ export function GameBoard() {
               })}
             </AnimatePresence>
 
+            {/* Freeze overlays */}
+            <AnimatePresence>
+              {items
+                .filter(
+                  i =>
+                    i.type === 'black_hole' &&
+                    i.freezeTurns &&
+                    i.freezeTurns > 0,
+                )
+                .map(bh => {
+                  const key = `${bh.pos.x},${bh.pos.y}`;
+                  const rect = cellRects[key];
+                  if (!rect) return null;
+
+                  const left = Math.round(rect.centerX - rect.size / 2);
+                  const top = Math.round(rect.centerY - rect.size / 2);
+
+                  return (
+                    <FreezeOverlay
+                      key={`freeze_ov_${bh.id}`}
+                      size={rect.size}
+                      left={left}
+                      top={top}
+                    />
+                  );
+                })}
+            </AnimatePresence>
+
             {/* Render BH visual plans */}
             <AnimatePresence>
               {visualEnemyPlans.map(plan => {
@@ -226,6 +288,8 @@ export function GameBoard() {
 
           {/* HUD counters above BHs */}
           <HUDBlackHoleCounter />
+          {/* Freeze HUD */}
+          <HUDFreezeCounter />
 
           {/* Floating scores */}
           <FloatingLayer>

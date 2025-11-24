@@ -1,7 +1,7 @@
 // src/ui/board/BlackHoleVisual.tsx
 import {motion} from 'framer-motion';
 import styled from 'styled-components';
-import {COSMIC_ICONS} from '../constants';
+import {COSMIC_ICONS} from '../../constants';
 import {useGameStore} from '@/state/game-store';
 
 const BHImg = styled(motion.img)`

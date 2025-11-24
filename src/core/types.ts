@@ -28,6 +28,7 @@ export interface ItemBase {
   frozen?: boolean;
   icon?: string;
   absorbed?: number;
+  freezeTurns?: number;
 }
 
 export type PowerupType = 'move' | 'destroy' | 'freeze_bh' | 'supernova';

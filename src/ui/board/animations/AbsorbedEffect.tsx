@@ -1,7 +1,7 @@
 // src/ui/board/AbsorbedEffect.tsx
 import {motion} from 'framer-motion';
 import styled from 'styled-components';
-import {COSMIC_ICONS} from '../constants';
+import {COSMIC_ICONS} from '../../constants';
 
 const AbsImg = styled(motion.img)`
   position: fixed;

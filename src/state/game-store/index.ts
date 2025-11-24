@@ -322,6 +322,36 @@ export const useGameStore = create<GameStore>()(
           return;
         }
 
+        // === Powerup: FREEZE BLACK HOLE ===
+        if (ap === 'freeze_bh') {
+          const itemsSnapshot = get().items.slice();
+
+          // buscar si hay un black_hole en la celda seleccionada
+          const idx = itemsSnapshot.findIndex(
+            i =>
+              i.pos.x === pos.x && i.pos.y === pos.y && i.type === 'black_hole',
+          );
+
+          // si no clicó un BH -> cancelar powerup sin hacer nada
+          if (idx === -1) {
+            set(() => ({activePowerup: null, selectedCell: null}));
+            return;
+          }
+
+          const bh = {...itemsSnapshot[idx]};
+          bh.freezeTurns = 3; // congelar 3 turnos
+
+          const newItems = itemsSnapshot.map((it, i) => (i === idx ? bh : it));
+
+          set(() => ({
+            items: newItems,
+            activePowerup: null,
+            selectedCell: null,
+          }));
+
+          return;
+        }
+
         // Other powerups: simply set selectedCell (their logic handled later)
         set(() => ({selectedCell: pos}));
       },
@@ -352,6 +382,23 @@ export const useGameStore = create<GameStore>()(
         const prev = get().turnCounter ?? 0;
         const next = prev + 1;
         set({turnCounter: next});
+
+        // Reducir freezeTurns en BH congelados
+        const itemsAfterFreeze = get().items.map(it => {
+          if (
+            it.type === 'black_hole' &&
+            it.freezeTurns &&
+            it.freezeTurns > 0
+          ) {
+            return {
+              ...it,
+              freezeTurns: it.freezeTurns - 1,
+            };
+          }
+          return it;
+        });
+
+        set({items: itemsAfterFreeze});
 
         // 1) spawn dynamic BH if level allows
         const level = get().currentLevel;

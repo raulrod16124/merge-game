@@ -48,6 +48,11 @@ export function computeEnemyMovePlans(
   const blackHoles = items.filter(i => i.type === 'black_hole');
 
   for (const bh of blackHoles) {
+    // si está congelado -> saltar este BH
+    if (bh.freezeTurns && bh.freezeTurns > 0) {
+      continue;
+    }
+
     const origin = {x: bh.pos.x, y: bh.pos.y};
 
     const validDirs = DIRECTIONS.map(d => ({

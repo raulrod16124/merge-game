@@ -1,5 +1,4 @@
 // src/ui/board/HUDBlackHoleCounter.tsx
-import React from 'react';
 import styled from 'styled-components';
 import {useGameStore} from '@/state/game-store';
 
