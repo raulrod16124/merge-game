@@ -34,7 +34,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     id: 'FIRST_MERGE',
     title: 'Primer Merge',
     description: 'Fusiona 3 objetos iguales por primera vez',
-    icon: 'merge',
+    icon: 'dust',
     condition: {type: 'merge'},
   },
   {

@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import {COLORS} from '@/ui/constants';
 
 const Shape = styled.div`
   position: absolute;

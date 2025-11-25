@@ -109,13 +109,10 @@ export function LevelCompleteModal({
           </Button>
           <Button
             to="/levels"
-            variant="secondary"
+            variant="tertiary"
             fullWidth={true}
             onClick={onContinue}>
-            Volver a niveles
-          </Button>
-          <Button variant="tertiary" fullWidth={true} onClick={onContinue}>
-            Cerrar
+            Salir
           </Button>
         </ButtonContainer>
       </Box>

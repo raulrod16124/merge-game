@@ -72,10 +72,17 @@ export function CosmicAvatar({variant, hideProgress}: Props) {
   const progress = usePlayerStore(s => s.cosmicProgress);
   const activeVariant = (variant ?? userVariant ?? 'hybrid') as AvatarVariant;
 
-  const {xp: cosmicXP, level: cosmicLevel} = progress[activeVariant];
+  const variantProgress =
+    progress && progress[activeVariant]
+      ? progress[activeVariant]
+      : {xp: 0, level: 1};
+
+  const cosmicXP = variantProgress.xp ?? 0;
+  const cosmicLevel = variantProgress.level ?? 1;
+
   const profile =
-    COSMIC_EVOLUTION[activeVariant][cosmicLevel] ??
-    COSMIC_EVOLUTION[activeVariant][1];
+    COSMIC_EVOLUTION[activeVariant]?.[cosmicLevel] ??
+    COSMIC_EVOLUTION[activeVariant]?.[1];
 
   const {progressPercent, nextLevelXP} = computeCosmicProgress(
     cosmicLevel,
