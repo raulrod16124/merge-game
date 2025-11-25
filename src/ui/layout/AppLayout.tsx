@@ -1,6 +1,7 @@
 import {Wrapper, Header, Content, BackButton} from './styles';
 import {ArrowLeft} from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
+import {HudNotifications} from '../components/HudNotifications';
 
 interface Props {
   children: React.ReactNode;
@@ -39,6 +40,7 @@ export default function AppLayout({
         )}
 
         {children}
+        <HudNotifications />
       </Content>
     </Wrapper>
   );

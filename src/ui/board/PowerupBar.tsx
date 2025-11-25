@@ -5,6 +5,7 @@ import {useGameStore} from '@/state/game-store';
 import {COLORS} from '@/ui/constants';
 import {STORE_ITEMS} from '@/data/store/store-items';
 import {Store, X} from 'lucide-react';
+import {usePlayerStore} from '@/state/player-store';
 
 const Wrapper = styled.div`
   height: calc(15dvh - 24px);
@@ -64,7 +65,11 @@ export function PowerupBar() {
   const consumeItem = useUserStore(s => s.consumeItem);
   const activatePowerup = useGameStore(s => s.activatePowerup);
 
-  const powerups = pickPowerupsFromStore();
+  // get unlocked powerups
+  const unlockedPowerups = usePlayerStore(s => s.unlockedPowerups);
+  const powerups = pickPowerupsFromStore().filter(p =>
+    unlockedPowerups.includes(p.id as any),
+  );
 
   if (!powerups || powerups.length === 0) {
     // fallback: show nothing to avoid confusing empty UI

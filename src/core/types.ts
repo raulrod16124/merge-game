@@ -90,3 +90,10 @@ export type ModalButton = {
   to?: string;
   fullWidth?: boolean;
 };
+
+export type UnlockItem = {
+  kind: 'powerup' | 'map' | 'achievement' | 'coins';
+  id?: string;
+  amount?: number;
+  name?: string;
+};

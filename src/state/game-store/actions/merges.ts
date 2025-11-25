@@ -7,6 +7,8 @@ import {getNextType, fusionScore, TIME_BONUS} from '@/core/fusionRules';
 import {computeSpawnWeights} from '../utils/spawnHelpers';
 import {pickWeighted} from '../utils/weighted';
 import {applyMergeRewards} from './rewards';
+import {useAchievementStore} from '@/state/achievement-store';
+import {ACHIEVEMENTS} from '@/data/achievements';
 
 function getConnectedCluster(
   start: Pos,
@@ -133,6 +135,18 @@ export const createMerges = (
         createdCounts: cc,
       };
     });
+
+    // === ACHIEVEMENTS: merge ===
+    const ach = useAchievementStore.getState();
+
+    // always unlock FIRST_MERGE
+    ach.unlockAchievement('FIRST_MERGE');
+
+    // typed achievements (specific cosmic types)
+    const specific = ACHIEVEMENTS.find(
+      a => a.condition.type === 'merge' && a.condition.value === fused.type,
+    );
+    if (specific) ach.unlockAchievement(specific.id);
 
     // Floating score + time bonus
     if (typeof get().addFloatingScore === 'function') {

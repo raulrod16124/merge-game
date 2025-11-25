@@ -184,7 +184,29 @@ export const useGameStore = create<GameStore>()(
 
       // level result
       levelResult: null,
-      setLevelResult: r => set(() => ({levelResult: r})),
+      setLevelResult: r => {
+        set(() => ({levelResult: r}));
+        try {
+          if (r && r.status === 'win') {
+            // unlock progression
+            // Note: import usePlayerStore lazily to avoid circular import at module top-level
+            import('@/state/player-store')
+              .then(mod => {
+                const player = mod.usePlayerStore.getState();
+                // unlock next level (assumes levelId is numeric-ish)
+                const lvlNum =
+                  parseInt(r.levelId.replace(/\D/g, ''), 10) || null;
+                if (lvlNum) {
+                  player.unlockLevel(lvlNum + 1);
+                  player.applyLevelUnlocks(lvlNum + 1);
+                }
+              })
+              .catch(() => {});
+          }
+        } catch (e) {
+          console.warn('apply level unlocks failed', e);
+        }
+      },
 
       // === move action + selectCell handling for powerups ===
       moveItem: (from, to) => {
@@ -280,6 +302,13 @@ export const useGameStore = create<GameStore>()(
             get().processMergesAt(to);
           }, 0);
 
+          import('@/state/player-store').then(mod => {
+            const player = mod.usePlayerStore.getState();
+            try {
+              player.checkAchievements({type: 'powerup', subject: 'move'});
+            } catch (e) {}
+          });
+
           return;
         }
 
@@ -320,6 +349,13 @@ export const useGameStore = create<GameStore>()(
             activePowerup: null,
             selectedCell: null,
           }));
+
+          import('@/state/player-store').then(mod => {
+            const player = mod.usePlayerStore.getState();
+            try {
+              player.checkAchievements({type: 'powerup', subject: 'destroy'});
+            } catch (e) {}
+          });
 
           return;
         }
@@ -362,6 +398,13 @@ export const useGameStore = create<GameStore>()(
             get().processMergesAt(pos);
           }, 0);
 
+          import('@/state/player-store').then(mod => {
+            const player = mod.usePlayerStore.getState();
+            try {
+              player.checkAchievements({type: 'powerup', subject: 'supernova'});
+            } catch (e) {}
+          });
+
           return;
         }
 
@@ -391,6 +434,13 @@ export const useGameStore = create<GameStore>()(
             activePowerup: null,
             selectedCell: null,
           }));
+
+          import('@/state/player-store').then(mod => {
+            const player = mod.usePlayerStore.getState();
+            try {
+              player.checkAchievements({type: 'powerup', subject: 'freeze_bh'});
+            } catch (e) {}
+          });
 
           return;
         }

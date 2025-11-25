@@ -12,7 +12,7 @@ import {
 } from './styles';
 
 import {CosmicAvatar} from '@/ui/components/cosmic-avatar';
-import {User, Settings, ShoppingBag, Coins} from 'lucide-react';
+import {User, Settings, ShoppingBag, Coins, Award} from 'lucide-react';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -28,6 +28,9 @@ export default function Home() {
         <IconButtons>
           <button onClick={() => navigate('/profile')}>
             <User size={22} strokeWidth={2.4} />
+          </button>
+          <button onClick={() => navigate('/achievements')}>
+            <Award size={22} strokeWidth={2.4} />
           </button>
           <button onClick={() => navigate('/settings')}>
             <Settings size={22} strokeWidth={2.4} />

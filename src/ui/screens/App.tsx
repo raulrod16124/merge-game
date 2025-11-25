@@ -1,5 +1,7 @@
 // src/App.tsx
+import React from 'react';
 import {Routes, Route, Navigate} from 'react-router-dom';
+import {useUserStore} from '@/state/user-store';
 import BoardScreen from './board';
 import Home from './home';
 import Levels from './levels';
@@ -9,12 +11,11 @@ import ProtectedRoute from '@/router/ProtectedRoute';
 import Profile from './profile';
 import Store from './store';
 import Settings from './settings';
-import {useUserStore} from '@/state/user-store';
-import React from 'react';
 import styled from 'styled-components';
 import Inventory from './inventory';
 import EditName from './edit-name';
 import EditAvatar from './edit-avatar';
+import AchievementsScreen from './achievements/AchievementsScreen';
 
 const AppWrapper = styled.div`
   min-height: 100dvh;
@@ -112,6 +113,15 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Inventory />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/achievements"
+          element={
+            <ProtectedRoute>
+              <AchievementsScreen />
             </ProtectedRoute>
           }
         />

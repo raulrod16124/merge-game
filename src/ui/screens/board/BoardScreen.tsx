@@ -2,19 +2,22 @@
 import {useEffect, useState} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 
-import {LEVELS} from '../../../data/levels';
-import {useGameStore} from '../../../state/game-store';
+import {LEVELS} from '@/data/levels';
+import {useGameStore} from '@/state/game-store';
 
-import {HUD} from '../../board/HUD';
+import {HUD} from '@/ui/board/HUD';
 import {GameHeader} from '@/ui/board/GameHeader';
-import {GameBoard} from '../../board/GameBoard';
+import {GameBoard} from '@/ui/board/GameBoard';
 
-import {HUDColumn, BoardColumn, BoardScreenWrapper} from './BoardScreen.styled';
-import {Modal} from '../../../common/Modal';
-import type {ModalState} from '../../../core/types';
+import {HUDColumn, BoardColumn, BoardScreenWrapper} from './styles';
+import {Modal} from '@/common/Modal';
+import type {ModalState, UnlockItem} from '@/core/types';
 import AppLayout from '@/ui/layout';
 import {PowerupBar} from '@/ui/board/PowerupBar';
 import {LevelCompleteModal} from '@/ui/components/modals/LevelCompleteModal';
+import {LEVEL_UNLOCKS} from '@/data/levelUnlocks';
+import NewUnlockModal from '@/ui/components/modals/NewUnlockModal';
+import {useAchievementStore} from '@/state';
 
 export function BoardScreen() {
   const {levelId} = useParams();
@@ -34,6 +37,9 @@ export function BoardScreen() {
   const [paused, setPaused] = useState(false);
   const openPause = () => setPaused(true);
   const closePause = () => setPaused(false);
+
+  const [unlockModalItems, setUnlockModalItems] = useState<UnlockItem[]>([]);
+  const [unlockModalOpen, setUnlockModalOpen] = useState(false);
 
   useEffect(() => {
     setModalState(null);
@@ -60,7 +66,48 @@ export function BoardScreen() {
 
   // Listen to store
   useEffect(() => {
-    if (levelResult) setModalState(levelResult as any);
+    if (levelResult)
+      setModalState(levelResult as React.SetStateAction<ModalState | null>);
+
+    if (levelResult?.status === 'win' && !unlockModalOpen) {
+      // === ACHIEVEMENTS: level win ===
+      const ach = useAchievementStore.getState();
+
+      const lvl = parseInt(levelResult.levelId.replace(/\D/g, ''), 10);
+      if (lvl === 10) ach.unlockAchievement('WIN_LEVEL_10');
+      if (lvl === 20) ach.unlockAchievement('WIN_LEVEL_20');
+
+      const lvlNum =
+        parseInt(levelResult.levelId.replace(/\D/g, ''), 10) || null;
+      if (lvlNum) {
+        const unlock = LEVEL_UNLOCKS[lvlNum + 1];
+        if (unlock) {
+          // compute list for modal
+          const items: any[] = [];
+          if (unlock.powerups)
+            unlock.powerups.forEach((p: any) =>
+              items.push({kind: 'powerup', id: p, name: p}),
+            );
+          if (unlock.maps)
+            unlock.maps.forEach((m: any) =>
+              items.push({kind: 'map', id: m, name: m}),
+            );
+          if (unlock.coins)
+            items.push({
+              kind: 'coins',
+              amount: unlock.coins,
+              name: `${unlock.coins} coins`,
+            });
+          if (unlock.achievements)
+            unlock.achievements.forEach(a =>
+              items.push({kind: 'achievement', id: a, name: a}),
+            );
+
+          setUnlockModalItems(items);
+          setUnlockModalOpen(true);
+        }
+      }
+    }
   }, [levelResult]);
 
   useEffect(() => {
@@ -111,7 +158,19 @@ export function BoardScreen() {
       </BoardScreenWrapper>
 
       {/* Modal success */}
-      {modalState?.status === 'win' && (
+      {unlockModalOpen && (
+        <NewUnlockModal
+          open={unlockModalOpen}
+          items={unlockModalItems}
+          onClose={() => {
+            setUnlockModalOpen(false);
+            setUnlockModalItems([]);
+          }}
+        />
+      )}
+
+      {/* Modal success */}
+      {!unlockModalOpen && modalState?.status === 'win' && (
         <LevelCompleteModal
           coins={levelCoins || 0}
           fusionStats={fusionStats}
