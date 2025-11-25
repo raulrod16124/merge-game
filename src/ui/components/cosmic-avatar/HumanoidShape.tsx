@@ -24,11 +24,25 @@ const Head = styled.div`
   ${breatheAnim}
 `;
 
-export function HumanoidShape() {
+interface IProps {
+  detail?: number;
+}
+
+export function HumanoidShape({detail = 0}: IProps) {
   return (
     <>
-      <Body />
-      <Head />
+      <Body
+        style={{
+          opacity: 0.85 + detail * 0.1,
+          transform: `scale(${1 + detail * 0.03})`,
+        }}
+      />
+      <Head
+        style={{
+          opacity: 0.9 + detail * 0.1,
+          transform: `scale(${1 + detail * 0.03})`,
+        }}
+      />
     </>
   );
 }

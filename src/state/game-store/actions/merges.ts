@@ -168,7 +168,9 @@ export const createMerges = (
           if (typeof get().stopTimer === 'function') {
             get().stopTimer();
           }
-          get().setLevelResult(result);
+          if (!get().levelResult) {
+            get().setLevelResult(result);
+          }
           return; // do not spawn next item nor chain merges
         }
       }

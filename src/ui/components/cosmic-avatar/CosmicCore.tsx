@@ -18,6 +18,15 @@ const Core = styled.div`
   animation: ${pulse} 4s ease-in-out infinite;
 `;
 
-export function CosmicCore() {
-  return <Core />;
+export function CosmicCore({glow}: {glow: number}) {
+  return (
+    <Core
+      style={{
+        boxShadow: `
+          0 0 ${25 * glow}px rgba(255,184,68,0.6),
+          0 0 ${40 * glow}px rgba(255,184,68,0.3)
+        `,
+      }}
+    />
+  );
 }

@@ -17,6 +17,7 @@ import {CosmicAvatar} from '@/ui/components/cosmic-avatar';
 import {Pencil} from 'lucide-react';
 import {Button} from '@/common/Button';
 import {COLORS} from '../../constants/index';
+import CosmicProfileProgress from '@/ui/components/cosmic-avatar/CosmicProfileProgress';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ export default function Profile() {
         {/* Avatar con edit */}
         <AvatarWrapper>
           <CosmicAvatar variant={avatar?.variant} />
+          <CosmicProfileProgress />
           <EditIcon onClick={() => navigate('/edit-avatar')}>
             <Pencil size={20} strokeWidth={2.4} color={COLORS.primary} />
           </EditIcon>

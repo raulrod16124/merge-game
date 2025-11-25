@@ -4,6 +4,7 @@ import {createJSONStorage, persist} from 'zustand/middleware';
 import type {PowerupType} from '@/core/types';
 import {LEVEL_UNLOCKS} from '@/data/levelUnlocks';
 import {ACHIEVEMENTS} from '@/data/achievements';
+import {LEVEL_XP_TABLE} from '@/data/cosmicLevels';
 
 export type AchievementId = string;
 
@@ -24,6 +25,14 @@ export type PlayerProgressState = {
   unlockedMaps: string[];
   achievements: Record<AchievementId, boolean>;
   coins: number;
+  cosmicProgress: {
+    humanoid: {xp: number; level: number};
+    abstract: {xp: number; level: number};
+    hybrid: {xp: number; level: number};
+  };
+  avatarVariant: 'humanoid' | 'abstract' | 'hybrid';
+  lastEvolutionLevel: number | null;
+  completedLevelUnlocks: Record<number, boolean>;
 
   // helpers
   unlockLevel: (level: number) => void;
@@ -31,6 +40,11 @@ export type PlayerProgressState = {
   unlockPowerup: (p: PowerupType) => void;
   unlockMap: (mapId: string) => void;
   addCoins: (amt: number) => void;
+  markLevelUnlocksAsCompleted: (level: number) => void;
+
+  triggerCosmicEvolution: ((lvl: number) => void) | null;
+  setEvolutionHandler: (fn: (lvl: number) => void) => void;
+  addXP: (amount: number) => void;
 
   // achievements
   hasAchievement: (id: AchievementId) => boolean;
@@ -54,6 +68,17 @@ export const usePlayerStore = create<PlayerProgressState>()(
       unlockedMaps: [],
       achievements: {},
       coins: 0,
+      cosmicProgress: {
+        humanoid: {xp: 0, level: 1},
+        abstract: {xp: 0, level: 1},
+        hybrid: {xp: 0, level: 1},
+      },
+      avatarVariant: 'humanoid',
+      triggerCosmicEvolution: null,
+      lastEvolutionLevel: null,
+      completedLevelUnlocks: {},
+
+      setEvolutionHandler: fn => set({triggerCosmicEvolution: fn}),
 
       unlockLevel: (level: number) =>
         set(state => ({
@@ -89,6 +114,14 @@ export const usePlayerStore = create<PlayerProgressState>()(
         });
       },
 
+      markLevelUnlocksAsCompleted: (level: number) =>
+        set(state => ({
+          completedLevelUnlocks: {
+            ...state.completedLevelUnlocks,
+            [level]: true,
+          },
+        })),
+
       unlockPowerup: (p: PowerupType) =>
         set(state => ({
           unlockedPowerups: Array.from(new Set([...state.unlockedPowerups, p])),
@@ -103,6 +136,41 @@ export const usePlayerStore = create<PlayerProgressState>()(
         set(state => ({
           coins: Math.max(0, (state.coins ?? 0) + amt),
         })),
+
+      // --- Cosmic XP system ---
+      addXP: (amount: number) => {
+        const variant = get().avatarVariant;
+        const prog = get().cosmicProgress[variant];
+        const xpNeeded = LEVEL_XP_TABLE[prog.level] ?? Infinity;
+
+        const totalXP = prog.xp + amount;
+
+        // Si no sube de nivel
+        if (totalXP < xpNeeded) {
+          set({
+            cosmicProgress: {
+              ...get().cosmicProgress,
+              [variant]: {...prog, xp: totalXP},
+            },
+          });
+          return;
+        }
+
+        // Subida de nivel
+        const newLevel = prog.level + 1;
+        const newXP = totalXP - xpNeeded;
+
+        set({
+          cosmicProgress: {
+            ...get().cosmicProgress,
+            [variant]: {xp: newXP, level: newLevel},
+          },
+        });
+
+        // activar animación evolución
+        const evo = get().triggerCosmicEvolution;
+        evo && evo(newLevel);
+      },
 
       hasAchievement: id => {
         const s = get();

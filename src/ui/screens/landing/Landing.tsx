@@ -9,6 +9,7 @@ import {CosmicAura} from '@/ui/components/cosmic-avatar/CosmicAura';
 import {CosmicCore} from '@/ui/components/cosmic-avatar/CosmicCore';
 import {CosmicParticles} from '@/ui/components/cosmic-avatar/CosmicParticles';
 import {CosmicLogo, Wrapper} from './styles';
+import {CosmicAvatar} from '@/ui/components/cosmic-avatar';
 
 export default function Landing() {
   const authenticated = useUserStore(s => s.authenticated);
@@ -51,12 +52,7 @@ export default function Landing() {
   return (
     <>
       <Wrapper>
-        <CosmicLogo>
-          <CosmicParticles />
-          <CosmicAura>
-            <CosmicCore />
-          </CosmicAura>
-        </CosmicLogo>
+        <CosmicAvatar variant="hybrid" hideProgress={true} />
 
         <h1>Stellar Merge</h1>
         <p>Crea, fusiona y da forma al universo.</p>

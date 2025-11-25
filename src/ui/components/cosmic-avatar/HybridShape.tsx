@@ -27,11 +27,25 @@ const Torso = styled.div`
   ${breatheAnim}
 `;
 
-export function HybridShape() {
+interface IProps {
+  detail?: number;
+}
+
+export function HybridShape({detail = 0}: IProps) {
   return (
     <>
-      <Glow />
-      <Torso />
+      <Glow
+        style={{
+          opacity: 0.85 + detail * 0.1,
+          transform: `scale(${1 + detail * 0.03})`,
+        }}
+      />
+      <Torso
+        style={{
+          opacity: 0.9 + detail * 0.1,
+          transform: `scale(${1 + detail * 0.03})`,
+        }}
+      />
     </>
   );
 }

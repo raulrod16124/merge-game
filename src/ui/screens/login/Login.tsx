@@ -31,7 +31,7 @@ export default function Login() {
 
       {/* PREVIEW */}
       <AvatarPreview>
-        <CosmicAvatar variant={variant as AvatarVariant} />
+        <CosmicAvatar variant={variant as AvatarVariant} hideProgress={true} />
       </AvatarPreview>
 
       {/* SELECTOR */}

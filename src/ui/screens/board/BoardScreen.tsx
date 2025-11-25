@@ -17,7 +17,8 @@ import {PowerupBar} from '@/ui/board/PowerupBar';
 import {LevelCompleteModal} from '@/ui/components/modals/LevelCompleteModal';
 import {LEVEL_UNLOCKS} from '@/data/levelUnlocks';
 import NewUnlockModal from '@/ui/components/modals/NewUnlockModal';
-import {useAchievementStore} from '@/state';
+import {useAchievementStore, usePlayerStore} from '@/state';
+import {LEVEL_XP_REWARD} from '@/data/levelXPRewards';
 
 export function BoardScreen() {
   const {levelId} = useParams();
@@ -32,6 +33,8 @@ export function BoardScreen() {
   const createdCounts = useGameStore(s => s.createdCounts);
   const levelCoins = useGameStore(s => s.levelCoins);
   const stopTimer = useGameStore(s => s.stopTimer);
+
+  const player = usePlayerStore.getState();
 
   const [modalState, setModalState] = useState<null | ModalState>(null);
   const [paused, setPaused] = useState(false);
@@ -66,49 +69,62 @@ export function BoardScreen() {
 
   // Listen to store
   useEffect(() => {
-    if (levelResult)
+    if (levelResult) {
       setModalState(levelResult as React.SetStateAction<ModalState | null>);
-
-    if (levelResult?.status === 'win' && !unlockModalOpen) {
-      // === ACHIEVEMENTS: level win ===
-      const ach = useAchievementStore.getState();
-
-      const lvl = parseInt(levelResult.levelId.replace(/\D/g, ''), 10);
-      if (lvl === 10) ach.unlockAchievement('WIN_LEVEL_10');
-      if (lvl === 20) ach.unlockAchievement('WIN_LEVEL_20');
 
       const lvlNum =
         parseInt(levelResult.levelId.replace(/\D/g, ''), 10) || null;
-      if (lvlNum) {
-        const unlock = LEVEL_UNLOCKS[lvlNum + 1];
-        if (unlock) {
-          // compute list for modal
-          const items: any[] = [];
-          if (unlock.powerups)
-            unlock.powerups.forEach((p: any) =>
-              items.push({kind: 'powerup', id: p, name: p}),
-            );
-          if (unlock.maps)
-            unlock.maps.forEach((m: any) =>
-              items.push({kind: 'map', id: m, name: m}),
-            );
-          if (unlock.coins)
-            items.push({
-              kind: 'coins',
-              amount: unlock.coins,
-              name: `${unlock.coins} coins`,
-            });
-          if (unlock.achievements)
-            unlock.achievements.forEach(a =>
-              items.push({kind: 'achievement', id: a, name: a}),
-            );
+      if (
+        levelResult.status === 'win' &&
+        !unlockModalOpen &&
+        lvlNum !== null &&
+        !player.completedLevelUnlocks?.[lvlNum + 1]
+      ) {
+        // XP formula básica (puedes ajustarla luego)
+        const xpGained =
+          Math.floor(
+            (createdCounts?.star ?? 0) * 10 + (levelCoins ?? 0) * 0.2,
+          ) + 50;
 
-          setUnlockModalItems(items);
-          setUnlockModalOpen(true);
+        player.addXP(xpGained + (LEVEL_XP_REWARD[lvlNum] ?? 50));
+        // === ACHIEVEMENTS: level win ===
+        const ach = useAchievementStore.getState();
+
+        const lvl = parseInt(levelResult.levelId.replace(/\D/g, ''), 10);
+        if (lvl === 10) ach.unlockAchievement('WIN_LEVEL_10');
+        if (lvl === 20) ach.unlockAchievement('WIN_LEVEL_20');
+
+        if (lvlNum) {
+          const unlock = LEVEL_UNLOCKS[lvlNum + 1];
+          if (unlock) {
+            // compute list for modal
+            const items: any[] = [];
+            if (unlock.powerups)
+              unlock.powerups.forEach((p: any) =>
+                items.push({kind: 'powerup', id: p, name: p}),
+              );
+            if (unlock.maps)
+              unlock.maps.forEach((m: any) =>
+                items.push({kind: 'map', id: m, name: m}),
+              );
+            if (unlock.coins)
+              items.push({
+                kind: 'coins',
+                amount: unlock.coins,
+                name: `${unlock.coins} coins`,
+              });
+            if (unlock.achievements)
+              unlock.achievements.forEach(a =>
+                items.push({kind: 'achievement', id: a, name: a}),
+              );
+
+            setUnlockModalItems(items);
+            setUnlockModalOpen(true);
+          }
         }
       }
     }
-  }, [levelResult]);
+  }, [levelResult, unlockModalOpen, player]);
 
   useEffect(() => {
     return () => {
@@ -163,6 +179,15 @@ export function BoardScreen() {
           open={unlockModalOpen}
           items={unlockModalItems}
           onClose={() => {
+            if (levelResult !== null) {
+              const lvlNum =
+                parseInt(levelResult.levelId.replace(/\D/g, ''), 10) || null;
+              if (lvlNum !== null) {
+                usePlayerStore
+                  .getState()
+                  .markLevelUnlocksAsCompleted(lvlNum + 1);
+              }
+            }
             setUnlockModalOpen(false);
             setUnlockModalItems([]);
           }}
@@ -170,11 +195,14 @@ export function BoardScreen() {
       )}
 
       {/* Modal success */}
-      {!unlockModalOpen && modalState?.status === 'win' && (
+      {modalState?.status === 'win' && !unlockModalOpen && (
         <LevelCompleteModal
           coins={levelCoins || 0}
           fusionStats={fusionStats}
-          onContinue={handleCloseModal}
+          onContinue={() => {
+            handleCloseModal();
+            setLevelResult(null);
+          }}
         />
       )}
 

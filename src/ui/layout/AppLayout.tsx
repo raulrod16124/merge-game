@@ -2,6 +2,9 @@ import {Wrapper, Header, Content, BackButton} from './styles';
 import {ArrowLeft} from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
 import {HudNotifications} from '../components/HudNotifications';
+import {usePlayerStore} from '@/state';
+import React from 'react';
+import {CosmicEvolutionModal} from '../components/modals/CosmicEvolutionModal';
 
 interface Props {
   children: React.ReactNode;
@@ -19,6 +22,13 @@ export default function AppLayout({
   hideHeader = false,
 }: Props) {
   const navigate = useNavigate();
+  const setHandler = usePlayerStore(s => s.setEvolutionHandler);
+
+  React.useEffect(() => {
+    setHandler((level: number) => {
+      usePlayerStore.setState({lastEvolutionLevel: level});
+    });
+  }, []);
 
   return (
     <Wrapper>
@@ -41,6 +51,7 @@ export default function AppLayout({
 
         {children}
         <HudNotifications />
+        <CosmicEvolutionModal />
       </Content>
     </Wrapper>
   );

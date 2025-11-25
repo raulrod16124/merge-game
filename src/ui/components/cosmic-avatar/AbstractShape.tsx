@@ -16,6 +16,17 @@ const Shape = styled.div`
   ${breatheAnim}
 `;
 
-export function AbstractShape() {
-  return <Shape />;
+interface IProps {
+  detail?: number;
+}
+
+export function AbstractShape({detail = 0}: IProps) {
+  return (
+    <Shape
+      style={{
+        opacity: 0.85 + detail * 0.1,
+        transform: `scale(${1 + detail * 0.03})`,
+      }}
+    />
+  );
 }
