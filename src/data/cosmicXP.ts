@@ -19,7 +19,7 @@ export function computeCosmicProgress(
 
   const span = Math.max(1, nextLevelXP - currentLevelXP);
   const gained = Math.min(Math.max(0, xp - currentLevelXP), span);
-  const progressPercent = Math.round((gained / span) * 100);
-
+  const gainedReference = gained > 0 ? gained : 100;
+  const progressPercent = Math.round((gainedReference / span) * 100);
   return {currentLevelXP, nextLevelXP, progressPercent};
 }

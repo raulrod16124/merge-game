@@ -35,14 +35,19 @@ const Fill = styled.div<{pct: number}>`
 export default function CosmicMiniProgress() {
   const variant = useUserStore(u => u.avatar);
   const progress = usePlayerStore(s => s.cosmicProgress);
-  const activeVariant = (variant ?? 'hybrid') as AvatarVariant;
-
-  const variantProgress = progress?.[activeVariant];
+  const activeVariant = variant
+    ? (Object.values(variant)[0] as AvatarVariant)
+    : ('hybrid' as AvatarVariant);
+  const variantProgress = progress[activeVariant];
 
   const xp = variantProgress?.xp ?? 0;
   const level = variantProgress?.level ?? 1;
 
   const {progressPercent} = computeCosmicProgress(level, xp);
+
+  if (!variantProgress.level) {
+    return null;
+  }
 
   return (
     <Wrap>
