@@ -23,6 +23,13 @@ export type AchievementDef = {
 const CACHE_KEY = 'player_progress_cache';
 
 export type PlayerProgressState = {
+  completedLevels: Record<
+    string,
+    {
+      score: number;
+      completedAt: number;
+    }
+  >;
   highestLevelUnlocked: number;
   unlockedPowerups: PowerupType[];
   unlockedMaps: string[];
@@ -37,6 +44,8 @@ export type PlayerProgressState = {
   lastEvolutionLevel: number | null;
   completedLevelUnlocks: Record<number, boolean>;
 
+  markLevelCompleted: (levelId: string, score: number) => void;
+  isLevelUnlocked: (levelNumber: number) => boolean;
   unlockLevel: (lvl: number) => void;
   applyLevelUnlocks: (lvl: number) => void;
   unlockPowerup: (p: PowerupType) => void;
@@ -65,6 +74,7 @@ export type PlayerProgressState = {
 };
 
 export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
+  completedLevels: {},
   highestLevelUnlocked: 1,
   unlockedPowerups: [],
   unlockedMaps: [],
@@ -105,6 +115,29 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
 
   // -----------------------------
   setEvolutionHandler: fn => set({triggerCosmicEvolution: fn}),
+
+  isLevelUnlocked: (n: number) => {
+    return n <= get().highestLevelUnlocked;
+  },
+
+  markLevelCompleted: (levelId: string, score: number) => {
+    const existing = get().completedLevels[levelId];
+
+    const improved = !existing || score > existing.score;
+
+    set(state => ({
+      completedLevels: {
+        ...state.completedLevels,
+        [levelId]: improved ? {score, completedAt: Date.now()} : existing,
+      },
+      highestLevelUnlocked: Math.max(
+        state.highestLevelUnlocked,
+        parseInt(levelId.replace(/\D/g, '')) + 1,
+      ),
+    }));
+
+    get().syncToFirebase();
+  },
 
   unlockLevel: lvl => {
     set(s => ({
@@ -351,6 +384,7 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
 
     const payload = {
       highestLevelUnlocked: s.highestLevelUnlocked,
+      completedLevels: s.completedLevels,
       unlockedPowerups: s.unlockedPowerups,
       unlockedMaps: s.unlockedMaps,
       achievements: s.achievements,

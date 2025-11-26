@@ -40,12 +40,6 @@ function InitFirebaseAuthSync() {
   return null;
 }
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js');
-  });
-}
-
 const updateSW = registerSW({
   onNeedRefresh() {
     /* opcional: notificar UI */

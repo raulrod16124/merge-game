@@ -145,6 +145,7 @@ export function BoardScreen() {
           setUnlockModalOpen(true);
         }
       }
+      usePlayerStore.getState().markLevelCompleted(lvlNum.toString(), xpGained);
     } else {
       // Si no es win o ya desbloqueado, igual marcamos como procesado para evitar reprocesos:
       processedLevelsRef.current.add(levelIdStr);

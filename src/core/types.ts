@@ -54,17 +54,23 @@ export type ResponsiveBoardSize = {
 export type LevelConfig = {
   id: string;
   name: string;
+
   boardSize: ResponsiveBoardSize;
   enemyCount: number;
-  spawnWeights: Record<CosmicType, number>;
-  initialMap: {type: CosmicType; x: number; y: number}[];
+
+  spawnWeights: Record<string, number>;
+
+  initialMap: {type: CosmicType | string; x: number; y: number}[];
   blockedCells?: Pos[];
-  maxBlackHoles?: number; // máximo simultáneo permitidos en el nivel
-  blackHoleSpawnRate?: number; // cada cuántos turnos intentamos spawnear
-  blackHoleSpawnChance?: number; // probabilidad por intento
+
+  maxBlackHoles?: number;
+  blackHoleSpawnRate?: number;
+  blackHoleSpawnChance?: number;
+
   mapAsset: string;
   objective?: Objective[];
-  timerSeconds?: number;
+
+  timerSeconds: number;
 };
 
 export interface GameState {

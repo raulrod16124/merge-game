@@ -1,63 +1,62 @@
-import type {LevelConfig} from '../../core/types';
+import type {LevelConfig} from '@/core/types';
 import {useNavigate} from 'react-router-dom';
-import {COSMIC_ICONS, COSMIC_TEXT} from '../constants';
+import {Lock, Star} from 'lucide-react';
+
 import {
-  Card,
-  Icon,
-  Info,
-  LevelCardHeader,
-  Name,
-  Pill,
+  NodeWrapper,
+  NodeCircle,
+  NodeInner,
+  LevelName,
+  Connector,
+  ScoreBadge,
 } from './LevelCard.styled';
-import {Button} from '../../common/Button';
 
-export function LevelCard({level}: {level: LevelConfig}) {
+type Props = {
+  level: LevelConfig;
+  unlocked: boolean;
+  completed: boolean;
+  highScore?: number | null;
+  index: number;
+};
+
+export function LevelCard({
+  level,
+  unlocked,
+  completed,
+  highScore,
+  index,
+}: Props) {
   const nav = useNavigate();
-  const handlePlay = () => nav(`/play/${level.id}`);
 
-  const previewType = Object.keys(
-    level.spawnWeights,
-  )[0] as keyof typeof COSMIC_ICONS;
-  const objective = level.objective?.[0];
-
-  const objectiveLabel = objective
-    ? objective.type === 'score'
-      ? `Consigue ${objective.target} puntos`
-      : objective.type === 'create'
-        ? // @ts-ignore
-          `Crear ${objective.target}   ${COSMIC_TEXT[objective.subject]}`
-        : objective.type === 'supernova'
-          ? `Generar ${objective.target} supernova`
-          : 'Objetivo especial'
-    : 'Sin objetivo';
+  const handleClick = () => {
+    if (unlocked) nav(`/play/${level.id}`);
+  };
 
   return (
-    <Card onClick={handlePlay}>
-      <LevelCardHeader>
-        <div>
-          <Name>{level.name}</Name>
-        </div>
+    <NodeWrapper $index={index}>
+      {/* Conexión hacia el siguiente nodo */}
+      <Connector />
 
-        <Icon
-          src={COSMIC_ICONS[previewType]}
-          alt={previewType}
-          draggable={false}
-        />
-      </LevelCardHeader>
+      <NodeCircle
+        $unlocked={unlocked}
+        $completed={completed}
+        onClick={handleClick}>
+        <NodeInner>
+          {completed ? (
+            <Star size={22} strokeWidth={2.4} />
+          ) : unlocked ? (
+            <Star size={20} strokeWidth={1.8} />
+          ) : (
+            <Lock size={20} strokeWidth={2.2} />
+          )}
+        </NodeInner>
+      </NodeCircle>
 
-      <Info>
-        {level.enemyCount ? <Pill>Enemigos: {level.enemyCount}</Pill> : null}
-        <Pill>{objectiveLabel}</Pill>
-      </Info>
+      <LevelName>{level.name}</LevelName>
 
-      <Button
-        variant="secondary"
-        styles={{
-          marginTop: '14px',
-          padding: '10px 14px',
-        }}>
-        Jugar
-      </Button>
-    </Card>
+      {completed && highScore != null && (
+        <ScoreBadge>⭐ {highScore}</ScoreBadge>
+      )}
+    </NodeWrapper>
   );
 }

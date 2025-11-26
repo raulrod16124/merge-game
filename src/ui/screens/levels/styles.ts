@@ -1,15 +1,16 @@
 import styled from 'styled-components';
-import {COLORS, HEADER_HEIGHT} from '@/ui/constants';
+import {COLORS} from '@/ui/constants';
 
 export const LevelsWrapper = styled.div`
-  width: 100%;
-  max-width: 1100px;
-  height: calc(100dvh - ${HEADER_HEIGHT}px);
-  margin: 24px auto;
-  padding: 10px 18px;
-  box-sizing: border-box;
+  padding: 30px 0;
+  position: relative;
+
   display: flex;
   flex-direction: column;
+  align-items: center;
+
+  /* Fondo cósmico opcional */
+  background: radial-gradient(circle at center, #0f0f2d, #000);
 `;
 
 export const Title = styled.h2`
