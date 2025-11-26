@@ -2,8 +2,6 @@
 import styled from 'styled-components';
 import {usePlayerStore} from '@/state/player-store';
 import {computeCosmicProgress} from '@/data/cosmicXP';
-import {useUserStore} from '@/state';
-import type {AvatarVariant} from './types';
 
 const Wrap = styled.div`
   margin-top: 8px;
@@ -33,11 +31,8 @@ const Fill = styled.div<{pct: number}>`
 `;
 
 export default function CosmicMiniProgress() {
-  const variant = useUserStore(u => u.avatar);
   const progress = usePlayerStore(s => s.cosmicProgress);
-  const activeVariant = variant
-    ? (Object.values(variant)[0] as AvatarVariant)
-    : ('hybrid' as AvatarVariant);
+  const activeVariant = usePlayerStore(s => s.avatarVariant);
   const variantProgress = progress[activeVariant];
 
   const xp = variantProgress?.xp ?? 0;

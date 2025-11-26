@@ -8,6 +8,7 @@ import {Button} from '@/common/Button';
 
 import {VariantSelector, PreviewArea} from './styles';
 import type {AvatarVariant} from '@/ui/components/cosmic-avatar/types';
+import {usePlayerStore} from '@/state';
 
 export default function EditAvatar() {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ export default function EditAvatar() {
 
   const save = () => {
     setAvatarVariant(temp);
+    usePlayerStore.setState({avatarVariant: temp});
     navigate('/profile');
   };
 
