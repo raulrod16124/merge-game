@@ -31,6 +31,7 @@ export type PlayerProgressState = {
     }
   >;
   highestLevelUnlocked: number;
+  newAchievements: AchievementId[];
   unlockedPowerups: PowerupType[];
   unlockedMaps: string[];
   achievements: Record<AchievementId, boolean>;
@@ -44,6 +45,7 @@ export type PlayerProgressState = {
   lastEvolutionLevel: number | null;
   completedLevelUnlocks: Record<number, boolean>;
 
+  clearNewAchievements: () => void;
   markLevelCompleted: (levelId: string, score: number) => void;
   isLevelUnlocked: (levelNumber: number) => boolean;
   unlockLevel: (lvl: number) => void;
@@ -76,6 +78,7 @@ export type PlayerProgressState = {
 export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
   completedLevels: {},
   highestLevelUnlocked: 1,
+  newAchievements: [],
   unlockedPowerups: [],
   unlockedMaps: [],
   achievements: {},
@@ -119,6 +122,8 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
   isLevelUnlocked: (n: number) => {
     return n <= get().highestLevelUnlocked;
   },
+
+  clearNewAchievements: () => set({newAchievements: []}),
 
   markLevelCompleted: (levelId: string, score: number) => {
     const existing = get().completedLevels[levelId];
@@ -341,6 +346,7 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
           new Set([...state.unlockedPowerups, ...powerupsGain]),
         ),
         unlockedMaps: Array.from(new Set([...state.unlockedMaps, ...mapsGain])),
+        newAchievements: [...(state.newAchievements ?? []), id],
       };
     });
 

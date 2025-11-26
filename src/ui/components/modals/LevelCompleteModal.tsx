@@ -1,10 +1,11 @@
 // src/ui/board/LevelCompleteModal.tsx
 import styled from 'styled-components';
 import {Button} from '@/common/Button';
-import {COLORS} from '@/ui/constants';
+import {COLORS, COSMIC_ICONS} from '@/ui/constants';
 import {Star, Trophy} from 'lucide-react';
 import {useParams} from 'react-router-dom';
 import {getNextLevelID} from '@/utils/getNextLevelID';
+import {ACHIEVEMENTS} from '@/data/achievements';
 
 const Overlay = styled.div`
   position: fixed;
@@ -41,6 +42,36 @@ const Title = styled.h2`
   margin-bottom: 12px;
 `;
 
+const AchievementsSection = styled.div`
+  margin-top: 24px;
+  text-align: left;
+
+  h3 {
+    color: #ffd27f;
+    margin-bottom: 8px;
+    font-size: 1rem;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    color: white;
+    font-size: 0.9rem;
+  }
+
+  img {
+    width: 32px;
+    height: 32px;
+  }
+`;
+
 const CoinsBox = styled.div`
   font-size: 1.3rem;
   margin: 14px 0;
@@ -71,11 +102,13 @@ const FusionItem = styled.div`
 export function LevelCompleteModal({
   coins,
   fusionStats,
+  newAchievements,
   onNextLevel,
   onContinue,
 }: {
   coins: number;
   fusionStats: {type: string; qty: number}[];
+  newAchievements: string[];
   onNextLevel: (nextLevelId: string) => void;
   onContinue: () => void;
 }) {
@@ -86,6 +119,29 @@ export function LevelCompleteModal({
       <Box>
         <Trophy size={50} color={COLORS.primary} style={{marginBottom: 10}} />
         <Title>¡Nivel Completado!</Title>
+
+        {newAchievements?.length > 0 && (
+          <AchievementsSection>
+            <h3>🎉 Logros Desbloqueados</h3>
+
+            <ul>
+              {newAchievements.map(id => {
+                const a = ACHIEVEMENTS.find(x => x.id === id);
+                if (!a) return null;
+
+                return (
+                  <li key={id}>
+                    <img
+                      src={COSMIC_ICONS[a.icon as keyof typeof COSMIC_ICONS]}
+                      alt={a.title}
+                    />
+                    <span>{a.title}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </AchievementsSection>
+        )}
 
         <CoinsBox>
           <Star size={20} /> +{coins} monedas

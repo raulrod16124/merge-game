@@ -19,12 +19,12 @@ const Grid = styled.div`
   padding: 12px;
 `;
 
-const Card = styled.div<{unlocked: boolean}>`
-  background: ${({unlocked}) =>
-    unlocked ? 'rgba(120,255,120,0.15)' : 'rgba(255,255,255,0.05)'};
+const Card = styled.div<{$unlocked: boolean}>`
+  background: ${({$unlocked}) =>
+    $unlocked ? 'rgba(120,255,120,0.15)' : 'rgba(255,255,255,0.05)'};
   border: 1px solid
-    ${({unlocked}) =>
-      unlocked ? 'rgba(120,255,120,0.4)' : 'rgba(255,255,255,0.1)'};
+    ${({$unlocked}) =>
+      $unlocked ? 'rgba(120,255,120,0.4)' : 'rgba(255,255,255,0.1)'};
   padding: 12px;
   border-radius: 12px;
   text-align: center;
@@ -32,8 +32,8 @@ const Card = styled.div<{unlocked: boolean}>`
   position: relative;
   transition: 0.25s ease;
 
-  ${({unlocked}) =>
-    !unlocked &&
+  ${({$unlocked}) =>
+    !$unlocked &&
     `
     opacity: 0.55;
     filter: saturate(0.3);
@@ -78,7 +78,7 @@ export default function AchievementsScreen() {
             const unlocked = isUnlocked(a.id);
 
             return (
-              <Card key={a.id} unlocked={unlocked}>
+              <Card key={a.id} $unlocked={unlocked}>
                 {unlocked ? (
                   <CheckIcon>
                     <Check size={18} />
