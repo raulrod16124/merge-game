@@ -62,7 +62,7 @@ export default function Login() {
         onChange={e => setName(e.target.value)}
       />
 
-      <Button variant="primary" fullWidth onClick={handleEnter}>
+      <Button variant="primary" fullWidth={true} onClick={handleEnter}>
         Entrar
       </Button>
     </Wrapper>

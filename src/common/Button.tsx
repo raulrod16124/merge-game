@@ -8,7 +8,7 @@ type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'success' | 'fail';
 
 type ButtonProps = {
   children: React.ReactNode;
-  variant?: ButtonVariant;
+  variant: ButtonVariant;
   to?: string;
   onClick?: () => void;
   disabled?: boolean;
@@ -103,7 +103,7 @@ export function Button({
   to,
   onClick,
   disabled,
-  fullWidth,
+  fullWidth = false,
   loading,
   className,
   selected,

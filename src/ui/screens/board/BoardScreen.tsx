@@ -195,10 +195,15 @@ export function BoardScreen() {
       )}
 
       {/* Modal success */}
-      {modalState?.status === 'win' && !unlockModalOpen && (
+      {!unlockModalOpen && modalState?.status === 'win' && (
         <LevelCompleteModal
           coins={levelCoins || 0}
           fusionStats={fusionStats}
+          onNextLevel={nextLevelId => {
+            handleCloseModal();
+            setLevelResult(null);
+            navigate(`/play/${nextLevelId}`);
+          }}
           onContinue={() => {
             handleCloseModal();
             setLevelResult(null);

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import {Button} from '@/common/Button';
 import {COLORS} from '@/ui/constants';
 import {Star, Trophy} from 'lucide-react';
-import {useNavigate, useParams} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 import {getNextLevelID} from '@/utils/getNextLevelID';
 
 const Overlay = styled.div`
@@ -71,14 +71,15 @@ const FusionItem = styled.div`
 export function LevelCompleteModal({
   coins,
   fusionStats,
+  onNextLevel,
   onContinue,
 }: {
   coins: number;
   fusionStats: {type: string; qty: number}[];
+  onNextLevel: (nextLevelId: string) => void;
   onContinue: () => void;
 }) {
   const {levelId} = useParams();
-  const navigate = useNavigate();
   const nextLevel = getNextLevelID(levelId || '');
   return (
     <Overlay>
@@ -104,7 +105,7 @@ export function LevelCompleteModal({
           <Button
             variant="primary"
             fullWidth={true}
-            onClick={() => navigate(`/play/${nextLevel}`)}>
+            onClick={() => onNextLevel(nextLevel)}>
             Próximo nivel
           </Button>
           <Button

@@ -57,7 +57,7 @@ export default function Settings() {
       <Section>
         <Button
           variant="fail"
-          fullWidth
+          fullWidth={true}
           onClick={() => {
             logout();
             window.location.href = '/login';

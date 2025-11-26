@@ -43,7 +43,7 @@ export default function EditName() {
           placeholder="Tu nombre..."
         />
 
-        <Button variant="primary" fullWidth onClick={save}>
+        <Button variant="primary" fullWidth={true} onClick={save}>
           Guardar
         </Button>
       </InputWrapper>

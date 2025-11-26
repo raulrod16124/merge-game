@@ -71,7 +71,7 @@ export default function Store() {
 
               <Button
                 variant="secondary"
-                fullWidth
+                fullWidth={true}
                 onClick={() => openModal(item)}>
                 Comprar
               </Button>

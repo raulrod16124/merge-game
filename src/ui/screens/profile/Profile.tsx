@@ -50,7 +50,7 @@ export default function Profile() {
         {/* Inventario */}
         <ButtonsArea>
           <Button
-            fullWidth
+            fullWidth={true}
             variant="secondary"
             onClick={() => navigate('/inventory')}>
             Ver Inventario
