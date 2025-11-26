@@ -1,20 +1,58 @@
-// src/ui/layout/AppLayout.tsx
+import {Wrapper, Header, Content, BackButton} from './styles';
+import {ArrowLeft} from 'lucide-react';
+import {useNavigate} from 'react-router-dom';
+import {HudNotifications} from '../components/HudNotifications';
+import {usePlayerStore} from '@/state';
 import React from 'react';
-import {Header} from '../components/Header';
-import {PWAUpdateModal} from '../components/modals/PWAUpdateModal';
-import {Content, Wrapper} from './AppLayout.styled';
+import {CosmicEvolutionModal} from '../components/modals/CosmicEvolutionModal';
 
-interface IProps {
+interface Props {
   children: React.ReactNode;
+  prevRoute?: string;
+  title?: string;
+  showBack?: boolean;
   hideHeader?: boolean;
 }
 
-export function AppLayout({children, hideHeader}: IProps) {
+export default function AppLayout({
+  children,
+  prevRoute,
+  title,
+  showBack = true,
+  hideHeader = false,
+}: Props) {
+  const navigate = useNavigate();
+  const setHandler = usePlayerStore(s => s.setEvolutionHandler);
+
+  React.useEffect(() => {
+    setHandler((level: number) => {
+      usePlayerStore.setState({lastEvolutionLevel: level});
+    });
+  }, []);
+
   return (
     <Wrapper>
-      {hideHeader ? null : <Header />}
-      <Content>{children}</Content>
-      <PWAUpdateModal />
+      <Content>
+        {!hideHeader && (
+          <Header>
+            {showBack ? (
+              <BackButton onClick={() => navigate(prevRoute || '-1')}>
+                <ArrowLeft size={24} strokeWidth={2.4} />
+              </BackButton>
+            ) : (
+              <div style={{width: 48}} />
+            )}
+
+            {title && <h2>{title}</h2>}
+
+            <div style={{width: 48}} />
+          </Header>
+        )}
+
+        {children}
+        <HudNotifications />
+        <CosmicEvolutionModal />
+      </Content>
     </Wrapper>
   );
 }

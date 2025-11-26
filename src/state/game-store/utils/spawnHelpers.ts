@@ -1,5 +1,5 @@
 // src/state/game-store/utils/spawnHelpers.ts
-import type {CosmicType} from '../../../core/types';
+import type {ItemBase, Pos, LevelConfig, CosmicType} from '@/core/types';
 
 export const TYPE_RANK: Record<CosmicType, number> = {
   dust: 1,
@@ -9,6 +9,7 @@ export const TYPE_RANK: Record<CosmicType, number> = {
   mature_planet: 5,
   star: 6,
   star_system: 7,
+  supernova: 7,
   nebula: 8,
   galaxy: 9,
   fragment: 10,
@@ -59,4 +60,125 @@ export function computeSpawnWeights(
   }
 
   return effective;
+}
+
+/**
+ * Busca una celda vacía aleatoria dentro del tablero.
+ * items: array de ItemBase con posicion x,y
+ * boardCols, boardRows: dimensiones del tablero
+ */
+export function randomEmptyCell(
+  items: ItemBase[],
+  boardCols: number,
+  boardRows: number,
+): Pos | null {
+  const occupied = new Set(items.map(it => `${it.pos.x}:${it.pos.y}`));
+  const empties: Pos[] = [];
+
+  for (let y = 0; y < boardRows; y++) {
+    for (let x = 0; x < boardCols; x++) {
+      const key = `${x}:${y}`;
+      if (!occupied.has(key)) empties.push({x, y});
+    }
+  }
+
+  if (empties.length === 0) return null;
+  const idx = Math.floor(Math.random() * empties.length);
+  return empties[idx];
+}
+
+/**
+ * Inserta un único black hole en una celda vacía. Devuelve items copy
+ */
+export function spawnBlackHole(
+  items: ItemBase[],
+  boardCols: number,
+  boardRows: number,
+  idSuffix?: string,
+): ItemBase[] {
+  const newItems = [...items];
+  const cell = randomEmptyCell(newItems, boardCols, boardRows);
+  if (!cell) return newItems;
+
+  const nowId = `blackhole_${Date.now()}${idSuffix ? `_${idSuffix}` : ''}`;
+
+  // ItemBase es la estructura que usan los objetos del juego.
+  // Aquí añadimos la propiedad `absorbed` para llevar el contador local del agujero
+  newItems.push({
+    id: nowId,
+    type: 'black_hole' as CosmicType,
+    level: 1,
+    pos: {x: cell.x, y: cell.y},
+    createdAt: Date.now(),
+    absorbed: 0, // contador de absorciones (usado en Fase 4)
+  } as unknown as ItemBase);
+
+  return newItems;
+}
+
+/**
+ * Comprueba si debemos intentar spawnear un agujero negro en este turno.
+ * Aplica tu ventana inicial (turns 3..7) y probabilidades definidas.
+ */
+export function shouldSpawnBlackHole(
+  level: LevelConfig,
+  turnCounter: number,
+  existingCount: number,
+): boolean {
+  const maxAllowed = level.maxBlackHoles ?? 0;
+  if (maxAllowed <= 0) return false; // nivel no permite enemigos
+
+  if (existingCount >= maxAllowed) return false;
+
+  const spawnRate =
+    level.blackHoleSpawnRate ??
+    (level.id && parseInt(level.id.replace(/\D/g, '')) >= 11 ? 4 : 5);
+  if (spawnRate <= 0) return false;
+
+  // Debemos comprobar si "toca" según spawnRate (ej: cada 5 turnos)
+  if (turnCounter % spawnRate !== 0) return false;
+
+  // Ventana prioritaria: turnos 3..7 -> probabilidad más alta
+  const earlyWindowMin = 3;
+  const earlyWindowMax = 7;
+
+  const earlyChance = 0.9; // 90% en ventana temprana
+  const normalChance = 0.75; // 75% fuera de la ventana
+
+  const configuredChance =
+    typeof level.blackHoleSpawnChance === 'number'
+      ? level.blackHoleSpawnChance
+      : null;
+
+  // Si estamos en la ventana temprana y el turno cae dentro:
+  if (turnCounter >= earlyWindowMin && turnCounter <= earlyWindowMax) {
+    const chance = configuredChance ?? earlyChance;
+    return Math.random() < chance;
+  }
+
+  // Fuera de la ventana temprana:
+  const chance = configuredChance ?? normalChance;
+  return Math.random() < chance;
+}
+
+/**
+ * Intentar spawnear uno o más agujeros negros dependiendo de level.maxBlackHoles.
+ *
+ * Devuelve la copia de items con los agujeros añadidos si correspondiera.
+ */
+export function maybeSpawnBlackHole(
+  items: ItemBase[],
+  boardCols: number,
+  boardRows: number,
+  level: LevelConfig,
+  turnCounter: number,
+  totalBH: number,
+): ItemBase[] {
+  if ((level.maxBlackHoles ?? 0) <= totalBH) return items;
+
+  if (shouldSpawnBlackHole(level, turnCounter, totalBH)) {
+    return spawnBlackHole(items, boardCols, boardRows);
+  }
+
+  return items;
 }

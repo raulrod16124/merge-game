@@ -4,7 +4,7 @@ export function usePWAInstall() {
   const [promptEvent, setPromptEvent] = useState<any>(null);
 
   useEffect(() => {
-    const handler = (e: any) => {
+    const handler = (e: Event) => {
       e.preventDefault();
       setPromptEvent(e);
     };

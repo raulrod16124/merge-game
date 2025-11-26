@@ -15,6 +15,7 @@ body,
   padding-bottom: constant(safe-area-inset-bottom);
   --vw: 100vw;
   --vh: 100vh;
+  --font-display: 'Exo 2', sans-serif;
 }
 
 body {
@@ -26,7 +27,6 @@ body {
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #0b1220;
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
 }

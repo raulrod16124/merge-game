@@ -10,6 +10,7 @@ export type CosmicType =
   | 'mature_planet'
   | 'star'
   | 'star_system'
+  | 'supernova'
   | 'nebula'
   | 'galaxy'
   | 'fragment_dark'
@@ -23,6 +24,7 @@ export const COSMIC_ICONS: Record<CosmicType, string> = {
   mature_planet: `${import.meta.env.BASE_URL}cosmic/mature_planet.png`,
   star: `${import.meta.env.BASE_URL}cosmic/star.png`,
   star_system: `${import.meta.env.BASE_URL}cosmic/star_system.png`,
+  supernova: `${import.meta.env.BASE_URL}cosmic/supernova.png`,
   nebula: `${import.meta.env.BASE_URL}cosmic/nebula.png`,
   galaxy: `${import.meta.env.BASE_URL}cosmic/galaxy.png`,
   fragment_dark: `${import.meta.env.BASE_URL}cosmic/fragment_dark.png`,
@@ -37,6 +39,7 @@ export const COSMIC_TEXT: Record<CosmicType, string> = {
   mature_planet: 'Mature Planet',
   star: 'Star',
   star_system: 'Star System',
+  supernova: 'Supernova',
   nebula: 'Nebula',
   galaxy: 'Galaxy',
   fragment_dark: 'Fragment',

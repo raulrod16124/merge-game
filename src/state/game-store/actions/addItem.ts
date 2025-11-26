@@ -1,11 +1,11 @@
-// src/state/gameStore/actions/addItem.ts
+// src/state/game-store/actions/addItem.ts
 import type {StateCreator} from 'zustand';
 import type {GameStore} from '../index';
 import type {Pos, ItemBase} from '../../../core/types';
 
 export const createAddItem =
   (set: Parameters<StateCreator<GameStore>>[0], get: () => GameStore) =>
-  (pos: Pos) => {
+  async (pos: Pos) => {
     const {items, boardSize, nextItem} = get();
 
     const inside =
@@ -18,7 +18,11 @@ export const createAddItem =
     if (!inside || !free) return;
 
     const newItem: ItemBase = {
-      id: 'it_' + crypto.randomUUID(),
+      id:
+        'it_' +
+        (typeof crypto !== 'undefined' && crypto.randomUUID
+          ? crypto.randomUUID()
+          : `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`),
       type: nextItem,
       level: 1,
       pos,
@@ -31,7 +35,13 @@ export const createAddItem =
       moves: state.moves + 1,
     }));
 
-    get().processMergesAt(pos);
-    get().spawnNextItem();
-    get().stepEnemyMovement();
+    // 2) Procesar merges encadenados (ahora processMergesAt es async y garantiza terminar)
+    if (typeof get().processMergesAt === 'function') {
+      await get().processMergesAt(pos);
+    }
+
+    // 3) Terminar el turno (solo aquí, una vez por jugada)
+    if (typeof get().incrementTurn === 'function') {
+      get().incrementTurn();
+    }
   };

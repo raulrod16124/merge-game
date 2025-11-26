@@ -17,6 +17,9 @@
       {"type": "dust", "x": 3, "y": 3}
     ],
     "blockedCells": [],
+    "maxBlackHoles": 0,
+    "blackHoleSpawnRate": 0,
+    "blackHoleSpawnChance": 0,
     "mapAsset": "/cosmic/map01.png",
     "objective": [{"type": "create", "subject": "micro_asteroid", "target": 3}],
     "timerSeconds": 75
@@ -40,6 +43,9 @@
       {"type": "micro_asteroid", "x": 2, "y": 2}
     ],
     "blockedCells": [],
+    "maxBlackHoles": 0,
+    "blackHoleSpawnRate": 0,
+    "blackHoleSpawnChance": 0,
     "mapAsset": "/cosmic/map02.png",
     "objective": [{"type": "score", "target": 250}],
     "timerSeconds": 85
@@ -62,6 +68,9 @@
       {"type": "micro_asteroid", "x": 3, "y": 2}
     ],
     "blockedCells": [],
+    "maxBlackHoles": 0,
+    "blackHoleSpawnRate": 0,
+    "blackHoleSpawnChance": 0,
     "mapAsset": "/cosmic/map03.png",
     "objective": [{"type": "create", "subject": "meteorite", "target": 3}],
     "timerSeconds": 95
@@ -86,6 +95,9 @@
       {"type": "micro_asteroid", "x": 1, "y": 3}
     ],
     "blockedCells": [],
+    "maxBlackHoles": 0,
+    "blackHoleSpawnRate": 0,
+    "blackHoleSpawnChance": 0,
     "mapAsset": "/cosmic/map04.png",
     "objective": [{"type": "score", "target": 450}],
     "timerSeconds": 110
@@ -110,6 +122,9 @@
       {"type": "dust", "x": 1, "y": 3}
     ],
     "blockedCells": [],
+    "maxBlackHoles": 1,
+    "blackHoleSpawnRate": 5,
+    "blackHoleSpawnChance": 0.75,
     "mapAsset": "/cosmic/map05.png",
     "objective": [{"type": "create", "subject": "baby_planet", "target": 3}],
     "timerSeconds": 120
@@ -133,6 +148,9 @@
       {"type": "dust", "x": 2, "y": 3}
     ],
     "blockedCells": [],
+    "maxBlackHoles": 1,
+    "blackHoleSpawnRate": 5,
+    "blackHoleSpawnChance": 0.75,
     "mapAsset": "/cosmic/map06.png",
     "objective": [{"type": "score", "target": 1200}],
     "timerSeconds": 125
@@ -155,6 +173,9 @@
       {"type": "micro_asteroid", "x": 3, "y": 3}
     ],
     "blockedCells": [],
+    "maxBlackHoles": 1,
+    "blackHoleSpawnRate": 5,
+    "blackHoleSpawnChance": 0.75,
     "mapAsset": "/cosmic/map07.png",
     "objective": [{"type": "create", "subject": "mature_planet", "target": 1}],
     "timerSeconds": 135
@@ -177,6 +198,9 @@
       {"type": "meteorite", "x": 3, "y": 3}
     ],
     "blockedCells": [],
+    "maxBlackHoles": 1,
+    "blackHoleSpawnRate": 5,
+    "blackHoleSpawnChance": 0.75,
     "mapAsset": "/cosmic/map08.png",
     "objective": [{"type": "create", "subject": "star", "target": 1}],
     "timerSeconds": 145
@@ -199,6 +223,9 @@
       {"type": "meteorite", "x": 3, "y": 3}
     ],
     "blockedCells": [],
+    "maxBlackHoles": 1,
+    "blackHoleSpawnRate": 5,
+    "blackHoleSpawnChance": 0.75,
     "mapAsset": "/cosmic/map09.png",
     "objective": [{"type": "score", "target": 2000}],
     "timerSeconds": 150
@@ -222,6 +249,9 @@
       {"type": "meteorite", "x": 3, "y": 3}
     ],
     "blockedCells": [],
+    "maxBlackHoles": 1,
+    "blackHoleSpawnRate": 5,
+    "blackHoleSpawnChance": 0.75,
     "mapAsset": "/cosmic/map10.png",
     "objective": [{"type": "score", "target": 2500}],
     "timerSeconds": 160
@@ -245,6 +275,9 @@
       {"type": "star", "x": 3, "y": 3}
     ],
     "blockedCells": [],
+    "maxBlackHoles": 1,
+    "blackHoleSpawnRate": 5,
+    "blackHoleSpawnChance": 0.75,
     "mapAsset": "/cosmic/map11.png",
     "objective": [
       {"type": "score", "target": 2200},
@@ -272,6 +305,9 @@
       {"type": "star", "x": 3, "y": 3}
     ],
     "blockedCells": [],
+    "maxBlackHoles": 2,
+    "blackHoleSpawnRate": 4,
+    "blackHoleSpawnChance": 0.75,
     "mapAsset": "/cosmic/map12.png",
     "objective": [
       {"type": "score", "target": 2500},

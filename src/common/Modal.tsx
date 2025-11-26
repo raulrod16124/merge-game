@@ -97,12 +97,13 @@ export function Modal({open, title, message, buttons, onClose}: Props) {
             position: 'absolute',
             alignSelf: 'flex-end',
             cursor: 'pointer',
-            right: 40,
+            top: '3%',
+            right: '4%',
           }}
           onClick={onClose}
         />
         {title && <Title>{title}</Title>}
-        {message && <Text>{message}</Text>}
+        {typeof message === 'string' ? <Text>{message}</Text> : message}
 
         <BtnGroup>
           {buttons.map((btn, idx) => (

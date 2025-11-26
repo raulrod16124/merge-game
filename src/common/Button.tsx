@@ -8,13 +8,14 @@ type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'success' | 'fail';
 
 type ButtonProps = {
   children: React.ReactNode;
-  variant?: ButtonVariant;
+  variant: ButtonVariant;
   to?: string;
   onClick?: () => void;
   disabled?: boolean;
   fullWidth?: boolean;
   loading?: boolean;
   className?: string;
+  selected?: boolean;
   styles?: React.CSSProperties;
 };
 
@@ -61,7 +62,7 @@ const BaseButton = styled.button<{
   variant: ButtonVariant;
   fullWidth?: boolean;
 }>`
-  padding: 12px 20px;
+  padding: 12px 0;
   border-radius: 16px;
   border: none;
   cursor: pointer;
@@ -74,7 +75,9 @@ const BaseButton = styled.button<{
   gap: 8px;
   text-decoration: none;
 
-  ${({fullWidth}) => fullWidth && 'width: 100%;'}
+  ${({fullWidth}) => (fullWidth ? 'padding: 12px 0;' : 'padding: 12px 16px;')}
+
+  ${({fullWidth}) => (fullWidth ? 'width: 100%;' : 'width: auto;')}
 
   ${({variant}) => variantStyles[variant]}
 
@@ -100,9 +103,10 @@ export function Button({
   to,
   onClick,
   disabled,
-  fullWidth,
+  fullWidth = false,
   loading,
   className,
+  selected,
   styles,
 }: ButtonProps) {
   const content = loading ? 'Cargando...' : children;
@@ -112,7 +116,7 @@ export function Button({
       <BaseButton
         as={Link}
         to={to}
-        variant={variant}
+        variant={selected ? 'secondary' : variant}
         disabled={disabled}
         fullWidth={fullWidth}
         className={className}
@@ -124,7 +128,7 @@ export function Button({
 
   return (
     <BaseButton
-      variant={variant}
+      variant={selected ? 'secondary' : variant}
       disabled={disabled}
       onClick={onClick}
       fullWidth={fullWidth}

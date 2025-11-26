@@ -23,9 +23,18 @@ export const BoardContainer = styled.div`
   align-items: center;
 `;
 
+export const ItemsLayer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 30;
+`;
+
 export const Grid = styled.div<{cols: number; rows: number}>`
   width: var(--vw);
-  height: calc(var(--vh) - 220px);
+  height: calc(var(--vh) - 20dvh);
+  margin-top: 15dvh;
   overflow: hidden;
   display: grid;
 
@@ -35,7 +44,7 @@ export const Grid = styled.div<{cols: number; rows: number}>`
   );
   grid-template-rows: repeat(
     ${p => p.rows},
-    calc(var(--vh) / ${p => p.rows} - 36px)
+    calc(var(--vh) / ${p => p.rows} - 6vh)
   );
 `;
 
