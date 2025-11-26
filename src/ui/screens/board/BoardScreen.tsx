@@ -1,5 +1,5 @@
 // src/ui/screens/BoardScreen.tsx
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 
 import {LEVELS} from '@/data/levels';
@@ -34,7 +34,15 @@ export function BoardScreen() {
   const levelCoins = useGameStore(s => s.levelCoins);
   const stopTimer = useGameStore(s => s.stopTimer);
 
-  const player = usePlayerStore.getState();
+  // Selectores reactivos: obtenemos solo lo que necesitamos del store
+  const addXP = usePlayerStore(s => s.addXP);
+  const completedLevelUnlocks = usePlayerStore(s => s.completedLevelUnlocks);
+  const markLevelUnlocksAsCompleted = usePlayerStore(
+    s => s.markLevelUnlocksAsCompleted,
+  );
+
+  // Ref para evitar procesar varias veces el mismo levelResult
+  const processedLevelsRef = useRef<Set<string>>(new Set());
 
   const [modalState, setModalState] = useState<null | ModalState>(null);
   const [paused, setPaused] = useState(false);
@@ -68,63 +76,90 @@ export function BoardScreen() {
   }, [levelId, currentLevel, loadLevel, navigate]);
 
   // Listen to store
+  // Listen to levelResult and award XP / open unlock modal safely and idempotently
   useEffect(() => {
-    if (levelResult) {
-      setModalState(levelResult as React.SetStateAction<ModalState | null>);
+    if (!levelResult) return;
 
-      const lvlNum =
-        parseInt(levelResult.levelId.replace(/\D/g, ''), 10) || null;
-      if (
-        levelResult.status === 'win' &&
-        !unlockModalOpen &&
-        lvlNum !== null &&
-        !player.completedLevelUnlocks?.[lvlNum + 1]
-      ) {
-        // XP formula básica (puedes ajustarla luego)
-        const xpGained =
-          Math.floor(
-            (createdCounts?.star ?? 0) * 10 + (levelCoins ?? 0) * 0.2,
-          ) + 50;
+    // Protegemos usando levelId (si existe) para evitar doble procesamiento
+    const levelIdStr = levelResult.levelId ?? 'unknown';
+    if (processedLevelsRef.current.has(levelIdStr)) {
+      // Ya procesado: solo actualizamos modalState si es necesario
+      setModalState(levelResult as ModalState | null);
+      return;
+    }
 
-        player.addXP(xpGained + (LEVEL_XP_REWARD[lvlNum] ?? 50));
-        // === ACHIEVEMENTS: level win ===
-        const ach = useAchievementStore.getState();
+    setModalState(levelResult as ModalState | null);
 
-        const lvl = parseInt(levelResult.levelId.replace(/\D/g, ''), 10);
-        if (lvl === 10) ach.unlockAchievement('WIN_LEVEL_10');
-        if (lvl === 20) ach.unlockAchievement('WIN_LEVEL_20');
+    const lvlNum = parseInt(levelResult.levelId.replace(/\D/g, ''), 10) || null;
 
-        if (lvlNum) {
-          const unlock = LEVEL_UNLOCKS[lvlNum + 1];
-          if (unlock) {
-            // compute list for modal
-            const items: any[] = [];
-            if (unlock.powerups)
-              unlock.powerups.forEach((p: any) =>
-                items.push({kind: 'powerup', id: p, name: p}),
-              );
-            if (unlock.maps)
-              unlock.maps.forEach((m: any) =>
-                items.push({kind: 'map', id: m, name: m}),
-              );
-            if (unlock.coins)
-              items.push({
-                kind: 'coins',
-                amount: unlock.coins,
-                name: `${unlock.coins} coins`,
-              });
-            if (unlock.achievements)
-              unlock.achievements.forEach(a =>
-                items.push({kind: 'achievement', id: a, name: a}),
-              );
+    if (
+      levelResult.status === 'win' &&
+      !unlockModalOpen &&
+      lvlNum !== null &&
+      !completedLevelUnlocks?.[lvlNum + 1]
+    ) {
+      // Marcar como procesado inmediatamente para evitar reentradas
+      processedLevelsRef.current.add(levelIdStr);
 
-            setUnlockModalItems(items);
-            setUnlockModalOpen(true);
-          }
+      // XP formula (igual que antes)
+      const xpGained =
+        Math.floor((createdCounts?.star ?? 0) * 10 + (levelCoins ?? 0) * 0.2) +
+        50;
+
+      console.log(
+        'ADDXP (BoardScreen) - awarding XP:',
+        xpGained + (LEVEL_XP_REWARD[lvlNum] ?? 50),
+      );
+      addXP(xpGained + (LEVEL_XP_REWARD[lvlNum] ?? 50));
+
+      // === ACHIEVEMENTS: level win ===
+      const ach = useAchievementStore.getState();
+      if (lvlNum === 10) ach.unlockAchievement('WIN_LEVEL_10');
+      if (lvlNum === 20) ach.unlockAchievement('WIN_LEVEL_20');
+
+      // Unlock modal items (same lógica)
+      if (lvlNum) {
+        const unlock = LEVEL_UNLOCKS[lvlNum + 1];
+        if (unlock) {
+          const items: any[] = [];
+          if (unlock.powerups)
+            unlock.powerups.forEach((p: any) =>
+              items.push({kind: 'powerup', id: p, name: p}),
+            );
+          if (unlock.maps)
+            unlock.maps.forEach((m: any) =>
+              items.push({kind: 'map', id: m, name: m}),
+            );
+          if (unlock.coins)
+            items.push({
+              kind: 'coins',
+              amount: unlock.coins,
+              name: `${unlock.coins} coins`,
+            });
+          if (unlock.achievements)
+            unlock.achievements.forEach(a =>
+              items.push({kind: 'achievement', id: a, name: a}),
+            );
+
+          setUnlockModalItems(items);
+          setUnlockModalOpen(true);
         }
       }
+    } else {
+      // Si no es win o ya desbloqueado, igual marcamos como procesado para evitar reprocesos:
+      processedLevelsRef.current.add(levelIdStr);
     }
-  }, [levelResult, unlockModalOpen, player]);
+    // Dependencias intencionadas: reaccionar a cambios relevantes solamente.
+    // Notar: no incluimos el objeto entero del player para evitar efectos no controlados.
+  }, [
+    levelResult?.levelId,
+    levelResult?.status,
+    unlockModalOpen,
+    createdCounts?.star,
+    levelCoins,
+    addXP,
+    completedLevelUnlocks,
+  ]);
 
   useEffect(() => {
     return () => {
@@ -183,11 +218,10 @@ export function BoardScreen() {
               const lvlNum =
                 parseInt(levelResult.levelId.replace(/\D/g, ''), 10) || null;
               if (lvlNum !== null) {
-                usePlayerStore
-                  .getState()
-                  .markLevelUnlocksAsCompleted(lvlNum + 1);
+                markLevelUnlocksAsCompleted(lvlNum + 1);
               }
             }
+
             setUnlockModalOpen(false);
             setUnlockModalItems([]);
           }}

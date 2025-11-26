@@ -17,7 +17,6 @@ const Wrap = styled.div`
 
 export function FloatingAchievement({
   text,
-  onDone,
 }: {
   text: string;
   onDone: () => void;

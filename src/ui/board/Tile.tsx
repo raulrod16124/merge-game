@@ -1,5 +1,4 @@
 // src/ui/board/Tile.tsx
-import React from 'react';
 import {motion} from 'framer-motion';
 import type {ItemBase} from '../../core/types';
 import {COSMIC_ICONS} from '../constants';

@@ -11,7 +11,7 @@ export const createPowerups = (
    * (antes solo marcaba powerupUsed: true y no habilitaba el modo).
    */
   activatePowerup: (id: PowerupType) => {
-    const state = get();
+    get();
 
     console.log('Powerup activado (createPowerups):', id);
 

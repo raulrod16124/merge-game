@@ -13,7 +13,7 @@ export default function Settings() {
 
   const [sound, setSound] = useState(true);
   const [vibration, setVibration] = useState(true);
-  const [language, setLanguage] = useState('es');
+  const [language] = useState('es');
 
   return (
     <AppLayout title="Ajustes" showBack={true} prevRoute="/home">

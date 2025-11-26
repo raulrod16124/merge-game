@@ -138,38 +138,70 @@ export const usePlayerStore = create<PlayerProgressState>()(
         })),
 
       // --- Cosmic XP system ---
+      // --- Cosmic XP system ---
       addXP: (amount: number) => {
         const variant = get().avatarVariant;
         const prog = get().cosmicProgress[variant];
-        const xpNeeded = LEVEL_XP_TABLE[prog.level] ?? Infinity;
 
-        const totalXP = prog.xp + amount;
+        // total acumulado después de recibir 'amount'
+        const totalXP = (prog?.xp ?? 0) + amount;
 
-        // Si no sube de nivel
-        if (totalXP < xpNeeded) {
+        // Determine el nivel máximo definido en la tabla (por si acaso)
+        const levelKeys = Object.keys(LEVEL_XP_TABLE)
+          .map(k => parseInt(k, 10))
+          .filter(n => !Number.isNaN(n))
+          .sort((a, b) => a - b);
+
+        const maxDefinedLevel = levelKeys.length
+          ? levelKeys[levelKeys.length - 1]
+          : prog.level;
+
+        // Si no hay tabla o el nivel actual ya está en tope, almacenamos y salimos
+        if (!levelKeys.length) {
           set({
             cosmicProgress: {
               ...get().cosmicProgress,
-              [variant]: {...prog, xp: totalXP},
+              [variant]: {xp: totalXP, level: prog.level},
             },
           });
           return;
         }
 
-        // Subida de nivel
-        const newLevel = prog.level + 1;
-        const newXP = totalXP - xpNeeded;
+        // Encontrar el nivel más alto cuyo umbral acumulado sea <= totalXP
+        // (LEVEL_XP_TABLE contiene XP acumulado por nivel)
+        let newLevel = prog.level;
+        for (let i = 0; i < levelKeys.length; i++) {
+          const lvl = levelKeys[i];
+          const threshold = LEVEL_XP_TABLE[lvl] ?? Infinity;
+          if (totalXP >= threshold) {
+            newLevel = lvl;
+          } else {
+            break;
+          }
+        }
 
+        // Cap al máximo definido (por si totalXP supera la última entrada)
+        if (newLevel > maxDefinedLevel) newLevel = maxDefinedLevel;
+
+        // Guardamos xp como XP total acumulado (coherente con computeCosmicProgress)
         set({
           cosmicProgress: {
             ...get().cosmicProgress,
-            [variant]: {xp: newXP, level: newLevel},
+            [variant]: {xp: totalXP, level: newLevel},
           },
         });
 
-        // activar animación evolución
-        const evo = get().triggerCosmicEvolution;
-        evo && evo(newLevel);
+        // Si hubo subida de nivel (newLevel > prog.level) => disparar la animación/handler
+        if (newLevel > (prog.level ?? 0)) {
+          const evo = get().triggerCosmicEvolution;
+          if (typeof evo === 'function') {
+            try {
+              evo(newLevel);
+            } catch (e) {
+              console.warn('triggerCosmicEvolution handler threw', e);
+            }
+          }
+        }
       },
 
       hasAchievement: id => {

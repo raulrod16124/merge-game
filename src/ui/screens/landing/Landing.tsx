@@ -4,11 +4,7 @@ import {useNavigate} from 'react-router-dom';
 import {useState} from 'react';
 import {Modal} from '@/common/Modal';
 import {usePWAInstall} from '@/hooks/usePWAInstall';
-
-import {CosmicAura} from '@/ui/components/cosmic-avatar/CosmicAura';
-import {CosmicCore} from '@/ui/components/cosmic-avatar/CosmicCore';
-import {CosmicParticles} from '@/ui/components/cosmic-avatar/CosmicParticles';
-import {CosmicLogo, Wrapper} from './styles';
+import {Wrapper} from './styles';
 import {CosmicAvatar} from '@/ui/components/cosmic-avatar';
 
 export default function Landing() {

@@ -31,7 +31,7 @@ interface IProps {
 }
 
 export function CosmicParticles({count, color}: IProps) {
-  const particles = Array.from({length: count}).map((_, i) => ({
+  const particles = Array.from({length: count}).map(() => ({
     x: (Math.random() - 0.5) * 120,
     y: (Math.random() - 0.5) * 160,
     delay: Math.random() * 2,

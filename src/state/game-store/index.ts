@@ -363,9 +363,6 @@ export const useGameStore = create<GameStore>()(
         // === SUPERNOVA powerup ===
         if (ap === 'supernova') {
           const items = get().items;
-          const existing = items.find(
-            i => i.pos.x === pos.x && i.pos.y === pos.y,
-          );
 
           // remove existing object if present
           let newItems = items.filter(

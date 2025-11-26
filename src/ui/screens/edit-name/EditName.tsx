@@ -8,7 +8,7 @@ import {InputWrapper, Input} from './styles';
 
 export default function EditName() {
   const navigate = useNavigate();
-  const {name, userId} = useUserStore();
+  const {name} = useUserStore();
   const setStore = useUserStore.setState;
 
   const [value, setValue] = useState(name ?? '');

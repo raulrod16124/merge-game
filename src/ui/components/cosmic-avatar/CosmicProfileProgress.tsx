@@ -44,7 +44,9 @@ const XPLabel = styled.div`
 export default function CosmicProfileProgress() {
   const variant = useUserStore(u => u.avatar);
   const progress = usePlayerStore(s => s.cosmicProgress);
-  const activeVariant = (variant ?? 'hybrid') as AvatarVariant;
+  const activeVariant = variant
+    ? (Object.values(variant)[0] as AvatarVariant)
+    : ('hybrid' as AvatarVariant);
 
   const variantProgress = progress?.[activeVariant];
 
