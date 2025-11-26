@@ -31,7 +31,7 @@ export default function EditAvatar() {
   return (
     <AppLayout title="Editar Avatar" prevRoute="/profile">
       <PreviewArea>
-        <CosmicAvatar variant={temp} hideProgress={true} />
+        <CosmicAvatar hideProgress={true} />
       </PreviewArea>
 
       <VariantSelector>

@@ -63,31 +63,22 @@ const LevelNumber = styled.div`
 /* Small XP text under badge on hover is shown via title attribute (keeps it simple) */
 
 type Props = {
-  variant?: AvatarVariant;
   hideProgress?: boolean;
 };
 
-export function CosmicAvatar({variant, hideProgress}: Props) {
-  const userVariant = useUserStore(s => s.avatar?.variant);
+export function CosmicAvatar({hideProgress}: Props) {
   const progress = usePlayerStore(s => s.cosmicProgress);
-  const activeVariant = (variant ?? userVariant ?? 'hybrid') as AvatarVariant;
+  const activeVariant = usePlayerStore(s => s.avatarVariant);
+  const variantProgress = progress[activeVariant];
 
-  const variantProgress =
-    progress && progress[activeVariant]
-      ? progress[activeVariant]
-      : {xp: 0, level: 1};
-
-  const cosmicXP = variantProgress.xp ?? 0;
-  const cosmicLevel = variantProgress.level ?? 1;
+  const xp = variantProgress?.xp ?? 0;
+  const level = variantProgress?.level ?? 1;
 
   const profile =
-    COSMIC_EVOLUTION[activeVariant]?.[cosmicLevel] ??
+    COSMIC_EVOLUTION[activeVariant]?.[level] ??
     COSMIC_EVOLUTION[activeVariant]?.[1];
 
-  const {progressPercent, nextLevelXP} = computeCosmicProgress(
-    cosmicLevel,
-    cosmicXP,
-  );
+  const {progressPercent, nextLevelXP} = computeCosmicProgress(level, xp);
 
   // circle ring params
   const R = 20;
@@ -96,12 +87,12 @@ export function CosmicAvatar({variant, hideProgress}: Props) {
   const dash = (C * pct) / 100;
 
   const title = nextLevelXP
-    ? `Nivel ${cosmicLevel} — XP ${cosmicXP} / ${nextLevelXP}`
-    : `Nivel ${cosmicLevel} — XP ${cosmicXP} (máximo)`;
+    ? `Nivel ${level} — XP ${xp} / ${nextLevelXP}`
+    : `Nivel ${level} — XP ${xp} (máximo)`;
 
   return (
     <Wrapper>
-      <LevelUpBurst trigger={cosmicLevel} />
+      <LevelUpBurst trigger={level} />
       <CosmicParticles
         count={profile.particleCount}
         color={profile.auraColor}
@@ -150,7 +141,7 @@ export function CosmicAvatar({variant, hideProgress}: Props) {
               </defs>
             </g>
           </Ring>
-          <LevelNumber>{cosmicLevel}</LevelNumber>
+          <LevelNumber>{level}</LevelNumber>
         </BadgeWrap>
       )}
     </Wrapper>

@@ -40,7 +40,7 @@ export default function Login() {
 
       {/* PREVIEW */}
       <AvatarPreview>
-        <CosmicAvatar variant={variant} hideProgress={true} />
+        <CosmicAvatar hideProgress={true} />
       </AvatarPreview>
 
       {/* SELECTOR */}

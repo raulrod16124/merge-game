@@ -17,7 +17,7 @@ import CosmicMiniProgress from '@/ui/components/cosmic-avatar/CosmicMiniProgress
 
 export default function Home() {
   const navigate = useNavigate();
-  const {name, coins, avatar} = useUserStore();
+  const {name, coins} = useUserStore();
 
   return (
     <Container>
@@ -47,7 +47,7 @@ export default function Home() {
 
       <HeroArea>
         <GlowBackground />
-        <CosmicAvatar variant={avatar?.variant} />
+        <CosmicAvatar />
         {/* Cosmic progress mini HUD */}
         <CosmicMiniProgress />
 

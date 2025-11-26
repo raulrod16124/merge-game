@@ -21,14 +21,14 @@ import CosmicProfileProgress from '@/ui/components/cosmic-avatar/CosmicProfilePr
 
 export default function Profile() {
   const navigate = useNavigate();
-  const {name, avatar} = useUserStore();
+  const {name} = useUserStore();
 
   return (
     <AppLayout title="Perfil" showBack={true} prevRoute="/home">
       <Section>
         {/* Avatar con edit */}
         <AvatarWrapper>
-          <CosmicAvatar variant={avatar?.variant} />
+          <CosmicAvatar />
           <CosmicProfileProgress />
           <EditIcon onClick={() => navigate('/edit-avatar')}>
             <Pencil size={20} strokeWidth={2.4} color={COLORS.primary} />
