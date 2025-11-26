@@ -70,10 +70,16 @@ export const ScoreBadge = styled.div`
   color: #ffd700;
 `;
 
-export const Connector = styled.div`
+export const Connector = styled.svg`
   position: absolute;
-  top: -50px;
-  width: 2px;
-  height: 50px;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), transparent);
+  top: -80px;
+  width: 140px;
+  height: 90px;
+  overflow: visible;
+
+  path {
+    stroke: rgba(255, 255, 255, 0.4);
+    stroke-width: 2px;
+    fill: none;
+  }
 `;

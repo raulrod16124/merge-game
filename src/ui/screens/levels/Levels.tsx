@@ -13,6 +13,8 @@ export function Levels() {
   return (
     <AppLayout title="Mapa Cósmico" prevRoute="/home">
       <LevelsWrapper>
+        <div className="nebula" style={{top: '30%', left: '-20%'}} />
+        <div className="nebula" style={{top: '70%', right: '-15%'}} />
         {levels.map((lvl, i) => {
           const index = Number(lvl.id.replace('level', ''));
           const unlocked = index <= highestUnlocked;

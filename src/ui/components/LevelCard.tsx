@@ -35,7 +35,15 @@ export function LevelCard({
   return (
     <NodeWrapper $index={index}>
       {/* Conexión hacia el siguiente nodo */}
-      <Connector />
+      <Connector viewBox="0 0 140 90">
+        <path
+          d={
+            index % 2 === 0
+              ? 'M 70 90 C 20 40, 20 10, 70 0'
+              : 'M 70 90 C 120 40, 120 10, 70 0'
+          }
+        />
+      </Connector>
 
       <NodeCircle
         $unlocked={unlocked}

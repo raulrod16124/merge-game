@@ -40,6 +40,8 @@ export function BoardScreen() {
   const markLevelUnlocksAsCompleted = usePlayerStore(
     s => s.markLevelUnlocksAsCompleted,
   );
+  const newAchievements = usePlayerStore(s => s.newAchievements);
+  const clearNewAchievements = usePlayerStore(s => s.clearNewAchievements);
 
   // Ref para evitar procesar varias veces el mismo levelResult
   const processedLevelsRef = useRef<Set<string>>(new Set());
@@ -114,8 +116,8 @@ export function BoardScreen() {
 
       // === ACHIEVEMENTS: level win ===
       const ach = useAchievementStore.getState();
-      if (lvlNum === 10) ach.unlockAchievement('WIN_LEVEL_10');
-      if (lvlNum === 20) ach.unlockAchievement('WIN_LEVEL_20');
+      if (lvlNum === 10) ach.unlock('WIN_LEVEL_10');
+      if (lvlNum === 20) ach.unlock('WIN_LEVEL_20');
 
       // Unlock modal items (same lógica)
       if (lvlNum) {
@@ -234,12 +236,15 @@ export function BoardScreen() {
         <LevelCompleteModal
           coins={levelCoins || 0}
           fusionStats={fusionStats}
+          newAchievements={newAchievements}
           onNextLevel={nextLevelId => {
+            clearNewAchievements();
             handleCloseModal();
             setLevelResult(null);
             navigate(`/play/${nextLevelId}`);
           }}
           onContinue={() => {
+            clearNewAchievements();
             handleCloseModal();
             setLevelResult(null);
           }}

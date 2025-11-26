@@ -26,8 +26,8 @@ const Bar = styled.div`
   position: relative;
 `;
 
-const Fill = styled.div<{pct: number}>`
-  width: ${({pct}) => pct}%;
+const Fill = styled.div<{$pct: number}>`
+  width: ${({$pct}) => $pct}%;
   height: 100%;
   background: linear-gradient(90deg, #ffb844, #ffe6b3);
   transition: width 0.35s ease;
@@ -58,7 +58,7 @@ export default function CosmicProfileProgress() {
       <Title>Nivel Cósmico {level}</Title>
 
       <Bar>
-        <Fill pct={progressPercent} />
+        <Fill $pct={progressPercent} />
       </Bar>
 
       <XPLabel>

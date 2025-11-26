@@ -59,8 +59,8 @@ const variantStyles = {
 };
 
 const BaseButton = styled.button<{
-  variant: ButtonVariant;
-  fullWidth?: boolean;
+  $variant: ButtonVariant;
+  $fullWidth?: boolean;
 }>`
   padding: 12px 0;
   border-radius: 16px;
@@ -75,11 +75,11 @@ const BaseButton = styled.button<{
   gap: 8px;
   text-decoration: none;
 
-  ${({fullWidth}) => (fullWidth ? 'padding: 12px 0;' : 'padding: 12px 16px;')}
+  ${({$fullWidth}) => ($fullWidth ? 'padding: 12px 0;' : 'padding: 12px 16px;')}
 
-  ${({fullWidth}) => (fullWidth ? 'width: 100%;' : 'width: auto;')}
+  ${({$fullWidth}) => ($fullWidth ? 'width: 100%;' : 'width: auto;')}
 
-  ${({variant}) => variantStyles[variant]}
+  ${({$variant}) => variantStyles[$variant]}
 
   &:hover {
     transform: translateY(-2px);
@@ -116,9 +116,9 @@ export function Button({
       <BaseButton
         as={Link}
         to={to}
-        variant={selected ? 'secondary' : variant}
+        $variant={selected ? 'secondary' : variant}
         disabled={disabled}
-        fullWidth={fullWidth}
+        $fullWidth={fullWidth}
         className={className}
         style={styles}>
         {content}
@@ -128,10 +128,10 @@ export function Button({
 
   return (
     <BaseButton
-      variant={selected ? 'secondary' : variant}
+      $variant={selected ? 'secondary' : variant}
       disabled={disabled}
       onClick={onClick}
-      fullWidth={fullWidth}
+      $fullWidth={fullWidth}
       className={className}
       style={styles}>
       {content}
