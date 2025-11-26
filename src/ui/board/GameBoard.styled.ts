@@ -31,7 +31,7 @@ export const ItemsLayer = styled.div`
   z-index: 30;
 `;
 
-export const Grid = styled.div<{cols: number; rows: number}>`
+export const Grid = styled.div<{$cols: number; $rows: number}>`
   width: var(--vw);
   height: calc(var(--vh) - 20dvh);
   margin-top: 15dvh;
@@ -39,12 +39,12 @@ export const Grid = styled.div<{cols: number; rows: number}>`
   display: grid;
 
   grid-template-columns: repeat(
-    ${p => p.cols},
-    calc(var(--vw) / ${p => p.cols})
+    ${p => p.$cols},
+    calc(var(--vw) / ${p => p.$cols})
   );
   grid-template-rows: repeat(
-    ${p => p.rows},
-    calc(var(--vh) / ${p => p.rows} - 6vh)
+    ${p => p.$rows},
+    calc(var(--vh) / ${p => p.$rows} - 6vh)
   );
 `;
 

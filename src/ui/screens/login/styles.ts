@@ -58,7 +58,7 @@ export const SelectorGrid = styled.div`
   margin-bottom: 12px;
 `;
 
-export const OptionCard = styled.button<{active: boolean}>`
+export const OptionCard = styled.button<{$active: boolean}>`
   padding: 14px 10px;
   border-radius: 14px;
   font-weight: 700;
@@ -66,10 +66,10 @@ export const OptionCard = styled.button<{active: boolean}>`
   border: none;
   font-size: 0.9rem;
 
-  background: ${({active}) =>
-    active ? COLORS.secondary : COLORS.tertiaryDark};
+  background: ${({$active}) =>
+    $active ? COLORS.secondary : COLORS.tertiaryDark};
 
-  color: ${({active}) => (active ? COLORS.white : '#CCC')};
+  color: ${({$active}) => ($active ? COLORS.white : '#CCC')};
 
   transition: 0.15s;
 

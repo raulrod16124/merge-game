@@ -1,10 +1,12 @@
 // src/state/player-store/index.ts
 import {create} from 'zustand';
-import {createJSONStorage, persist} from 'zustand/middleware';
 import type {PowerupType} from '@/core/types';
 import {LEVEL_UNLOCKS} from '@/data/levelUnlocks';
 import {ACHIEVEMENTS} from '@/data/achievements';
 import {LEVEL_XP_TABLE} from '@/data/cosmicLevels';
+import {doc, setDoc, getDoc, serverTimestamp} from 'firebase/firestore';
+import {db} from '@/core/firebase';
+import {useUserStore} from '@/state/user-store';
 
 export type AchievementId = string;
 
@@ -14,12 +16,13 @@ export type AchievementDef = {
   desc: string;
   reward?: {coins?: number; powerups?: PowerupType[]; maps?: string[]};
   trigger: 'merge' | 'powerup' | 'level' | 'misc';
-  subject?: string; // e.g. cosmic type or powerup id
-  count?: number; // optional threshold
+  subject?: string;
+  count?: number;
 };
 
+const CACHE_KEY = 'player_progress_cache';
+
 export type PlayerProgressState = {
-  // basic progression
   highestLevelUnlocked: number;
   unlockedPowerups: PowerupType[];
   unlockedMaps: string[];
@@ -34,19 +37,18 @@ export type PlayerProgressState = {
   lastEvolutionLevel: number | null;
   completedLevelUnlocks: Record<number, boolean>;
 
-  // helpers
-  unlockLevel: (level: number) => void;
-  applyLevelUnlocks: (level: number) => void;
+  unlockLevel: (lvl: number) => void;
+  applyLevelUnlocks: (lvl: number) => void;
   unlockPowerup: (p: PowerupType) => void;
-  unlockMap: (mapId: string) => void;
+  unlockMap: (id: string) => void;
   addCoins: (amt: number) => void;
-  markLevelUnlocksAsCompleted: (level: number) => void;
+  markLevelUnlocksAsCompleted: (lvl: number) => void;
 
   triggerCosmicEvolution: ((lvl: number) => void) | null;
   setEvolutionHandler: (fn: (lvl: number) => void) => void;
-  addXP: (amount: number) => void;
+  addXP: (amt: number) => void;
+  updateLeaderboardScores: () => Promise<void>;
 
-  // achievements
   hasAchievement: (id: AchievementId) => boolean;
   grantAchievement: (id: AchievementId) => void;
   checkAchievements: (event: {
@@ -55,14 +57,346 @@ export type PlayerProgressState = {
     value?: any;
   }) => void;
 
-  // persistence / sync stubs for Firebase (no-op for now)
-  syncToFirebase: (userId: string) => Promise<void>;
-  loadFromFirebase: (userId: string) => Promise<void>;
+  syncToFirebase: () => Promise<void>;
+  loadFromFirebase: () => Promise<void>;
+  resetToInitialState: () => void;
+  loadFromCache: () => void;
+  saveCache: () => void;
 };
 
-export const usePlayerStore = create<PlayerProgressState>()(
-  persist(
-    (set, get) => ({
+export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
+  highestLevelUnlocked: 1,
+  unlockedPowerups: [],
+  unlockedMaps: [],
+  achievements: {},
+  coins: 0,
+  cosmicProgress: {
+    humanoid: {xp: 0, level: 1},
+    abstract: {xp: 0, level: 1},
+    hybrid: {xp: 0, level: 1},
+  },
+  avatarVariant: 'humanoid',
+  lastEvolutionLevel: null,
+  completedLevelUnlocks: {},
+  triggerCosmicEvolution: null,
+
+  // -----------------------------
+  // OFFLINE CACHE SYSTEM
+  // -----------------------------
+  loadFromCache: () => {
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      set(data);
+    } catch (e) {
+      console.warn('Failed loading player cache', e);
+    }
+  },
+
+  saveCache: () => {
+    const data = get();
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+    } catch {
+      /* ignore quota errors */
+    }
+  },
+
+  // -----------------------------
+  setEvolutionHandler: fn => set({triggerCosmicEvolution: fn}),
+
+  unlockLevel: lvl => {
+    set(s => ({
+      highestLevelUnlocked: Math.max(s.highestLevelUnlocked, lvl),
+    }));
+    get().saveCache();
+    get().syncToFirebase();
+    get().updateLeaderboardScores();
+  },
+
+  applyLevelUnlocks: lvl => {
+    const unlock = LEVEL_UNLOCKS[lvl];
+    if (!unlock) return;
+
+    const {powerups, maps, achievements: achs, coins} = unlock;
+
+    set(state => {
+      const newPw = Array.isArray(powerups)
+        ? Array.from(new Set([...state.unlockedPowerups, ...powerups]))
+        : state.unlockedPowerups;
+
+      const newMaps = Array.isArray(maps)
+        ? Array.from(new Set([...state.unlockedMaps, ...maps]))
+        : state.unlockedMaps;
+
+      const newAchievements = {...state.achievements};
+      if (Array.isArray(achs)) {
+        for (const a of achs) newAchievements[a] = true;
+      }
+
+      return {
+        unlockedPowerups: newPw,
+        unlockedMaps: newMaps,
+        achievements: newAchievements,
+        coins: state.coins + (typeof coins === 'number' ? coins : 0),
+      };
+    });
+
+    get().saveCache();
+    get().syncToFirebase();
+    useUserStore.getState().syncToFirebase();
+    get().updateLeaderboardScores();
+  },
+
+  markLevelUnlocksAsCompleted: lvl => {
+    set(s => ({
+      completedLevelUnlocks: {...s.completedLevelUnlocks, [lvl]: true},
+    }));
+    get().saveCache();
+    get().syncToFirebase();
+  },
+
+  unlockPowerup: p =>
+    set(s => ({
+      unlockedPowerups: Array.from(new Set([...s.unlockedPowerups, p])),
+    })),
+
+  unlockMap: id =>
+    set(s => ({
+      unlockedMaps: Array.from(new Set([...s.unlockedMaps, id])),
+    })),
+
+  addCoins: amt => {
+    set(s => ({coins: Math.max(0, s.coins + amt)}));
+    get().saveCache();
+    get().syncToFirebase();
+    useUserStore.getState().syncToFirebase();
+    get().updateLeaderboardScores();
+  },
+
+  // -----------------------------
+  // COSMIC XP SYSTEM
+  // -----------------------------
+  addXP: amt => {
+    const variant = get().avatarVariant;
+    const prog = get().cosmicProgress[variant];
+    const totalXP = prog.xp + amt;
+
+    const levelKeys = Object.keys(LEVEL_XP_TABLE).map(n => parseInt(n, 10));
+    const maxDefinedLevel = Math.max(...levelKeys);
+
+    let newLevel = prog.level;
+    for (const lvl of levelKeys) {
+      if (totalXP >= LEVEL_XP_TABLE[lvl]) newLevel = lvl;
+    }
+
+    if (newLevel > maxDefinedLevel) newLevel = maxDefinedLevel;
+
+    set({
+      cosmicProgress: {
+        ...get().cosmicProgress,
+        [variant]: {xp: totalXP, level: newLevel},
+      },
+    });
+
+    if (newLevel > prog.level) {
+      const evo = get().triggerCosmicEvolution;
+      evo?.(newLevel);
+    }
+
+    get().saveCache();
+    get().syncToFirebase();
+    get().updateLeaderboardScores();
+  },
+
+  // -----------------------------
+  // RANKING
+  // -----------------------------
+  updateLeaderboardScores: async () => {
+    const uid = useUserStore.getState().uid;
+    const name = useUserStore.getState().name;
+    const avatar = useUserStore.getState().avatar;
+
+    if (!uid) return;
+
+    const state = get();
+
+    // Ranking 1: Global
+    const rankScoreGlobal =
+      state.highestLevelUnlocked * 100000 + (state.coins ?? 0);
+
+    // Ranking 2: Mayor nivel de ser cósmico
+    // Puede ser del avatar activo o el mayor de todos
+    const cosmicLevels = [
+      state.cosmicProgress.humanoid.level,
+      state.cosmicProgress.abstract.level,
+      state.cosmicProgress.hybrid.level,
+    ];
+    const rankCosmicLevel = Math.max(...cosmicLevels);
+
+    // Ranking 3: XP total combinada entre variantes
+    const totalXP =
+      state.cosmicProgress.humanoid.xp +
+      state.cosmicProgress.abstract.xp +
+      state.cosmicProgress.hybrid.xp;
+    const rankTotalCosmicXP = totalXP;
+
+    try {
+      await setDoc(
+        doc(db, 'leaderboard', uid),
+        {
+          uid,
+          name: name ?? 'Unknown',
+          avatar: avatar ?? {variant: 'hybrid'},
+
+          // Valores exportados al ranking
+          rankScoreGlobal,
+          rankCosmicLevel,
+          rankTotalCosmicXP,
+
+          // Datos informativos
+          highestLevelUnlocked: state.highestLevelUnlocked,
+          coins: state.coins,
+
+          updatedAt: serverTimestamp(),
+        },
+        {merge: true},
+      );
+    } catch (e) {
+      console.warn('Leaderboard update failed', e);
+    }
+  },
+
+  // -----------------------------
+  // ACHIEVEMENTS
+  // -----------------------------
+  hasAchievement: id => {
+    return Boolean(get().achievements[id]);
+  },
+
+  grantAchievement: id => {
+    const list = ACHIEVEMENTS; // array
+    const def = list.find(a => a.id === id); // buscar achievement por id
+
+    if (!def) {
+      console.warn('Achievement definition not found for ID:', id);
+      return;
+    }
+
+    set(state => {
+      if (state.achievements[id]) return {};
+
+      // Notificación visual en HUD
+      import('@/state/hud-store').then(mod => {
+        mod.useHudStore.getState().push(`Logro desbloqueado: ${def.title}`);
+      });
+
+      // Marcar achievement como logrado
+      const updated = {...state.achievements, [id]: true};
+
+      // Aplicar recompensas
+      const reward = def.reward ?? {};
+      const coinsGain = reward.coins ?? 0;
+      const powerupsGain = reward.powerups ?? [];
+      const mapsGain = reward.maps ?? [];
+
+      return {
+        achievements: updated,
+        coins: (state.coins ?? 0) + coinsGain,
+        unlockedPowerups: Array.from(
+          new Set([...state.unlockedPowerups, ...powerupsGain]),
+        ),
+        unlockedMaps: Array.from(new Set([...state.unlockedMaps, ...mapsGain])),
+      };
+    });
+
+    get().saveCache();
+    get().syncToFirebase();
+    useUserStore.getState().syncToFirebase();
+    get().updateLeaderboardScores();
+  },
+
+  checkAchievements: ({type, value}) => {
+    const state = get();
+
+    for (const def of ACHIEVEMENTS) {
+      // Ya desbloqueado → ignorar
+      if (state.achievements[def.id]) continue;
+
+      // Coincide el tipo
+      if (def.condition.type !== type) continue;
+
+      // Achievement sin valor → se desbloquea por tipo
+      if (!('value' in def.condition) || def.condition.value === undefined) {
+        get().grantAchievement(def.id);
+        continue;
+      }
+
+      // Tiene valor → debe coincidir
+      if (def.condition.value === value) {
+        get().grantAchievement(def.id);
+      }
+    }
+  },
+
+  // -----------------------------
+  // FIREBASE SYNC
+  // -----------------------------
+  syncToFirebase: async () => {
+    const uid = useUserStore.getState().uid;
+    if (!uid) return;
+
+    const s = get();
+
+    const payload = {
+      highestLevelUnlocked: s.highestLevelUnlocked,
+      unlockedPowerups: s.unlockedPowerups,
+      unlockedMaps: s.unlockedMaps,
+      achievements: s.achievements,
+      coins: s.coins,
+      cosmicProgress: s.cosmicProgress,
+      avatarVariant: s.avatarVariant,
+      completedLevelUnlocks: s.completedLevelUnlocks,
+      lastEvolutionLevel: s.lastEvolutionLevel,
+      lastUpdated: serverTimestamp(),
+    };
+
+    try {
+      await setDoc(doc(db, 'progress', uid), payload, {merge: true});
+    } catch {}
+  },
+
+  loadFromFirebase: async () => {
+    const uid = useUserStore.getState().uid;
+    if (!uid) return;
+
+    try {
+      const snap = await getDoc(doc(db, 'progress', uid));
+      if (!snap.exists()) return;
+
+      const data = snap.data();
+
+      set({
+        highestLevelUnlocked: data.highestLevelUnlocked ?? 1,
+        unlockedPowerups: data.unlockedPowerups ?? [],
+        unlockedMaps: data.unlockedMaps ?? [],
+        achievements: data.achievements ?? {},
+        coins: data.coins ?? 0,
+        cosmicProgress: data.cosmicProgress ?? get().cosmicProgress,
+        avatarVariant: data.avatarVariant ?? get().avatarVariant,
+        completedLevelUnlocks: data.completedLevelUnlocks ?? {},
+        lastEvolutionLevel: data.lastEvolutionLevel ?? null,
+      });
+
+      get().saveCache();
+    } catch (e) {
+      console.warn('loadFromFirebase failed', e);
+    }
+  },
+
+  resetToInitialState: () =>
+    set({
       highestLevelUnlocked: 1,
       unlockedPowerups: [],
       unlockedMaps: [],
@@ -74,215 +408,8 @@ export const usePlayerStore = create<PlayerProgressState>()(
         hybrid: {xp: 0, level: 1},
       },
       avatarVariant: 'humanoid',
-      triggerCosmicEvolution: null,
       lastEvolutionLevel: null,
       completedLevelUnlocks: {},
-
-      setEvolutionHandler: fn => set({triggerCosmicEvolution: fn}),
-
-      unlockLevel: (level: number) =>
-        set(state => ({
-          highestLevelUnlocked: Math.max(state.highestLevelUnlocked, level),
-        })),
-
-      applyLevelUnlocks: (level: number) => {
-        const unlock = (LEVEL_UNLOCKS as Record<number, any>)[level];
-        if (!unlock) return;
-
-        const {powerups, maps, achievements: achs, coins} = unlock as any;
-
-        set(state => {
-          const newPowerups = Array.isArray(powerups)
-            ? Array.from(new Set([...state.unlockedPowerups, ...powerups]))
-            : state.unlockedPowerups;
-
-          const newMaps = Array.isArray(maps)
-            ? Array.from(new Set([...state.unlockedMaps, ...maps]))
-            : state.unlockedMaps;
-
-          const newAchievements = {...state.achievements};
-          if (Array.isArray(achs)) {
-            for (const a of achs) newAchievements[a] = true;
-          }
-
-          return {
-            unlockedPowerups: newPowerups,
-            unlockedMaps: newMaps,
-            achievements: newAchievements,
-            coins: state.coins + (typeof coins === 'number' ? coins : 0),
-          };
-        });
-      },
-
-      markLevelUnlocksAsCompleted: (level: number) =>
-        set(state => ({
-          completedLevelUnlocks: {
-            ...state.completedLevelUnlocks,
-            [level]: true,
-          },
-        })),
-
-      unlockPowerup: (p: PowerupType) =>
-        set(state => ({
-          unlockedPowerups: Array.from(new Set([...state.unlockedPowerups, p])),
-        })),
-
-      unlockMap: (mapId: string) =>
-        set(state => ({
-          unlockedMaps: Array.from(new Set([...state.unlockedMaps, mapId])),
-        })),
-
-      addCoins: amt =>
-        set(state => ({
-          coins: Math.max(0, (state.coins ?? 0) + amt),
-        })),
-
-      // --- Cosmic XP system ---
-      // --- Cosmic XP system ---
-      addXP: (amount: number) => {
-        const variant = get().avatarVariant;
-        const prog = get().cosmicProgress[variant];
-
-        // total acumulado después de recibir 'amount'
-        const totalXP = (prog?.xp ?? 0) + amount;
-
-        // Determine el nivel máximo definido en la tabla (por si acaso)
-        const levelKeys = Object.keys(LEVEL_XP_TABLE)
-          .map(k => parseInt(k, 10))
-          .filter(n => !Number.isNaN(n))
-          .sort((a, b) => a - b);
-
-        const maxDefinedLevel = levelKeys.length
-          ? levelKeys[levelKeys.length - 1]
-          : prog.level;
-
-        // Si no hay tabla o el nivel actual ya está en tope, almacenamos y salimos
-        if (!levelKeys.length) {
-          set({
-            cosmicProgress: {
-              ...get().cosmicProgress,
-              [variant]: {xp: totalXP, level: prog.level},
-            },
-          });
-          return;
-        }
-
-        // Encontrar el nivel más alto cuyo umbral acumulado sea <= totalXP
-        // (LEVEL_XP_TABLE contiene XP acumulado por nivel)
-        let newLevel = prog.level;
-        for (let i = 0; i < levelKeys.length; i++) {
-          const lvl = levelKeys[i];
-          const threshold = LEVEL_XP_TABLE[lvl] ?? Infinity;
-          if (totalXP >= threshold) {
-            newLevel = lvl;
-          } else {
-            break;
-          }
-        }
-
-        // Cap al máximo definido (por si totalXP supera la última entrada)
-        if (newLevel > maxDefinedLevel) newLevel = maxDefinedLevel;
-
-        // Guardamos xp como XP total acumulado (coherente con computeCosmicProgress)
-        set({
-          cosmicProgress: {
-            ...get().cosmicProgress,
-            [variant]: {xp: totalXP, level: newLevel},
-          },
-        });
-
-        // Si hubo subida de nivel (newLevel > prog.level) => disparar la animación/handler
-        if (newLevel > (prog.level ?? 0)) {
-          const evo = get().triggerCosmicEvolution;
-          if (typeof evo === 'function') {
-            try {
-              evo(newLevel);
-            } catch (e) {
-              console.warn('triggerCosmicEvolution handler threw', e);
-            }
-          }
-        }
-      },
-
-      hasAchievement: id => {
-        const s = get();
-        return Boolean(s.achievements?.[id]);
-      },
-
-      grantAchievement: id => {
-        set(state => {
-          if (state.achievements?.[id]) return {};
-
-          import('@/state/hud-store').then(mod => {
-            mod.useHudStore.getState().push(`Logro desbloqueado: ${id}`);
-          });
-
-          const next = {...(state.achievements || {})};
-          next[id] = true;
-          // apply reward if achievement is defined
-          const def = (ACHIEVEMENTS as Record<string, any>)[id];
-          const reward = def?.reward;
-          let coinsGain = 0;
-          const pwToUnlock: PowerupType[] = [];
-          const mapsToUnlock: string[] = [];
-          if (reward) {
-            if (typeof reward.coins === 'number') coinsGain = reward.coins;
-            if (Array.isArray(reward.powerups))
-              pwToUnlock.push(...reward.powerups);
-            if (Array.isArray(reward.maps)) mapsToUnlock.push(...reward.maps);
-          }
-
-          return {
-            achievements: next,
-            coins: (state.coins ?? 0) + coinsGain,
-            unlockedPowerups: Array.from(
-              new Set([...state.unlockedPowerups, ...pwToUnlock]),
-            ),
-            unlockedMaps: Array.from(
-              new Set([...state.unlockedMaps, ...mapsToUnlock]),
-            ),
-          };
-        });
-      },
-
-      checkAchievements: event => {
-        // event: {type, subject, value}
-        const defs = ACHIEVEMENTS as Record<string, any>;
-        for (const id of Object.keys(defs)) {
-          const def = defs[id] as AchievementDef;
-          if (!def) continue;
-          if (get().hasAchievement(def.id)) continue;
-
-          // quick rule matching
-          if (def.trigger !== event.type) continue;
-          if (def.subject && def.subject !== event.subject) continue;
-
-          // count-based: if def.count provided, event.value must be >= count
-          if (typeof def.count === 'number') {
-            if (typeof event.value === 'number' && event.value >= def.count) {
-              get().grantAchievement(def.id);
-            }
-            continue;
-          }
-
-          // otherwise simple trigger
-          get().grantAchievement(def.id);
-        }
-      },
-
-      syncToFirebase: async _userId => {
-        // placeholder: implement later
-        return Promise.resolve();
-      },
-
-      loadFromFirebase: async _userId => {
-        // placeholder
-        return Promise.resolve();
-      },
+      triggerCosmicEvolution: null,
     }),
-    {
-      name: 'player-progress', // localStorage key
-      storage: createJSONStorage(() => localStorage),
-    },
-  ),
-);
+}));

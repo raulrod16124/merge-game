@@ -66,7 +66,7 @@ export const Overlay = styled.div`
   z-index: 58;
 `;
 
-export const SidePanel = styled.div<{open: boolean}>`
+export const SidePanel = styled.div<{$open: boolean}>`
   position: fixed;
   top: 0;
   right: 0;
@@ -85,7 +85,7 @@ export const SidePanel = styled.div<{open: boolean}>`
   border-left: 2px solid rgba(180, 160, 255, 0.28);
   box-shadow: -6px 0 25px rgba(0, 0, 0, 0.35);
 
-  transform: translateX(${p => (p.open ? '0' : '110%')});
+  transform: translateX(${p => (p.$open ? '0' : '110%')});
   transition: transform 240ms cubic-bezier(0.3, 0.7, 0.2, 1.1);
 
   display: flex;

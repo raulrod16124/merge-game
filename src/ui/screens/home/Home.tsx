@@ -12,7 +12,7 @@ import {
 } from './styles';
 
 import {CosmicAvatar} from '@/ui/components/cosmic-avatar';
-import {User, Settings, ShoppingBag, Coins, Award} from 'lucide-react';
+import {User, Settings, ShoppingBag, Coins, Award, Trophy} from 'lucide-react';
 import CosmicMiniProgress from '@/ui/components/cosmic-avatar/CosmicMiniProgress';
 
 export default function Home() {
@@ -32,6 +32,9 @@ export default function Home() {
           </button>
           <button onClick={() => navigate('/achievements')}>
             <Award size={22} strokeWidth={2.4} />
+          </button>
+          <button onClick={() => navigate('/ranking')}>
+            <Trophy size={22} strokeWidth={2.4} />
           </button>
           <button onClick={() => navigate('/settings')}>
             <Settings size={22} strokeWidth={2.4} />

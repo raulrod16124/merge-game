@@ -53,7 +53,7 @@ export function GameBoard() {
         transition={{duration: 0.28}}
         style={{width: '100%', height: '100%'}}>
         <BoardContainer>
-          <Grid cols={cols} rows={rows}>
+          <Grid $cols={cols} $rows={rows}>
             {Array.from({length: cols * rows}).map((_, index) => {
               const x = index % cols;
               const y = Math.floor(index / cols);
