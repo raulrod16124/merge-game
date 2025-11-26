@@ -8,8 +8,6 @@ import {AbstractShape} from './AbstractShape';
 import {HumanoidShape} from './HumanoidShape';
 import {HybridShape} from './HybridShape';
 
-import type {AvatarVariant} from './types';
-import {useUserStore} from '@/state/user-store';
 import {usePlayerStore} from '@/state/player-store';
 import {COSMIC_EVOLUTION} from '@/data/cosmicEvolution';
 import {computeCosmicProgress} from '@/data/cosmicXP';

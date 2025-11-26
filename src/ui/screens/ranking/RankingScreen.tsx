@@ -1,5 +1,4 @@
 import {useEffect, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
 import AppLayout from '@/ui/layout';
 
 import {Trophy, Star, Award} from 'lucide-react';

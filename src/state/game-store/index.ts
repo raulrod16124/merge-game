@@ -768,7 +768,7 @@ export const useGameStore = create<GameStore>()(
 
         const initial = lvl.initialMap.map((s, idx) => ({
           id: `init_${idx}_${Date.now()}`,
-          type: s.type,
+          type: s.type as CosmicType,
           level: 1,
           pos: {x: s.x, y: s.y},
           createdAt: Date.now(),
