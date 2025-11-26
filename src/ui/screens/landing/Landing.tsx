@@ -48,7 +48,7 @@ export default function Landing() {
   return (
     <>
       <Wrapper>
-        <CosmicAvatar variant="hybrid" hideProgress={true} />
+        <CosmicAvatar hideProgress={true} />
 
         <h1>Stellar Merge</h1>
         <p>Crea, fusiona y da forma al universo.</p>

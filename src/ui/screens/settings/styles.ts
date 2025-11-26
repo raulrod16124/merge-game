@@ -41,11 +41,12 @@ export const Label = styled.span`
   font-weight: 600;
 `;
 
-export const Toggle = styled.div<{active: boolean}>`
+export const Toggle = styled.div<{$active: boolean}>`
   font-size: 0.9rem;
   padding: 4px 10px;
   border-radius: 8px;
-  background: ${({active}) => (active ? COLORS.successDark : COLORS.failDark)};
+  background: ${({$active}) =>
+    $active ? COLORS.successDark : COLORS.failDark};
   color: white;
 `;
 

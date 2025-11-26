@@ -1,6 +1,8 @@
+// src/ui/screens/login/Login.tsx
 import {useState, useEffect} from 'react';
 import {useUserStore} from '@/state/user-store';
 import {useNavigate} from 'react-router-dom';
+
 import {CosmicAvatar} from '@/ui/components/cosmic-avatar';
 import {Button} from '@/common/Button';
 
@@ -9,19 +11,26 @@ import type {AvatarVariant} from '@/ui/components/cosmic-avatar/types';
 
 export default function Login() {
   const [name, setName] = useState('');
-  const [variant, setVariant] = useState('hybrid');
+  const [variant, setVariant] = useState<AvatarVariant>('hybrid');
 
   const authenticated = useUserStore(s => s.authenticated);
   const authenticate = useUserStore(s => s.authenticate);
+
   const navigate = useNavigate();
 
   useEffect(() => {
     if (authenticated) navigate('/home');
-  }, [authenticated]);
+  }, [authenticated, navigate]);
 
-  const handleEnter = () => {
+  const handleEnter = async () => {
     if (!name.trim()) return;
-    authenticate(name.trim(), variant as AvatarVariant);
+
+    try {
+      await authenticate(name.trim(), variant);
+      navigate('/home');
+    } catch (err) {
+      console.error('Login error:', err);
+    }
   };
 
   return (
@@ -31,25 +40,25 @@ export default function Login() {
 
       {/* PREVIEW */}
       <AvatarPreview>
-        <CosmicAvatar variant={variant as AvatarVariant} hideProgress={true} />
+        <CosmicAvatar hideProgress={true} />
       </AvatarPreview>
 
       {/* SELECTOR */}
       <SelectorGrid>
         <OptionCard
-          active={variant === 'abstract'}
+          $active={variant === 'abstract'}
           onClick={() => setVariant('abstract')}>
           Abstracto
         </OptionCard>
 
         <OptionCard
-          active={variant === 'humanoid'}
+          $active={variant === 'humanoid'}
           onClick={() => setVariant('humanoid')}>
           Humanoide
         </OptionCard>
 
         <OptionCard
-          active={variant === 'hybrid'}
+          $active={variant === 'hybrid'}
           onClick={() => setVariant('hybrid')}>
           Híbrido
         </OptionCard>

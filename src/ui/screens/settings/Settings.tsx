@@ -30,13 +30,13 @@ export default function Settings() {
         {/* Sonido */}
         <Row onClick={() => setSound(!sound)}>
           <Label>Sonido</Label>
-          <Toggle active={sound}>{sound ? 'ON' : 'OFF'}</Toggle>
+          <Toggle $active={sound}>{sound ? 'ON' : 'OFF'}</Toggle>
         </Row>
 
         {/* Vibración */}
         <Row onClick={() => setVibration(!vibration)}>
           <Label>Vibración</Label>
-          <Toggle active={vibration}>{vibration ? 'ON' : 'OFF'}</Toggle>
+          <Toggle $active={vibration}>{vibration ? 'ON' : 'OFF'}</Toggle>
         </Row>
       </Section>
 

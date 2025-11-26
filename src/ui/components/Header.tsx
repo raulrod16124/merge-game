@@ -56,7 +56,7 @@ export function Header() {
 
       {open && <Overlay onClick={() => setOpen(false)} />}
 
-      <SidePanel ref={panelRef} open={open}>
+      <SidePanel ref={panelRef} $open={open}>
         <CircleX
           size={24}
           color="#FFFFFF"
