@@ -140,13 +140,13 @@ export const createMerges = (
     const ach = useAchievementStore.getState();
 
     // always unlock FIRST_MERGE
-    ach.unlockAchievement('FIRST_MERGE');
+    ach.unlock('FIRST_MERGE');
 
     // typed achievements (specific cosmic types)
     const specific = ACHIEVEMENTS.find(
       a => a.condition.type === 'merge' && a.condition.value === fused.type,
     );
-    if (specific) ach.unlockAchievement(specific.id);
+    if (specific) ach.unlock(specific.id);
 
     // Floating score + time bonus
     if (typeof get().addFloatingScore === 'function') {
