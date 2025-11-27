@@ -9,8 +9,9 @@
     "lint": "eslint . --ext .ts,.tsx",
     "preview": "vite preview",
     "test": "vitest",
-    "deploy": "gh-pages -d dist",
-    "gh-deploy": "tsc -b && vite build && gh-pages -d dist"
+    "gh-deploy": "DEPLOY_TARGET=github tsc -b && DEPLOY_TARGET=github vite build && gh-pages -d dist",
+    "firebase-deploy": "DEPLOY_TARGET=firebase npm run build && firebase deploy --only hosting",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "firebase": "^12.6.0",

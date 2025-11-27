@@ -60,7 +60,10 @@ updateViewportSize();
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <InitFirebaseAuthSync />
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
+    <BrowserRouter
+      basename={
+        window.location.hostname.includes('github.io') ? '/merge-game/' : '/'
+      }>
       <App />
     </BrowserRouter>
   </React.StrictMode>,

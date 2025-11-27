@@ -3,11 +3,13 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import {VitePWA} from 'vite-plugin-pwa';
 
-export default defineConfig(({command}) => {
-  const isProd = command === 'build';
+export default defineConfig(() => {
+  // 🔥 Deploy automático según target
+  const target = process.env.DEPLOY_TARGET || 'firebase';
 
   return {
-    base: isProd ? '/merge-game/' : '/',
+    // 👇 Base dinámica
+    base: target === 'github' ? '/merge-game/' : '/',
 
     plugins: [
       react(),
@@ -26,8 +28,10 @@ export default defineConfig(({command}) => {
           background_color: '#0d0d12',
           display: 'standalone',
           orientation: 'portrait',
-          start_url: '.',
-          scope: '.',
+
+          // 👇 Ajuste clave para GitHub Pages
+          start_url: target === 'github' ? '/merge-game/' : '/',
+          scope: target === 'github' ? '/merge-game/' : '/',
 
           icons: [
             {
@@ -47,10 +51,6 @@ export default defineConfig(({command}) => {
 
         workbox: {
           navigateFallback: 'index.html',
-        },
-
-        devOptions: {
-          enabled: true,
         },
       }),
     ],
