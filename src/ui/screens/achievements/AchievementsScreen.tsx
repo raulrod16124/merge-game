@@ -5,6 +5,7 @@ import {ACHIEVEMENTS} from '@/data/achievements';
 import {useAchievementStore} from '@/state/achievement-store';
 import {COSMIC_ICONS} from '@/ui/constants';
 import {Check, Lock} from 'lucide-react';
+import {usePlayerStore} from '@/state';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -68,14 +69,14 @@ const Reward = styled.div`
 `;
 
 export default function AchievementsScreen() {
-  const isUnlocked = useAchievementStore(s => s.isUnlocked);
+  const unlockedMap = usePlayerStore(s => s.achievements);
 
   return (
     <AppLayout prevRoute="/home" title="Logros">
       <Wrapper>
         <Grid>
           {ACHIEVEMENTS.map(a => {
-            const unlocked = isUnlocked(a.id);
+            const unlocked = Boolean(unlockedMap[a.id]);
 
             return (
               <Card key={a.id} $unlocked={unlocked}>

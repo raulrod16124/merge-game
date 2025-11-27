@@ -1,95 +1,168 @@
-// src/ui/screens/store/index.tsx
-
-import {useState} from 'react';
+import {useMemo, useState} from 'react';
 import AppLayout from '@/ui/layout';
 import {useUserStore} from '@/state/user-store';
+import {usePlayerStore} from '@/state/player-store';
+import {STORE_ITEMS, type StoreItem} from '@/data/store/store-items';
+
+import {Modal} from '@/common/Modal';
+import {Coins, Lock, Minus, Plus} from 'lucide-react';
 
 import {
   Container,
   CoinsDisplay,
-  ItemsList,
-  ItemCard,
-  ItemTitle,
-  ItemDesc,
-  PriceTag,
+  Grid,
+  Card,
+  IconWrap,
+  Info,
+  Title,
+  Desc,
+  Price,
+  LockedOverlay,
+  QtyControls,
+  QtyButton,
 } from './styles';
 
-import {STORE_ITEMS, type StoreItem} from '@/data/store/store-items';
-import {Button} from '@/common/Button';
-import {Modal} from '@/common/Modal';
-import {Coins} from 'lucide-react';
-
 export default function Store() {
-  const {coins, addCoins, addInventoryItem} = useUserStore();
-  const [modal, setModal] = useState<{open: boolean; item?: StoreItem | null}>({
-    open: false,
-  });
-  const [itemTitle, setItemTitle] = useState<string>('');
+  const coins = useUserStore(s => s.coins);
+  const addCoins = useUserStore(s => s.addCoins);
+  const addInventoryItem = useUserStore(s => s.addInventoryItem);
+  const inventory = useUserStore(s => s.inventory);
+
+  const isPowerupUnlocked = usePlayerStore(s => s.isPowerupUnlocked);
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selected, setSelected] = useState<StoreItem | null>(null);
+  const [qty, setQty] = useState(1);
+  const [error, setError] = useState<string | null>(null);
 
   const openModal = (item: StoreItem) => {
-    setModal({open: true, item});
-    setItemTitle(`${item.name}`);
+    if (item.type === 'powerup' && !isPowerupUnlocked(item.id)) {
+      return; // → bloqueado: no hacer nada
+    }
+    setError(null);
+    setQty(1);
+    setSelected(item);
+    setModalOpen(true);
   };
 
   const closeModal = () => {
-    setModal({open: false, item: null});
+    setModalOpen(false);
+    setSelected(null);
+    setQty(1);
+    setError(null);
   };
 
-  const buyItem = () => {
-    if (!modal.item) return;
+  const totalPrice = useMemo(() => {
+    return selected ? selected.price * qty : 0;
+  }, [selected, qty]);
 
-    const item = modal.item;
+  const increment = () => setQty(q => Math.min(99, q + 1));
+  const decrement = () => setQty(q => Math.max(1, q - 1));
 
-    // Verificar si hay monedas
-    if (coins < item.price) {
-      alert('No tienes suficientes monedas');
+  const buy = () => {
+    if (!selected) return;
+
+    if (selected.type === 'powerup' && !isPowerupUnlocked(selected.id)) {
+      setError('Este powerup no está desbloqueado todavía.');
       return;
     }
 
-    addCoins(-item.price);
-    addInventoryItem(item.id);
+    if (coins < totalPrice) {
+      setError('No tienes suficientes monedas.');
+      return;
+    }
 
+    addCoins(-totalPrice);
+    addInventoryItem(selected.id, qty);
     closeModal();
   };
 
   return (
-    <AppLayout title="Store" showBack={true} prevRoute="/home">
+    <AppLayout title="Tienda" showBack={true} prevRoute="/home">
       <Container>
         <CoinsDisplay>
-          <Coins size={22} strokeWidth={2.4} /> {coins}
+          <Coins size={20} strokeWidth={2.4} /> {coins}
         </CoinsDisplay>
 
-        <ItemsList>
-          {STORE_ITEMS.map(item => (
-            <ItemCard key={item.id}>
-              <ItemTitle>{item.name}</ItemTitle>
-              <ItemDesc>{item.description}</ItemDesc>
+        <Grid>
+          {STORE_ITEMS.map(item => {
+            const Icon = item.icon;
+            const locked =
+              item.type === 'powerup' && !isPowerupUnlocked(item.id);
 
-              <PriceTag>
-                {item.price} <Coins size={22} strokeWidth={2.4} />
-              </PriceTag>
+            return (
+              <Card
+                key={item.id}
+                $locked={locked}
+                onClick={() => !locked && openModal(item)}>
+                <IconWrap $locked={locked}>
+                  <Icon size={34} strokeWidth={2.6} />
+                </IconWrap>
 
-              <Button
-                variant="secondary"
-                fullWidth={true}
-                onClick={() => openModal(item)}>
-                Comprar
-              </Button>
-            </ItemCard>
-          ))}
-        </ItemsList>
+                <Info>
+                  <Title>{item.name}</Title>
+                  <Desc>{item.description}</Desc>
+
+                  <div
+                    style={{marginTop: 6, fontSize: '0.75rem', opacity: 0.7}}>
+                    Tienes: <b>{inventory[item.id] ?? 0}</b>
+                  </div>
+                </Info>
+
+                <Price>
+                  {item.price} <Coins size={16} strokeWidth={2.4} />
+                </Price>
+
+                {locked && (
+                  <LockedOverlay>
+                    <Lock size={28} strokeWidth={3} />
+                  </LockedOverlay>
+                )}
+              </Card>
+            );
+          })}
+        </Grid>
       </Container>
 
-      {/* Modal de compra */}
       <Modal
-        open={modal.open}
+        open={modalOpen}
         onClose={closeModal}
-        title={itemTitle || 'Confirmar Compra'}
+        title={selected?.name ?? 'Comprar'}
         message={
-          modal.item ? (
+          selected ? (
             <div>
-              ¿Comprar <b>{modal.item.name}</b> por <b>{modal.item.price}</b>{' '}
-              monedas?
+              <div style={{marginBottom: 6, fontSize: '0.85rem', opacity: 0.8}}>
+                Stock actual: <b>{inventory[selected.id] ?? 0}</b>
+              </div>
+              <div style={{marginBottom: 10}}>{selected.description}</div>
+
+              <QtyControls>
+                <QtyButton onClick={decrement}>
+                  <Minus size={16} />
+                </QtyButton>
+
+                <div style={{minWidth: 50, textAlign: 'center'}}>{qty}</div>
+
+                <QtyButton onClick={increment}>
+                  <Plus size={16} />
+                </QtyButton>
+              </QtyControls>
+
+              <div style={{marginTop: 12, fontWeight: 600}}>
+                Total: {totalPrice}{' '}
+                <Coins size={14} style={{verticalAlign: -2}} />
+              </div>
+
+              {error && (
+                <div
+                  style={{
+                    marginTop: 10,
+                    color: '#ffb6b6',
+                    fontSize: '0.9rem',
+                  }}>
+                  {error}
+                </div>
+              )}
             </div>
           ) : null
         }
@@ -102,7 +175,7 @@ export default function Store() {
           {
             label: 'Comprar',
             variant: 'primary',
-            onClick: buyItem,
+            onClick: buy,
           },
         ]}
       />
