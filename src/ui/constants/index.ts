@@ -60,3 +60,10 @@ export const COLORS = {
   black: '#121212',
   white: '#FFFFFF',
 };
+
+// color por variante
+export const VARIANT_COLORS: Record<string, string> = {
+  humanoid: '#ffb703', // dorado
+  abstract: '#7b2ff7', // violeta cósmico
+  hybrid: '#4cc9f0', // azul energía
+};

@@ -18,17 +18,19 @@ import {Pencil} from 'lucide-react';
 import {Button} from '@/common/Button';
 import {COLORS} from '../../constants/index';
 import CosmicProfileProgress from '@/ui/components/cosmic-avatar/CosmicProfileProgress';
+import {usePlayerStore} from '@/state';
 
 export default function Profile() {
   const navigate = useNavigate();
   const {name} = useUserStore();
+  const avatarVariant = usePlayerStore(s => s.avatarVariant);
 
   return (
     <AppLayout title="Perfil" showBack={true} prevRoute="/home">
       <Section>
         {/* Avatar con edit */}
         <AvatarWrapper>
-          <CosmicAvatar />
+          <CosmicAvatar variant={avatarVariant} />
           <CosmicProfileProgress />
           <EditIcon onClick={() => navigate('/edit-avatar')}>
             <Pencil size={20} strokeWidth={2.4} color={COLORS.primary} />

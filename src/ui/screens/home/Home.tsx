@@ -14,10 +14,12 @@ import {
 import {CosmicAvatar} from '@/ui/components/cosmic-avatar';
 import {User, Settings, ShoppingBag, Coins, Award, Trophy} from 'lucide-react';
 import CosmicMiniProgress from '@/ui/components/cosmic-avatar/CosmicMiniProgress';
+import {usePlayerStore} from '@/state';
 
 export default function Home() {
   const navigate = useNavigate();
   const {name, coins} = useUserStore();
+  const avatarVariant = usePlayerStore(s => s.avatarVariant);
 
   return (
     <Container>
@@ -47,7 +49,7 @@ export default function Home() {
 
       <HeroArea>
         <GlowBackground />
-        <CosmicAvatar />
+        <CosmicAvatar variant={avatarVariant} />
         {/* Cosmic progress mini HUD */}
         <CosmicMiniProgress />
 

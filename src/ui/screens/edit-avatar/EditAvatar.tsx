@@ -14,7 +14,7 @@ export default function EditAvatar() {
   const navigate = useNavigate();
   const {avatar, setAvatarVariant} = useUserStore();
 
-  const [temp, setTemp] = useState(avatar?.variant ?? 'hybrid');
+  const [temp, setTemp] = useState<AvatarVariant>(avatar?.variant ?? 'hybrid');
 
   const variants = [
     {key: 'abstract', label: 'Abstract'},
@@ -31,7 +31,7 @@ export default function EditAvatar() {
   return (
     <AppLayout title="Editar Avatar" prevRoute="/profile">
       <PreviewArea>
-        <CosmicAvatar hideProgress={true} />
+        <CosmicAvatar variant={temp} hideProgress={true} />
       </PreviewArea>
 
       <VariantSelector>

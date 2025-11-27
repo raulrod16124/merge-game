@@ -1,7 +1,7 @@
 import {Button} from '@/common/Button';
 import {useUserStore} from '@/state/user-store';
 import {useNavigate} from 'react-router-dom';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {Modal} from '@/common/Modal';
 import {usePWAInstall} from '@/hooks/usePWAInstall';
 import {Wrapper} from './styles';
@@ -15,10 +15,33 @@ export default function Landing() {
 
   const [modalInstall, setModalInstall] = useState(false);
   const [modalIOS, setModalIOS] = useState(false);
+  const [justInstalled, setJustInstalled] = useState(false);
+
+  // Detectar si es PWA instalada
+  const isStandalone =
+    window.matchMedia('(display-mode: standalone)').matches ||
+    (window.navigator as any).standalone === true;
 
   const isIOS =
     /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+  // Si está instalada → no mostrar Landing
+  useEffect(() => {
+    if (isStandalone) {
+      if (authenticated) navigate('/home');
+      else navigate('/login');
+    }
+  }, [isStandalone, authenticated, navigate]);
+
+  // Marcar que la app ha sido instalada
+  useEffect(() => {
+    const handler = () => {
+      setJustInstalled(true);
+    };
+    window.addEventListener('appinstalled', handler);
+    return () => window.removeEventListener('appinstalled', handler);
+  }, []);
 
   const goNext = () => {
     if (authenticated) navigate('/home');
@@ -26,8 +49,9 @@ export default function Landing() {
   };
 
   const handleStart = () => {
+    if (justInstalled) return;
+
     if (isIOS) {
-      // En iOS nunca hay beforeinstallprompt
       setModalIOS(true);
       return;
     }
@@ -43,6 +67,7 @@ export default function Landing() {
   const handleInstall = async () => {
     await installApp();
     setModalInstall(false);
+    setJustInstalled(true);
   };
 
   return (
@@ -53,9 +78,24 @@ export default function Landing() {
         <h1>Stellar Merge</h1>
         <p>Crea, fusiona y da forma al universo.</p>
 
-        <Button variant="secondary" onClick={handleStart} fullWidth={true}>
-          Comenzar
-        </Button>
+        {!justInstalled && (
+          <Button variant="secondary" onClick={handleStart} fullWidth={true}>
+            Comenzar
+          </Button>
+        )}
+
+        {justInstalled && (
+          <p
+            style={{
+              color: '#9eff9e',
+              marginTop: '20px',
+              fontSize: '0.9rem',
+              textAlign: 'center',
+            }}>
+            ✔ App instalada. Ahora puedes abrir Stellar Merge desde tu pantalla
+            de inicio.
+          </p>
+        )}
       </Wrapper>
 
       {/* Modal Android / Desktop */}
@@ -89,7 +129,7 @@ export default function Landing() {
             <br />
             1️⃣ Abre este sitio en <b>Safari</b>
             <br />
-            2️⃣ Pulsa el botón <b>Compartir</b> (icono cuadrado con flecha ↑)
+            2️⃣ Pulsa <b>Compartir</b> (icono cuadrado con flecha ↑)
             <br />
             3️⃣ Selecciona <b>“Añadir a pantalla de inicio”</b>
             <br />

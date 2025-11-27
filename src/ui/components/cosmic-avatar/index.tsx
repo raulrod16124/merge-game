@@ -9,9 +9,11 @@ import {HumanoidShape} from './HumanoidShape';
 import {HybridShape} from './HybridShape';
 
 import {usePlayerStore} from '@/state/player-store';
+import {useUserStore} from '@/state/user-store';
 import {COSMIC_EVOLUTION} from '@/data/cosmicEvolution';
 import {computeCosmicProgress} from '@/data/cosmicXP';
 import LevelUpBurst from './LevelUpBurst';
+import type {AvatarVariant} from './types';
 
 const Wrapper = styled.div`
   position: relative;
@@ -22,7 +24,6 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
-/* Badge / ring styles */
 const BadgeWrap = styled.div`
   position: absolute;
   right: -6px;
@@ -58,27 +59,32 @@ const LevelNumber = styled.div`
   pointer-events: none;
 `;
 
-/* Small XP text under badge on hover is shown via title attribute (keeps it simple) */
-
 type Props = {
+  variant?: AvatarVariant; // Forzar variante manualmente
+  forceVariant?: AvatarVariant; // Para animaciones / transiciones
   hideProgress?: boolean;
 };
 
-export function CosmicAvatar({hideProgress}: Props) {
+export function CosmicAvatar({variant, forceVariant, hideProgress}: Props) {
+  const userVariant = useUserStore(s => s.avatar?.variant);
+  const playerVariant = usePlayerStore(s => s.avatarVariant);
+
+  /** 🔥 Resolución final de variante (prioridades) */
+  const finalVariant =
+    forceVariant || variant || userVariant || playerVariant || 'hybrid';
+
   const progress = usePlayerStore(s => s.cosmicProgress);
-  const activeVariant = usePlayerStore(s => s.avatarVariant);
-  const variantProgress = progress[activeVariant];
+  const variantProgress = progress[finalVariant];
 
   const xp = variantProgress?.xp ?? 0;
   const level = variantProgress?.level ?? 1;
 
   const profile =
-    COSMIC_EVOLUTION[activeVariant]?.[level] ??
-    COSMIC_EVOLUTION[activeVariant]?.[1];
+    COSMIC_EVOLUTION[finalVariant]?.[level] ??
+    COSMIC_EVOLUTION[finalVariant]?.[1];
 
   const {progressPercent, nextLevelXP} = computeCosmicProgress(level, xp);
 
-  // circle ring params
   const R = 20;
   const C = 2 * Math.PI * R;
   const pct = Math.max(0, Math.min(100, progressPercent));
@@ -91,6 +97,7 @@ export function CosmicAvatar({hideProgress}: Props) {
   return (
     <Wrapper>
       <LevelUpBurst trigger={level} />
+
       <CosmicParticles
         count={profile.particleCount}
         color={profile.auraColor}
@@ -100,40 +107,31 @@ export function CosmicAvatar({hideProgress}: Props) {
         <CosmicCore glow={profile.coreGlow} />
       </CosmicAura>
 
-      {activeVariant === 'abstract' && (
+      {finalVariant === 'abstract' && (
         <AbstractShape detail={profile.shapeDetail} />
       )}
-      {activeVariant === 'humanoid' && (
+      {finalVariant === 'humanoid' && (
         <HumanoidShape detail={profile.shapeDetail} />
       )}
-      {activeVariant === 'hybrid' && (
+      {finalVariant === 'hybrid' && (
         <HybridShape detail={profile.shapeDetail} />
       )}
 
-      {/* Badge + ring */}
       {!hideProgress && (
         <BadgeWrap title={title}>
           <Ring viewBox="0 0 48 48" aria-hidden>
-            <defs />
             <g fill="none" strokeWidth="3" strokeLinecap="round">
-              {/* background circle */}
               <circle cx="24" cy="24" r={R} stroke="rgba(255,255,255,0.06)" />
-              {/* progress */}
               <circle
                 cx="24"
                 cy="24"
                 r={R}
                 stroke="url(#grad)"
                 strokeDasharray={`${dash} ${C - dash}`}
-                strokeDashoffset="0"
               />
               <defs>
                 <linearGradient id="grad" x1="0" x2="1">
-                  <stop
-                    offset="0%"
-                    stopColor={profile.auraColor}
-                    stopOpacity="1"
-                  />
+                  <stop offset="0%" stopColor={profile.auraColor} />
                   <stop offset="100%" stopColor="#ffffff" stopOpacity="0.9" />
                 </linearGradient>
               </defs>
