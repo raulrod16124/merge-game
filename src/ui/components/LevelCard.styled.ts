@@ -1,85 +1,72 @@
-import styled, {keyframes, css} from 'styled-components';
+// src/ui/components/LevelCard/LevelCard.styled.ts
+import styled, {css} from 'styled-components';
 
-const pulse = keyframes`
-  0% { box-shadow: 0 0 6px rgba(255,255,255,0.4); }
-  50% { box-shadow: 0 0 14px rgba(255,255,255,0.9); }
-  100% { box-shadow: 0 0 6px rgba(255,255,255,0.4); }
-`;
-
+/* Contenedor individual del nodo */
 export const NodeWrapper = styled.div<{$index: number}>`
   position: relative;
+  width: 260px; /* más ancho para que el nodo ocupe espacio y se alternen */
+  height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 60px 0;
+  z-index: 10;
 
-  transform: translateX(${({$index}) => ($index % 2 === 0 ? '-20px' : '20px')});
+  /* menos espacio vertical entre nodos */
+  margin-top: ${({$index}) => ($index === 0 ? '24px' : '40px')};
+
+  /* alternate left / right visual offset */
+  align-self: ${({$index}) => ($index % 2 === 0 ? 'flex-start' : 'flex-end')};
+  padding-left: ${({$index}) => ($index % 2 !== 0 ? '45%' : '0')};
+  padding-right: ${({$index}) => ($index % 2 === 0 ? '45%' : '0')};
 `;
 
-export const NodeCircle = styled.div<{
-  $unlocked: boolean;
-  $completed: boolean;
-}>`
-  width: 74px;
-  height: 74px;
-  border-radius: 999px;
-
+/* PLANETA */
+export const Planet = styled.div<{$unlocked: boolean}>`
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
   background: ${({$unlocked}) =>
     $unlocked
-      ? 'radial-gradient(circle, #ffffff 25%, #b0d6ff 70%, #3f4e72 100%)'
-      : 'radial-gradient(circle, #333 20%, #111 100%)'};
-
-  border: ${({$completed}) =>
-    $completed ? '2px solid #ffd700' : '1px solid rgba(255,255,255,0.3)'};
+      ? 'radial-gradient(circle, #ffdd77 0%, #ff9a3c 40%, #8c2fff 100%)'
+      : 'radial-gradient(circle, #444 0%, #262626 100%)'};
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  cursor: ${({$unlocked}) => ($unlocked ? 'pointer' : 'default')};
+  box-shadow: ${({$unlocked}) =>
+    $unlocked ? '0 0 26px rgba(255,200,90,0.85)' : '0 0 10px rgba(0,0,0,0.6)'};
 
-  ${({$completed}) =>
-    $completed &&
-    css`
-      animation: ${pulse} 2.2s infinite ease-in-out;
-    `}
+  transform: ${({$unlocked}) => ($unlocked ? 'scale(1)' : 'scale(0.92)')};
+
+  transition:
+    transform 0.24s ease,
+    box-shadow 0.24s ease;
 `;
 
-export const NodeInner = styled.div`
+/* Icono interno */
+export const PlanetIcon = styled.div`
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  svg {
-    color: white;
-  }
 `;
 
+/* Nombre */
 export const LevelName = styled.div`
   margin-top: 8px;
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.8);
-  text-align: center;
-  width: 120px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffd7ff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 `;
 
+/* Score */
 export const ScoreBadge = styled.div`
-  margin-top: 4px;
-  font-size: 0.78rem;
-  color: #ffd700;
-`;
-
-export const Connector = styled.svg`
-  position: absolute;
-  top: -80px;
-  width: 140px;
-  height: 90px;
-  overflow: visible;
-
-  path {
-    stroke: rgba(255, 255, 255, 0.4);
-    stroke-width: 2px;
-    fill: none;
-  }
+  margin-top: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 4px 10px;
+  border-radius: 12px;
+  color: white;
+  font-size: 13px;
 `;

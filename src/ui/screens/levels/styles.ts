@@ -1,89 +1,83 @@
+// src/ui/screens/levels/styles.ts
 import styled, {keyframes} from 'styled-components';
-import {COLORS} from '@/ui/constants';
 
-const drift = keyframes`
-  0% { transform: translateY(0px); }
-  100% { transform: translateY(-120px); }
-`;
-
+/* ==== Fondo espacial cartoon ==== */
 export const LevelsWrapper = styled.div`
-  padding: 30px 0;
   position: relative;
+  width: 100%;
+  min-height: 100dvh;
+  padding: 40px 0; /* menos padding top para ver más niveles */
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  /* Ocultar scrollbar */
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  padding-bottom: 90px; /* evita huecos excesivos al final */
+
+  background:
+    radial-gradient(
+      circle at 40% 20%,
+      rgba(255, 145, 255, 0.18) 0%,
+      rgba(120, 0, 180, 0.12) 30%,
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 70% 60%,
+      rgba(255, 100, 180, 0.28) 0%,
+      rgba(120, 0, 180, 0.1) 40%,
+      transparent 70%
+    ),
+    radial-gradient(
+      circle at center,
+      #0d0433 0%,
+      #120444 35%,
+      #15024d 60%,
+      #08001a 100%
+    );
+
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  overflow-x: hidden;
-
-  background: black;
-
-  /* Cielo estrellado animado */
-  &:before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: url('/cosmic/stars_bg.png');
-    opacity: 0.35;
-    animation: ${drift} 45s linear infinite;
-    pointer-events: none;
-  }
-
-  &:after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: url('/cosmic/nebulosa_bg.png') center/cover no-repeat;
-    opacity: 0.12;
-    animation: ${drift} 90s linear infinite;
-    pointer-events: none;
-  }
-
-  @keyframes floatNebula {
-    0% {
-      transform: translate(-40px, 20px) scale(1);
-      opacity: 0.18;
-    }
-    50% {
-      transform: translate(40px, -40px) scale(1.05);
-      opacity: 0.28;
-    }
-    100% {
-      transform: translate(-40px, 20px) scale(1);
-      opacity: 0.18;
-    }
-  }
-
-  .nebula {
-    position: absolute;
-    width: 340px;
-    height: 340px;
-    background: url('/cosmic/nebulosa_bg.png') center/contain no-repeat;
-    opacity: 1;
-    animation: floatNebula 40s ease-in-out infinite;
-  }
 `;
 
-export const Title = styled.h2`
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(20px, 4vw, 36px);
-  color: ${COLORS.white};
-  text-align: center;
+/* ==== Animación de cometas ==== */
+const cometAnim = keyframes`
+  0% { transform: translate(-20vw, -10vh) rotate(35deg); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translate(140vw, 120vh) rotate(35deg); opacity: 0; }
 `;
 
-export const Grid = styled.div`
-  margin-top: 18px;
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 18px;
-  overflow-y: auto;
-  padding: 12px 0;
+export const Comet = styled.div`
+  position: absolute;
+  top: -10vh;
+  left: -20vw;
+  width: 6px;
+  height: 110px;
+  background: linear-gradient(180deg, #ff59f8, transparent);
+  border-radius: 4px;
+  filter: blur(2px);
+  opacity: 0;
+  animation: ${cometAnim} 4s linear infinite;
+  animation-delay: ${() => Math.random() * 5}s;
+  transform: rotate(35deg);
+`;
 
-  @media (min-width: 640px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
+/* ==== Línea ondulada que conecta los niveles ==== */
+export const RouteLine = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 220%;
+  pointer-events: none;
+  z-index: 0;
+  top: 0;
+  left: 0;
 
-  @media (min-width: 980px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  background-image: url('/cosmic/route_path.png');
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: 90% auto;
 `;
