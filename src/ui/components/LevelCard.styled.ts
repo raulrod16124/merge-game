@@ -1,5 +1,5 @@
 // src/ui/components/LevelCard/LevelCard.styled.ts
-import styled, {css} from 'styled-components';
+import styled from 'styled-components';
 
 /* Contenedor individual del nodo */
 export const NodeWrapper = styled.div<{$index: number}>`
