@@ -20,6 +20,7 @@ import {Button} from '@/common/Button';
 import {Coins, Lock} from 'lucide-react';
 import {Modal} from '@/common/Modal';
 import type {PowerupType} from '@/core/types';
+import {COLORS} from '@/ui/constants';
 
 export default function Store() {
   const coins = useUserStore(s => s.coins);
@@ -69,7 +70,7 @@ export default function Store() {
     <AppLayout title="Tienda Cósmica" showBack={true} prevRoute="/home">
       <Container>
         {/* Monedas */}
-        <div style={{display: 'flex', justifyContent: 'flex-end', padding: 12}}>
+        <div style={{display: 'flex', justifyContent: 'center', padding: 12}}>
           <div
             style={{
               background: 'rgba(255,255,255,0.08)',
@@ -78,8 +79,9 @@ export default function Store() {
               display: 'flex',
               alignItems: 'center',
               gap: 8,
-              fontWeight: 600,
-              color: 'white',
+              fontWeight: 700,
+              fontSize: '1.5rem',
+              color: COLORS.primary,
             }}>
             <Coins size={20} /> {coins}
           </div>

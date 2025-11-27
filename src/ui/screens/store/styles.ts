@@ -1,7 +1,8 @@
+import {COLORS} from '@/ui/constants';
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  padding: 16px;
+  padding: 0 16px;
   color: white;
 `;
 
@@ -20,7 +21,11 @@ export const Grid = styled.div`
 
 export const Card = styled.div<{locked: boolean}>`
   position: relative;
-  background: rgba(255, 255, 255, 0.06);
+  background: linear-gradient(
+    180deg,
+    ${COLORS.tertiaryDark},
+    ${COLORS.tertiary}
+  );
   border-radius: 12px;
   padding: 10px;
   display: flex;

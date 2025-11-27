@@ -5,6 +5,7 @@ import {HudNotifications} from '../components/HudNotifications';
 import {usePlayerStore} from '@/state';
 import React from 'react';
 import {CosmicEvolutionModal} from '../components/modals/CosmicEvolutionModal';
+import StarField from '../components/StarField';
 
 interface Props {
   children: React.ReactNode;
@@ -33,6 +34,7 @@ export default function AppLayout({
   return (
     <Wrapper>
       <Content>
+        <StarField />
         {!hideHeader && (
           <Header>
             {showBack ? (
