@@ -2,7 +2,6 @@
 import styled from 'styled-components';
 import AppLayout from '@/ui/layout';
 import {ACHIEVEMENTS} from '@/data/achievements';
-import {useAchievementStore} from '@/state/achievement-store';
 import {COSMIC_ICONS} from '@/ui/constants';
 import {Check, Lock} from 'lucide-react';
 import {usePlayerStore} from '@/state';
