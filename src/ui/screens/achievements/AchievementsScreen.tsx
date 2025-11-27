@@ -1,10 +1,9 @@
-// src/ui/screens/AchievementsScreen.tsx
 import styled from 'styled-components';
 import AppLayout from '@/ui/layout';
 import {ACHIEVEMENTS} from '@/data/achievements';
-import {COSMIC_ICONS} from '@/ui/constants';
+import {COSMIC_ICONS, type CosmicType} from '@/ui/constants';
 import {Check, Lock} from 'lucide-react';
-import {usePlayerStore} from '@/state';
+import {usePlayerStore} from '@/state/player-store';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -25,7 +24,7 @@ const Card = styled.div<{$unlocked: boolean}>`
   border: 1px solid
     ${({$unlocked}) =>
       $unlocked ? 'rgba(120,255,120,0.4)' : 'rgba(255,255,255,0.1)'};
-  padding: 12px;
+  padding: 12px 5px;
   border-radius: 12px;
   text-align: center;
   color: white;
@@ -41,8 +40,8 @@ const Card = styled.div<{$unlocked: boolean}>`
 `;
 
 const Icon = styled.img`
-  width: 48px;
-  height: 48px;
+  width: 65px;
+  height: 65px;
   margin: 0 auto 8px auto;
   display: block;
 `;
@@ -88,8 +87,8 @@ export default function AchievementsScreen() {
                     <Lock size={18} />
                   </LockIconOverlay>
                 )}
-                {/* @ts-ignore */}
-                <Icon src={COSMIC_ICONS[a.icon]} />
+
+                <Icon src={COSMIC_ICONS[a.icon as CosmicType]} />
 
                 <h3 style={{marginBottom: 4}}>{a.title}</h3>
 
