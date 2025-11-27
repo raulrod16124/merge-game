@@ -2,7 +2,6 @@ import {COLORS} from '@/ui/constants';
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  padding: 0 16px;
   color: white;
 `;
 
@@ -11,11 +10,13 @@ export const SectionTitle = styled.h3`
   font-size: 1.2rem;
   font-weight: 700;
   color: #e1d2ff;
+  padding: 0 16px;
 `;
 
 export const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  padding: 0 16px;
   gap: 14px;
 `;
 

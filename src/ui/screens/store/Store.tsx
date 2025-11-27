@@ -116,13 +116,18 @@ export default function Store() {
                 )}
 
                 <CardFooter>
-                  <div className="price">
+                  <div className="price" style={{color: COLORS.primary}}>
                     <Coins size={20} /> {item.price}
                   </div>
                   <Button
                     variant="secondary"
                     disabled={locked}
-                    onClick={() => !locked && openModal(item)}>
+                    onClick={() => !locked && openModal(item)}
+                    styles={{
+                      fontSize: '0.8rem',
+                      borderRadius: '10px',
+                      padding: '10px',
+                    }}>
                     Comprar
                   </Button>
                 </CardFooter>

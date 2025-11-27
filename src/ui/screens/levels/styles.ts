@@ -17,28 +17,6 @@ export const LevelsWrapper = styled.div`
   }
 
   padding-bottom: 90px; /* evita huecos excesivos al final */
-
-  background:
-    radial-gradient(
-      circle at 40% 20%,
-      rgba(255, 145, 255, 0.18) 0%,
-      rgba(120, 0, 180, 0.12) 30%,
-      transparent 60%
-    ),
-    radial-gradient(
-      circle at 70% 60%,
-      rgba(255, 100, 180, 0.28) 0%,
-      rgba(120, 0, 180, 0.1) 40%,
-      transparent 70%
-    ),
-    radial-gradient(
-      circle at center,
-      #0d0433 0%,
-      #120444 35%,
-      #15024d 60%,
-      #08001a 100%
-    );
-
   display: flex;
   flex-direction: column;
   align-items: center;
