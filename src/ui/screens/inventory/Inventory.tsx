@@ -2,19 +2,19 @@
 
 import {useUserStore} from '@/state/user-store';
 import {STORE_ITEMS} from '@/data/store/store-items';
-
 import AppLayout from '@/ui/layout';
 
 import {
   Container,
   Subtitle,
   Grid,
-  ItemBox,
-  Badge,
+  ItemCard,
+  IconWrap,
+  ItemName,
+  ItemDescription,
+  QuantityBanner,
   EmptyMessage,
 } from './styles';
-
-import {Store} from 'lucide-react';
 
 export default function Inventory() {
   const {inventory} = useUserStore();
@@ -29,21 +29,27 @@ export default function Inventory() {
         <Subtitle>Objetos que has adquirido</Subtitle>
 
         {itemsOwned.length === 0 ? (
-          <EmptyMessage>
-            Todavía no tienes objetos.
-            <br />
-            Consíguelos en la Store <Store size={16} strokeWidth={2.4} />
-          </EmptyMessage>
+          <EmptyMessage>No tienes objetos todavía.</EmptyMessage>
         ) : (
           <Grid>
             {itemsOwned.map(item => {
-              const Icon = item.icon;
+              const qty = inventory[item.id];
+              const img = `/powerups/${item.id}.png`;
 
               return (
-                <ItemBox key={item.id}>
-                  <Icon size={32} strokeWidth={2.4} />
-                  <Badge>{inventory[item.id]}</Badge>
-                </ItemBox>
+                <ItemCard key={item.id}>
+                  <IconWrap>
+                    <img src={img} alt={item.name} />
+                  </IconWrap>
+
+                  <ItemName>{item.name}</ItemName>
+
+                  <ItemDescription>
+                    {item.description ?? 'Power cósmico especial.'}
+                  </ItemDescription>
+
+                  <QuantityBanner>x{qty}</QuantityBanner>
+                </ItemCard>
               );
             })}
           </Grid>

@@ -1,5 +1,8 @@
+// src/ui/screens/store/index.tsx
+
 import {useState} from 'react';
 import AppLayout from '@/ui/layout';
+
 import {useUserStore} from '@/state/user-store';
 import {usePlayerStore} from '@/state/player-store';
 
@@ -30,99 +33,94 @@ export default function Store() {
   const addCoins = useUserStore(s => s.addCoins);
   const addInventoryItem = useUserStore(s => s.addInventoryItem);
 
-  const [modal, setModal] = useState<{
-    open: boolean;
-    item: any | null;
-    qty: number;
-  }>({open: false, item: null, qty: 1});
+  const [modal, setModal] = useState({
+    open: false,
+    item: null as any,
+    qty: 1,
+  });
 
-  const openModal = (item: any) => {
-    setModal({open: true, item, qty: 1});
-  };
+  const openModal = (item: any) => setModal({open: true, item, qty: 1});
 
-  const closeModal = () =>
-    setModal({
-      open: false,
-      item: null,
-      qty: 1,
-    });
+  const closeModal = () => setModal({open: false, item: null, qty: 1});
 
   const buyItems = () => {
     if (!modal.item) return;
 
-    const totalPrice = modal.item.price * modal.qty;
+    const total = modal.item.price * modal.qty;
 
-    if (coins < totalPrice) {
+    if (coins < total) {
       alert('No tienes suficientes monedas');
       return;
     }
 
-    addCoins(-totalPrice);
+    addCoins(-total);
     addInventoryItem(modal.item.id, modal.qty);
-
     closeModal();
   };
 
-  const isUnlocked = (itemId: string) =>
-    unlockedPowerups.includes(itemId as PowerupType);
+  const isUnlocked = (id: string) =>
+    unlockedPowerups.includes(id as PowerupType);
 
   return (
-    <AppLayout
-      title="Tienda Cósmica"
-      showBack={true}
-      prevRoute="/home"
-      secondaryBg={true}>
+    <AppLayout title="Tienda Cósmica" prevRoute="/home" showBack={true}>
       <Container>
-        {/* Monedas */}
+        {/* MONEDAS */}
         <div style={{display: 'flex', justifyContent: 'center', padding: 12}}>
           <div
             style={{
               background: 'rgba(255,255,255,0.08)',
-              padding: '6px 12px',
-              borderRadius: 10,
+              padding: '8px 14px',
+              borderRadius: 12,
               display: 'flex',
               alignItems: 'center',
               gap: 8,
               fontWeight: 700,
-              fontSize: '1.5rem',
+              fontSize: '1.6rem',
               color: COLORS.primary,
             }}>
             <Coins size={20} /> {coins}
           </div>
         </div>
 
-        {/* SECCION POWERUPS */}
+        {/* POWERUPS */}
         <SectionTitle>Powerups</SectionTitle>
 
         <Grid>
           {STORE_ITEMS.map(item => {
             const locked = !isUnlocked(item.id);
+            const qty = inventory[item.id] ?? 0;
 
             return (
               <Card key={item.id} $locked={locked}>
+                {/* ICON */}
                 <CardIcon>
-                  <item.icon size={34} />
+                  <img src={`/powerups/${item.id}.png`} alt={item.name} />
                 </CardIcon>
 
+                {/* INFO */}
                 <CardInfo>
                   <h4>{item.name}</h4>
                   <p>{item.description}</p>
 
                   <div className="stock">
-                    Stock: <b>{inventory[item.id] ?? 0}</b>
+                    Stock: <b>{qty}</b>
                   </div>
                 </CardInfo>
 
                 {locked && (
                   <LockedOverlay>
-                    <Lock size={26} />
+                    <Lock size={28} />
                   </LockedOverlay>
                 )}
 
+                {/* FOOTER */}
                 <CardFooter>
-                  <div className="price" style={{color: COLORS.primary}}>
+                  <div
+                    className="price"
+                    style={{color: COLORS.primary, fontWeight: 700}}>
                     <Coins size={20} /> {item.price}
                   </div>
+
                   <Button
                     variant="secondary"
                     disabled={locked}
@@ -141,20 +139,19 @@ export default function Store() {
         </Grid>
       </Container>
 
-      {/* MODAL DE COMPRA */}
+      {/* MODAL */}
       <Modal
         open={modal.open}
-        title={modal.item ? modal.item.name : 'Comprar'}
+        title={modal.item?.name}
         onClose={closeModal}
         message={
           modal.item ? (
             <>
               <p>{modal.item.description}</p>
-              <br />
+
               <p>
                 Stock actual: <b>{inventory[modal.item.id] ?? 0}</b>
               </p>
-              <br />
 
               <QuantitySelector>
                 <button
@@ -171,24 +168,16 @@ export default function Store() {
                 </button>
               </QuantitySelector>
 
-              <br />
-              <p style={{fontWeight: 600}}>
+              <p
+                style={{fontWeight: 600, marginTop: 14, color: COLORS.primary}}>
                 Precio total: {modal.item.price * modal.qty} <Coins size={20} />
               </p>
             </>
           ) : null
         }
         buttons={[
-          {
-            label: 'Cancelar',
-            variant: 'tertiary',
-            onClick: closeModal,
-          },
-          {
-            label: 'Comprar',
-            variant: 'primary',
-            onClick: buyItems,
-          },
+          {label: 'Cancelar', variant: 'tertiary', onClick: closeModal},
+          {label: 'Comprar', variant: 'primary', onClick: buyItems},
         ]}
       />
     </AppLayout>

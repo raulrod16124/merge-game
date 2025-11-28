@@ -1,5 +1,5 @@
 // src/App.tsx
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useUserStore} from '@/state/user-store';
 import styled from 'styled-components';
 import Router from '@/router/Router';

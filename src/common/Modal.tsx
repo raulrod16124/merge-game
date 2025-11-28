@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import {Button} from './Button';
 import type {ModalButton} from '../core/types';
 import {CircleX} from 'lucide-react';
+import {COLORS} from '@/ui/constants';
 
 type Props = {
   open: boolean;
@@ -43,7 +44,7 @@ const ModalBox = styled.div`
   max-width: 420px;
   text-align: center;
   box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
-  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border: 1.5px solid ${COLORS.secondary};
 
   display: flex;
   flex-direction: column;

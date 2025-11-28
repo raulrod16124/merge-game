@@ -8,6 +8,7 @@ export type StoreItem = {
   description: string;
   price: number;
   icon: React.ComponentType<{size?: number; strokeWidth?: number}>;
+  image: string;
 };
 
 export const STORE_ITEMS: StoreItem[] = [
@@ -18,6 +19,7 @@ export const STORE_ITEMS: StoreItem[] = [
     description: 'Desplaza un objeto sin consumir turno.',
     price: 50,
     icon: Move,
+    image: '/powerups/move.png',
   },
   {
     id: 'destroy',
@@ -26,6 +28,7 @@ export const STORE_ITEMS: StoreItem[] = [
     description: 'Elimina un objeto del tablero.',
     price: 75,
     icon: Flame,
+    image: '/powerups/destroy.png',
   },
   {
     id: 'freeze_bh',
@@ -34,6 +37,7 @@ export const STORE_ITEMS: StoreItem[] = [
     description: 'Evita que el agujero negro se mueva durante 1 turno.',
     price: 120,
     icon: Snowflake,
+    image: '/powerups/freeze_bh.png',
   },
   {
     id: 'supernova',
@@ -42,5 +46,6 @@ export const STORE_ITEMS: StoreItem[] = [
     description: 'Crea una supernova en una celda vacía.',
     price: 200,
     icon: HelpCircle,
+    image: '/powerups/supernova.png',
   },
 ];

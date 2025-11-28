@@ -1,97 +1,81 @@
 // src/ui/screens/inventory/styles.ts
-
-import styled from 'styled-components';
 import {COLORS} from '@/ui/constants';
+import styled from 'styled-components';
 
 export const Container = styled.div`
-  padding: 24px;
-  height: calc(100dvh - 20dvh);
-  display: flex;
-  flex-direction: column;
-  color: ${COLORS.white};
-  overflow-y: auto;
+  padding: 20px;
+  color: white;
 `;
 
-export const Header = styled.header`
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-`;
-
-export const BackButton = styled.button`
-  background: ${COLORS.tertiaryDark};
-  border: none;
-  padding: 8px 10px;
-  border-radius: 12px;
-  cursor: pointer;
-  color: ${COLORS.white};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: 0.15s;
-
-  &:hover {
-    background: ${COLORS.tertiary};
-    transform: translateY(-2px);
-  }
-`;
-
-export const Title = styled.h2`
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: ${COLORS.primary};
+export const Subtitle = styled.h3`
   text-align: center;
-  margin: 20px 0 6px;
-`;
-
-export const Subtitle = styled.p`
-  opacity: 0.8;
-  font-size: 0.95rem;
-  text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+  color: #ffdaff;
+  font-size: 1.1rem;
 `;
 
 export const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 18px;
-
-  @media (min-width: 640px) {
-    grid-template-columns: repeat(5, 1fr);
-  }
+  justify-items: center;
 `;
 
-export const ItemBox = styled.div`
-  background: ${COLORS.tertiaryDark};
-  border-radius: 16px;
-  padding: 16px;
+export const ItemCard = styled.div`
+  width: 150px;
+  background: linear-gradient(180deg, #1b1038, #120a2a);
+  border-radius: 18px;
+  padding-top: 14px;
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
+  text-align: center;
+  border: 2px solid ${COLORS.primaryDark};
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: 0.2s;
 
-  svg {
-    color: ${COLORS.white};
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
   }
 `;
 
-export const Badge = styled.div`
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  background: ${COLORS.primary};
-  color: ${COLORS.tertiaryDark};
-  font-weight: 600;
-  font-size: 1rem;
-  padding: 4px;
-  border-radius: 50%;
-  min-width: 22px;
-  height: 22px;
+export const IconWrap = styled.div`
+  width: 85px;
+  height: 85px;
+  margin: 0 auto 8px auto;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+
+  img {
+    width: 85px;
+    height: 85px;
+    object-fit: contain;
+  }
+`;
+
+export const ItemName = styled.div`
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+`;
+
+export const ItemDescription = styled.div`
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  min-height: 32px;
+  margin-bottom: 10px;
+`;
+
+export const QuantityBanner = styled.div`
+  background: ${COLORS.primary};
+  width: 100%;
+  padding: 6px 0;
+  border-radius: 0 0 16px 16px;
+  color: #3d2800;
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-top: 10px;
 `;
 
 export const EmptyMessage = styled.div`
