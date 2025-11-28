@@ -197,10 +197,11 @@ export const TabItem = styled.button<{$active?: boolean}>`
   gap: 6px;
   background: ${({$active}) => ($active ? COLORS.secondary : 'transparent')};
   padding: 2dvh 0;
-  color: ${({$active}) => ($active ? COLORS.primary : COLORS.white)};
+  color: ${({$active}) => ($active ? COLORS.tertiary : COLORS.white)};
   width: 100%;
   height: 100%;
   font-size: 0.85rem;
+  font-weight: 600;
   border: ${({$active}) =>
     $active ? 'none' : `1px solid ${COLORS.secondary}`};
 

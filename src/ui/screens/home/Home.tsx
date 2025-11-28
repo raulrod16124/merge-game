@@ -32,21 +32,14 @@ import {CosmicAvatar} from '@/ui/components/cosmic-avatar';
 import CosmicMiniProgress from '@/ui/components/cosmic-avatar/CosmicMiniProgress';
 import StarField from '@/ui/components/StarField';
 import {COLORS} from '@/ui/constants';
-import LoadingScreen from '@/ui/components/LoadingScreen';
 
 export default function Home() {
   const navigate = useNavigate();
   const {name, coins} = useUserStore();
   const avatarVariant = usePlayerStore(s => s.avatarVariant);
-  const cosmicLoaded = Boolean(
-    Object.keys(usePlayerStore.getState().cosmicProgress ?? {}).length,
-  );
-
-  const isReady = !!avatarVariant && cosmicLoaded;
 
   return (
     <Container>
-      <LoadingScreen isReady={isReady} />
       {/* animated star background */}
       <StarField />
 
