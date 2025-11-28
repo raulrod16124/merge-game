@@ -18,6 +18,7 @@ export type Achievement = {
   title: string;
   description: string;
   icon: string;
+  difficulty: number;
   condition: {
     type: 'merge' | 'level_win' | 'powerup' | 'supernova';
     value?: CosmicType | number | string;
@@ -35,6 +36,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     title: 'Primer Merge',
     description: 'Fusiona 3 objetos iguales por primera vez',
     icon: 'dust',
+    difficulty: 1,
     condition: {type: 'merge'},
   },
   {
@@ -42,6 +44,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     title: 'Pequeño Constructor',
     description: 'Crea tu primer micro-asteroide',
     icon: 'micro_asteroid',
+    difficulty: 1,
     condition: {type: 'merge', value: 'micro_asteroid'},
   },
   {
@@ -49,6 +52,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     title: 'Constructor Estelar',
     description: 'Crea tu primer meteorito',
     icon: 'meteorite',
+    difficulty: 2,
     condition: {type: 'merge', value: 'meteorite'},
   },
   {
@@ -56,6 +60,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     title: 'Encendiendo el Universo',
     description: 'Crea tu primera estrella',
     icon: 'star',
+    difficulty: 3,
     condition: {type: 'merge', value: 'star'},
   },
   {
@@ -63,6 +68,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     title: 'El Nacimiento del Cosmos',
     description: 'Crea tu primera nebulosa',
     icon: 'nebula',
+    difficulty: 3,
     condition: {type: 'merge', value: 'nebula'},
   },
   {
@@ -70,6 +76,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     title: 'Arquitecto Galáctico',
     description: 'Crea tu primera galaxia',
     icon: 'galaxy',
+    difficulty: 4,
     condition: {type: 'merge', value: 'galaxy'},
   },
   {
@@ -77,6 +84,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     title: 'Explosión Cósmica',
     description: 'Genera una supernova por primera vez',
     icon: 'supernova',
+    difficulty: 3,
     condition: {type: 'supernova'},
   },
   {
@@ -84,6 +92,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     title: 'Aprendiz de Energía',
     description: 'Usa un powerup por primera vez',
     icon: 'zap',
+    difficulty: 2,
     condition: {type: 'powerup'},
   },
   {
@@ -91,6 +100,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     title: 'Maestro del Tiempo',
     description: 'Congela un agujero negro',
     icon: 'snow',
+    difficulty: 2,
     condition: {type: 'powerup', value: 'freeze_bh'},
   },
   {
@@ -98,6 +108,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     title: 'Dominador del Universo I',
     description: 'Completa el nivel 10',
     icon: 'trophy',
+    difficulty: 2,
     condition: {type: 'level_win', value: 10},
   },
   {
@@ -105,6 +116,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     title: 'Dominador del Universo II',
     description: 'Completa el nivel 20',
     icon: 'trophy',
+    difficulty: 3,
     condition: {type: 'level_win', value: 20},
   },
 ];
