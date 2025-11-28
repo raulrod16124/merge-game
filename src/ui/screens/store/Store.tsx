@@ -67,7 +67,11 @@ export default function Store() {
     unlockedPowerups.includes(itemId as PowerupType);
 
   return (
-    <AppLayout title="Tienda Cósmica" showBack={true} prevRoute="/home">
+    <AppLayout
+      title="Tienda Cósmica"
+      showBack={true}
+      prevRoute="/home"
+      secondaryBg={true}>
       <Container>
         {/* Monedas */}
         <div style={{display: 'flex', justifyContent: 'center', padding: 12}}>
@@ -95,7 +99,7 @@ export default function Store() {
             const locked = !isUnlocked(item.id);
 
             return (
-              <Card key={item.id} locked={locked}>
+              <Card key={item.id} $locked={locked}>
                 <CardIcon>
                   <item.icon size={34} />
                 </CardIcon>

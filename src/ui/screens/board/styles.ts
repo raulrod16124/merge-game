@@ -6,10 +6,6 @@ export const BoardScreenWrapper = styled.div`
   display: flex;
   flex-direction: column;
 
-  background-size: cover;
-  background-position: center;
-  background-image: url(${import.meta.env.BASE_URL}boards/map1.png);
-
   overflow-x: hidden;
   overflow-y: auto;
 

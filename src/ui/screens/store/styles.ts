@@ -20,7 +20,7 @@ export const Grid = styled.div`
   gap: 14px;
 `;
 
-export const Card = styled.div<{locked: boolean}>`
+export const Card = styled.div<{$locked: boolean}>`
   position: relative;
   background: linear-gradient(
     180deg,
@@ -33,7 +33,7 @@ export const Card = styled.div<{locked: boolean}>`
   flex-direction: column;
   gap: 8px;
 
-  opacity: ${({locked}) => (locked ? 0.45 : 1)};
+  opacity: ${({$locked}) => ($locked ? 0.45 : 1)};
 `;
 
 export const CardIcon = styled.div`

@@ -8,21 +8,21 @@ const blink = keyframes`
 `;
 
 const Particle = styled.div<{
-  delay: number;
-  x: number;
-  y: number;
-  color: string;
+  $delay: number;
+  $x: number;
+  $y: number;
+  $color: string;
 }>`
   position: absolute;
   width: 6px;
   height: 6px;
-  background: ${({color}) => (color ? color : COLORS.primary)};
+  background: ${({$color}) => ($color ? $color : COLORS.primary)};
   border-radius: 50%;
   opacity: 0.7;
-  box-shadow: 0 0 8px ${({color}) => (color ? color : COLORS.primary)};
+  box-shadow: 0 0 8px ${({$color}) => ($color ? $color : COLORS.primary)};
   animation: ${blink} 2s linear infinite;
-  animation-delay: ${({delay}) => delay}s;
-  transform: translate(${({x}) => x}px, ${({y}) => y}px);
+  animation-delay: ${({$delay}) => $delay}s;
+  transform: translate(${({$x}) => $x}px, ${({$y}) => $y}px);
 `;
 
 interface IProps {
@@ -40,7 +40,7 @@ export function CosmicParticles({count, color}: IProps) {
   return (
     <>
       {particles.map((p, i) => (
-        <Particle key={i} delay={p.delay} x={p.x} y={p.y} color={color} />
+        <Particle key={i} $delay={p.delay} $x={p.x} $y={p.y} $color={color} />
       ))}
     </>
   );

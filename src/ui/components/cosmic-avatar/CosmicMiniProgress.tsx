@@ -23,8 +23,8 @@ const Bar = styled.div`
   overflow: hidden;
 `;
 
-const Fill = styled.div<{pct: number}>`
-  width: ${({pct}) => pct}%;
+const Fill = styled.div<{$pct: number}>`
+  width: ${({$pct}) => $pct}%;
   height: 100%;
   background: linear-gradient(90deg, #ffb844, #ffe6b3);
   transition: width 0.3s ease;
@@ -51,7 +51,7 @@ export default function CosmicMiniProgress() {
       </Label>
 
       <Bar>
-        <Fill pct={progressPercent} />
+        <Fill $pct={progressPercent} />
       </Bar>
     </Wrap>
   );

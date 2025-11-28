@@ -15,7 +15,6 @@ import {
   FilterButton,
   List,
   PlayerCard,
-  AvatarCircle,
   PlayerInfo,
   PlayerName,
   PlayerStats,
@@ -24,12 +23,14 @@ import {
   SkeletonCircle,
   SkeletonBlock,
   SkeletonShimmer,
+  RankBadge,
 } from './styles';
+import type {AvatarVariant} from '@/ui/components/cosmic-avatar/types';
 
 type LeaderboardEntry = {
   uid: string;
   name: string;
-  avatar: {variant: string};
+  avatar: AvatarVariant;
   rankScoreGlobal?: number;
   rankCosmicLevel?: number;
   rankTotalCosmicXP?: number;
@@ -101,9 +102,7 @@ export default function RankingScreen() {
           <List>
             {players.map((p, idx) => (
               <PlayerCard key={p.uid}>
-                <AvatarCircle $variant={p.avatar?.variant ?? 'hybrid'}>
-                  {idx + 1}
-                </AvatarCircle>
+                <RankBadge>{idx + 1}</RankBadge>
 
                 <PlayerInfo>
                   <PlayerName>{p.name ?? 'Jugador'}</PlayerName>

@@ -15,10 +15,10 @@ const Outer = styled.div`
   overflow: hidden;
 `;
 
-const Inner = styled.div<{pct: number; color: string}>`
-  width: ${({pct}) => pct}%;
+const Inner = styled.div<{$pct: number; $color: string}>`
+  width: ${({$pct}) => $pct}%;
   height: 100%;
-  background: ${({color}) => color};
+  background: ${({$color}) => $color};
   transition: width 0.35s linear;
 `;
 
@@ -35,7 +35,7 @@ export function TimerBar() {
   return (
     <BarWrapper aria-hidden={false}>
       <Outer>
-        <Inner pct={pct} color={color} />
+        <Inner $pct={pct} $color={color} />
       </Outer>
     </BarWrapper>
   );

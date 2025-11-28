@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import {COLORS} from '../constants';
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{$secondaryBg?: boolean}>`
   position: relative;
   min-height: 100vh;
   height: 100dvh;
@@ -11,26 +11,12 @@ export const Wrapper = styled.div`
   overflow-y: hidden;
   overflow-x: hidden;
 
-  background:
-    radial-gradient(
-      circle at 40% 20%,
-      rgba(255, 145, 255, 0.25) 0%,
-      rgba(120, 0, 180, 0.18) 30%,
-      transparent 60%
-    ),
-    radial-gradient(
-      circle at 70% 60%,
-      rgba(255, 100, 180, 0.35) 0%,
-      rgba(120, 0, 180, 0.15) 40%,
-      transparent 70%
-    ),
-    radial-gradient(
-      circle at center,
-      #0d0433 0%,
-      #120444 35%,
-      #15024d 60%,
-      #08001a 100%
-    );
+  background: ${({$secondaryBg}) =>
+    $secondaryBg &&
+    'radial-gradient(circle at 40% 20%,rgba(255, 145, 255, 0.2),transparent 55%),radial-gradient(circle at 75% 65%,rgba(120, 0, 180, 0.18),transparent 60%), linear-gradient(180deg, #19042b 0%, #10001b 60%, #05000a 100%)'};
+  background: ${({$secondaryBg}) =>
+    !$secondaryBg &&
+    'radial-gradient(circle at 40% 20%,rgba(255, 145, 255, 0.25) 0%,rgba(120, 0, 180, 0.18) 30%,transparent 60%),radial-gradient(circle at 70% 60%,rgba(255, 100, 180, 0.35) 0%,rgba(120, 0, 180, 0.15) 40%,transparent 70%),radial-gradient(circle at center,#0d0433 0%,#120444 35%,#15024d 60%,#08001a 100%)'};
 `;
 
 export const Header = styled.header`

@@ -90,7 +90,6 @@ export const Content = styled.main`
 `;
 
 export const AvatarWrap = styled.div`
-  margin-top: 6dvh;
   width: 220px;
   height: 240px;
   display: flex;

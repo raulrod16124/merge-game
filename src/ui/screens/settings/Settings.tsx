@@ -16,7 +16,11 @@ export default function Settings() {
   const [language] = useState('es');
 
   return (
-    <AppLayout title="Ajustes" showBack={true} prevRoute="/home">
+    <AppLayout
+      title="Ajustes"
+      showBack={true}
+      prevRoute="/home"
+      secondaryBg={true}>
       <Section>
         <SectionTitle>General</SectionTitle>
 

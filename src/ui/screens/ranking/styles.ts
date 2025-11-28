@@ -1,10 +1,16 @@
+// styles.ts
+import {COLORS} from '@/ui/constants';
 import styled from 'styled-components';
 
+// Contenedor general
 export const Section = styled.div`
   padding: 20px;
   color: white;
 `;
 
+/* =============================
+   FILTERS
+============================= */
 export const FilterBar = styled.div`
   display: flex;
   justify-content: space-between;
@@ -14,7 +20,7 @@ export const FilterBar = styled.div`
 
 export const FilterButton = styled.button<{$active: boolean}>`
   flex: 1;
-  padding: 10px 8px;
+  padding: 12px 8px;
 
   display: flex;
   align-items: center;
@@ -22,74 +28,117 @@ export const FilterButton = styled.button<{$active: boolean}>`
   gap: 6px;
 
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
+  font-weight: 600;
 
   background: ${({$active}) =>
-    $active ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.06)'};
+    $active
+      ? 'linear-gradient(145deg, #7b3bff, #5922c7)'
+      : 'rgba(255,255,255,0.06)'};
 
   color: ${({$active}) => ($active ? 'white' : 'rgba(255,255,255,0.7)')};
 
-  transition: background 0.2s ease;
+  box-shadow: ${({$active}) =>
+    $active
+      ? '0 4px 12px rgba(120, 80, 255, 0.45)'
+      : 'inset 0 0 0 transparent'};
+
+  transition: 0.22s ease;
 `;
+
+/* =============================
+   LISTA DE JUGADORES
+============================= */
 
 export const List = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 18px;
   margin-bottom: 24px;
 `;
 
+/* --- Tarjeta estilo Achievements 2D --- */
 export const PlayerCard = styled.div`
-  padding: 12px;
+  padding: 14px 16px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  justify-content: space-between;
 
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.05);
+  border-radius: 18px;
+  position: relative;
+  overflow: hidden;
+
+  background: linear-gradient(180deg, #2b1459, #1a0835);
+  border: 2px solid ${COLORS.secondary};
+
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.4),
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
+
+  transition: 0.25s ease;
+
+  &:active {
+    transform: scale(0.97);
+  }
 `;
 
-export const AvatarCircle = styled.div<{$variant: string}>`
+/* Número de ranking (medalla 2D) */
+export const RankBadge = styled.div`
   min-width: 48px;
   height: 48px;
 
   border-radius: 50%;
+  background: linear-gradient(145deg, #ffd86b, #f7a900);
   display: flex;
   align-items: center;
   justify-content: center;
 
-  font-weight: bold;
+  color: ${COLORS.tertiary};
+  font-size: 1.2rem;
+  font-weight: 900;
 
-  background: ${({$variant}) =>
-    $variant === 'humanoid'
-      ? 'linear-gradient(145deg, #7aa0ff, #476bdb)'
-      : $variant === 'abstract'
-        ? 'linear-gradient(145deg, #ff86d5, #d74eb2)'
-        : 'linear-gradient(145deg, #ffd36e, #e1a945)'};
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.4),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.3);
 `;
 
+/* Info del jugador */
 export const PlayerInfo = styled.div`
   flex: 1;
-  display: flex;
-  flex-direction: column;
+  margin-left: 14px;
 `;
 
 export const PlayerName = styled.div`
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.25);
 `;
 
 export const PlayerStats = styled.div`
-  opacity: 0.7;
+  opacity: 0.8;
   margin-top: 4px;
   font-size: 0.85rem;
+  color: #e2d4ff;
 `;
 
-export const LoadingText = styled.p`
-  text-align: center;
-  opacity: 0.6;
-  margin-top: 20px;
+/* Contenedor del avatar */
+export const AvatarWrapper = styled.div`
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.16),
+    transparent 70%
+  );
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.28);
 `;
 
 // ===============================

@@ -13,6 +13,7 @@ interface Props {
   title?: string;
   showBack?: boolean;
   hideHeader?: boolean;
+  secondaryBg?: boolean;
 }
 
 export default function AppLayout({
@@ -21,6 +22,7 @@ export default function AppLayout({
   title,
   showBack = true,
   hideHeader = false,
+  secondaryBg = false,
 }: Props) {
   const {pathname} = useLocation();
   const navigate = useNavigate();
@@ -41,7 +43,7 @@ export default function AppLayout({
   }, []);
 
   return (
-    <Wrapper>
+    <Wrapper $secondaryBg={secondaryBg}>
       <Content>
         <StarField />
         {!hideHeader && (
