@@ -436,6 +436,7 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
       });
 
       get().saveCache();
+      get().syncToFirebase();
     } catch (e) {
       console.warn('loadFromFirebase failed', e);
     }

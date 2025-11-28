@@ -71,3 +71,47 @@ export const Content = styled.div`
   flex: 1;
   overflow-y: auto;
 `;
+
+/* bottom tab bar */
+export const TabBar = styled.nav`
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(12dvh + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.02),
+    rgba(0, 0, 0, 0.28)
+  );
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  z-index: 40;
+  backdrop-filter: blur(8px);
+`;
+
+export const TabItem = styled.button<{$active?: boolean}>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: ${({$active}) => ($active ? COLORS.secondary : 'transparent')};
+  padding: 2dvh 18px;
+  color: ${({$active}) => ($active ? COLORS.primary : COLORS.white)};
+  width: 100%;
+  height: 100%;
+  font-size: 0.85rem;
+  border: ${({$active}) =>
+    $active ? 'none' : `1px solid ${COLORS.secondary}`};
+
+  &:nth-child(1) {
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+  }
+  &:nth-child(5) {
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+  }
+`;

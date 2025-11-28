@@ -24,7 +24,7 @@ export default function Inventory() {
   );
 
   return (
-    <AppLayout title="Inventario Cósmico" showBack={true} prevRoute="/profile">
+    <AppLayout title="Inventario Cósmico" showBack={true} prevRoute="/home">
       <Container>
         <Subtitle>Objetos que has adquirido</Subtitle>
 

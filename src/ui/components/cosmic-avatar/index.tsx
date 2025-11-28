@@ -22,6 +22,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  filter: drop-shadow(0 0 25px rgba(255, 200, 90, 0.4));
 `;
 
 const BadgeWrap = styled.div`

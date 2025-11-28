@@ -9,7 +9,7 @@ const fadeIn = keyframes`
 
 export const Container = styled.div`
   position: relative;
-  min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
 
   background:
@@ -99,6 +99,19 @@ export const AvatarWrap = styled.div`
   justify-content: center;
   position: relative;
   animation: ${fadeIn} 500ms ease both;
+
+  background: radial-gradient(
+    circle,
+    rgba(10, 0, 20, 0.75) 0%,
+    rgba(10, 0, 20, 0.55) 60%,
+    rgba(10, 0, 20, 0) 100%
+  );
+
+  box-shadow:
+    0 0 40px rgba(0, 0, 0, 0.6),
+    0 0 90px rgba(60, 0, 90, 0.5);
+
+  border-radius: 50%;
 `;
 
 /* greeting */
@@ -164,7 +177,7 @@ export const TabBar = styled.nav`
   left: 0;
   right: 0;
   bottom: 0;
-  height: 12dvh;
+  height: calc(12dvh + env(safe-area-inset-bottom));
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -178,24 +191,25 @@ export const TabBar = styled.nav`
   backdrop-filter: blur(8px);
 `;
 
-export const TabItem = styled.button`
+export const TabItem = styled.button<{$active?: boolean}>`
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  background: transparent;
+  background: ${({$active}) => ($active ? COLORS.secondary : 'transparent')};
   padding: 2dvh 18px;
-  color: #fff;
+  color: ${({$active}) => ($active ? COLORS.primary : COLORS.white)};
   width: 100%;
   height: 100%;
   font-size: 0.85rem;
-  border: 1px solid #5a2fd4;
+  border: ${({$active}) =>
+    $active ? 'none' : `1px solid ${COLORS.secondary}`};
 
   &:nth-child(1) {
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
   }
-  &:nth-child(4) {
+  &:nth-child(5) {
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
   }

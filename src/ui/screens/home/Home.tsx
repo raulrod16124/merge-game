@@ -11,6 +11,7 @@ import {
   Settings,
   Box,
   SquareStar,
+  Play,
 } from 'lucide-react';
 import {
   Container,
@@ -104,6 +105,11 @@ export default function Home() {
         <TabItem onClick={() => navigate('/achievements')}>
           <SquareStar size={30} strokeWidth={1.8} />
           <div>Logros</div>
+        </TabItem>
+
+        <TabItem $active={true} onClick={() => navigate('/home')}>
+          <Play size={30} strokeWidth={1.8} />
+          <div>Play</div>
         </TabItem>
 
         <TabItem onClick={() => navigate('/profile')}>

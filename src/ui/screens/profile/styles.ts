@@ -12,7 +12,24 @@ export const AvatarWrapper = styled.div`
   position: relative;
   align-self: center;
   transform: scale(0.75);
-  margin-top: -20px;
+  width: 220px;
+  height: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background: radial-gradient(
+    circle,
+    rgba(10, 0, 20, 0.75) 0%,
+    rgba(10, 0, 20, 0.55) 60%,
+    rgba(10, 0, 20, 0) 100%
+  );
+
+  box-shadow:
+    0 0 40px rgba(0, 0, 0, 0.6),
+    0 0 90px rgba(60, 0, 90, 0.5);
+
+  border-radius: 50%;
 `;
 
 export const EditIcon = styled.button`
