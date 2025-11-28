@@ -166,7 +166,7 @@ export const FloatingButton = styled.button`
     rgba(255, 255, 255, 0.03),
     rgba(0, 0, 0, 0.12)
   );
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 2px solid ${COLORS.secondary};
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
   color: white;
 `;

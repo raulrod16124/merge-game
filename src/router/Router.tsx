@@ -13,6 +13,7 @@ import Settings from '@/ui/screens/settings';
 import Store from '@/ui/screens/store';
 import {Routes, Route, Navigate} from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
+import PlayerStats from '@/ui/screens/stats/PlayerStats';
 
 export default function Router() {
   return (
@@ -114,6 +115,15 @@ export default function Router() {
         element={
           <ProtectedRoute>
             <RankingScreen />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/stats"
+        element={
+          <ProtectedRoute>
+            <PlayerStats />
           </ProtectedRoute>
         }
       />

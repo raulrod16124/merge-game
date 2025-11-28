@@ -12,6 +12,7 @@ import {
   Box,
   SquareStar,
   Play,
+  ChartSpline,
 } from 'lucide-react';
 import {
   Container,
@@ -92,6 +93,10 @@ export default function Home() {
           onClick={() => navigate('/inventory')}
           title="Inventario">
           <Archive size={20} strokeWidth={2.2} />
+        </FloatingButton>
+
+        <FloatingButton onClick={() => navigate('/stats')} title="Estadísticas">
+          <ChartSpline size={20} strokeWidth={2.2} />
         </FloatingButton>
       </FloatingButtons>
 

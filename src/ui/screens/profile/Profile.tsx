@@ -9,13 +9,11 @@ import {
   FieldLabel,
   Value,
   EditIcon,
-  ButtonsArea,
   RightContent,
 } from './styles';
 
 import {CosmicAvatar} from '@/ui/components/cosmic-avatar';
 import {Pencil} from 'lucide-react';
-import {Button} from '@/common/Button';
 import {COLORS} from '../../constants/index';
 import CosmicProfileProgress from '@/ui/components/cosmic-avatar/CosmicProfileProgress';
 import {usePlayerStore} from '@/state';
@@ -48,16 +46,6 @@ export default function Profile() {
             </EditIcon>
           </RightContent>
         </Row>
-
-        {/* Inventario */}
-        <ButtonsArea>
-          <Button
-            fullWidth={true}
-            variant="secondary"
-            onClick={() => navigate('/inventory')}>
-            Ver Inventario
-          </Button>
-        </ButtonsArea>
       </Section>
     </AppLayout>
   );
