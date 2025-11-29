@@ -16,37 +16,30 @@ export const NodeWrapper = styled.div<{$index: number}>`
 
   /* alternate left / right visual offset */
   align-self: ${({$index}) => ($index % 2 === 0 ? 'flex-start' : 'flex-end')};
-  padding-left: ${({$index}) => ($index % 2 !== 0 ? '45%' : '0')};
-  padding-right: ${({$index}) => ($index % 2 === 0 ? '45%' : '0')};
+  padding-left: ${({$index}) => ($index % 2 !== 0 ? '40%' : '0')};
+  padding-right: ${({$index}) => ($index % 2 === 0 ? '40%' : '0')};
 `;
 
-/* PLANETA */
-export const Planet = styled.div<{$unlocked: boolean}>`
-  width: 82px;
-  height: 82px;
-  border-radius: 50%;
-  background: ${({$unlocked}) =>
-    $unlocked
-      ? 'radial-gradient(circle, #ffdd77 0%, #ff9a3c 40%, #8c2fff 100%)'
-      : 'radial-gradient(circle, #444 0%, #262626 100%)'};
+export const LevelsWrapper = styled.div<{$unlocked: boolean}>`
+  width: 100px;
+  height: 100px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  box-shadow: ${({$unlocked}) =>
-    $unlocked ? '0 0 26px rgba(255,200,90,0.85)' : '0 0 10px rgba(0,0,0,0.6)'};
+  opacity: ${({$unlocked}) => ($unlocked ? 1 : 0.4)};
 
   transform: ${({$unlocked}) => ($unlocked ? 'scale(1)' : 'scale(0.92)')};
 
-  transition:
-    transform 0.24s ease,
-    box-shadow 0.24s ease;
+  transition: transform 0.24s ease;
 `;
 
-/* Icono interno */
-export const PlanetIcon = styled.div`
-  color: white;
+export const LevelImg = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -69,4 +62,10 @@ export const ScoreBadge = styled.div`
   border-radius: 12px;
   color: white;
   font-size: 13px;
+`;
+
+export const SectionLevelWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;

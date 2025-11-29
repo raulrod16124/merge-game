@@ -7,6 +7,8 @@ import {LEVEL_XP_TABLE} from '@/data/cosmicLevels';
 import {doc, setDoc, getDoc, serverTimestamp} from 'firebase/firestore';
 import {db} from '@/core/firebase';
 import {useUserStore} from '@/state/user-store';
+import {levelIdToIndex} from '@/data/levelIndexMap';
+import {SECTION_UNLOCKS} from '@/data/sectionUnlocks';
 
 export type AchievementId = string;
 
@@ -44,17 +46,22 @@ export type PlayerProgressState = {
   avatarVariant: 'humanoid' | 'abstract' | 'hybrid';
   lastEvolutionLevel: number | null;
   completedLevelUnlocks: Record<number, boolean>;
+  unlockedSections: number[]; // e.g. [1]
+  unlockedLevels: string[]; // e.g. ['level01']
 
   isPowerupUnlocked: (id: PowerupType) => boolean;
   clearNewAchievements: () => void;
   markLevelCompleted: (levelId: string, score: number) => void;
-  isLevelUnlocked: (levelNumber: number) => boolean;
-  unlockLevel: (lvl: number) => void;
   applyLevelUnlocks: (lvl: number) => void;
   unlockPowerup: (p: PowerupType) => void;
   unlockMap: (id: string) => void;
   addCoins: (amt: number) => void;
   markLevelUnlocksAsCompleted: (lvl: number) => void;
+  unlockSection: (sectionNumber: number) => void;
+  unlockLevel: (levelId: string) => void;
+  isLevelUnlocked: (levelId: string) => boolean;
+  isSectionUnlocked: (sectionNumber: number) => boolean;
+  completeLevel: (levelId: string, score?: number) => void;
 
   triggerCosmicEvolution: ((lvl: number) => void) | null;
   setEvolutionHandler: (fn: (lvl: number) => void) => void;
@@ -93,6 +100,8 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
   lastEvolutionLevel: null,
   completedLevelUnlocks: {},
   triggerCosmicEvolution: null,
+  unlockedSections: [1],
+  unlockedLevels: ['level01'],
 
   // -----------------------------
   // OFFLINE CACHE SYSTEM
@@ -120,13 +129,99 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
   // -----------------------------
   setEvolutionHandler: fn => set({triggerCosmicEvolution: fn}),
 
-  isLevelUnlocked: (n: number) => {
-    return n <= get().highestLevelUnlocked;
+  unlockSection: (sectionNumber: number) => {
+    set(state => {
+      if (state.unlockedSections.includes(sectionNumber)) return state;
+      return {unlockedSections: [...state.unlockedSections, sectionNumber]};
+    });
+    // unlock all levels in section
+    const sec = SECTION_UNLOCKS[sectionNumber];
+    if (sec) {
+      const newLevels: string[] = [];
+      for (let i = sec.startLevelIndex; i <= sec.endLevelIndex; i++) {
+        newLevels.push(`level${String(i).padStart(2, '0')}`);
+      }
+      set(state => ({
+        unlockedLevels: Array.from(
+          new Set([...state.unlockedLevels, ...newLevels]),
+        ),
+      }));
+    }
+  },
+  unlockLevel: (levelId: string) => {
+    set(state => {
+      if (state.unlockedLevels.includes(levelId)) return state;
+      return {unlockedLevels: [...state.unlockedLevels, levelId]};
+    });
+  },
+  isLevelUnlocked: (levelId: string) => {
+    const state = get();
+    return state.unlockedLevels.includes(levelId);
+  },
+  isSectionUnlocked: (sectionNumber: number) => {
+    const state = get();
+    return state.unlockedSections.includes(sectionNumber);
   },
 
   isPowerupUnlocked: (id: PowerupType) => {
     const s = get();
     return Array.isArray(s.unlockedPowerups) && s.unlockedPowerups.includes(id);
+  },
+
+  completeLevel: (levelId: string, score?: number) => {
+    set(state => {
+      const now = Date.now();
+      const completedLevels = {...(state.completedLevels || {})};
+      completedLevels[levelId] = {
+        score: score ?? completedLevels[levelId]?.score ?? 0,
+        completedAt: now,
+      };
+
+      return {completedLevels};
+    });
+
+    // desbloquear siguiente nivel según index
+    try {
+      const idx = levelIdToIndex(levelId);
+      const nextIndex = idx + 1;
+      if (nextIndex <= 50) {
+        const nextLevelId = `level${String(nextIndex).padStart(2, '0')}`;
+        get().unlockLevel(nextLevelId);
+      }
+
+      // comprobar si completamos una sección entera -> desbloquear siguiente sección
+      const currentIndex = levelIdToIndex(levelId);
+      const sectionEntry = Object.values(SECTION_UNLOCKS).find(
+        s =>
+          currentIndex >= s.startLevelIndex && currentIndex <= s.endLevelIndex,
+      );
+      if (sectionEntry) {
+        // comprobar si todos los niveles de esa sección están en completedLevels
+        const comp = get().completedLevels || {};
+        const allDone = (() => {
+          for (
+            let i = sectionEntry.startLevelIndex;
+            i <= sectionEntry.endLevelIndex;
+            i++
+          ) {
+            const lid = `level${String(i).padStart(2, '0')}`;
+            if (!comp[lid]) return false;
+          }
+          return true;
+        })();
+
+        if (allDone && sectionEntry.unlocksNext) {
+          get().unlockSection(sectionEntry.unlocksNext);
+        }
+      }
+
+      // persistir en la función de guardado que ya uses
+      if (typeof (get() as any).saveProgress === 'function') {
+        (get() as any).saveProgress();
+      }
+    } catch (err) {
+      console.warn('completeLevel: index parse error', err);
+    }
   },
 
   clearNewAchievements: () => set({newAchievements: []}),
@@ -148,15 +243,6 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
     }));
 
     get().syncToFirebase();
-  },
-
-  unlockLevel: lvl => {
-    set(s => ({
-      highestLevelUnlocked: Math.max(s.highestLevelUnlocked, lvl),
-    }));
-    get().saveCache();
-    get().syncToFirebase();
-    get().updateLeaderboardScores();
   },
 
   applyLevelUnlocks: lvl => {

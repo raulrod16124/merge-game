@@ -21,6 +21,7 @@ import {getResponsiveBoardSize} from '../../utils/getResponsiveBoardSize';
 import {createPowerups} from './actions/powerups';
 import {maybeSpawnBlackHole} from './utils/spawnHelpers';
 import {computeEnemyMovePlans, type EnemyMovePlan} from './utils/enemyMovement';
+import {usePlayerStore} from '@/state/player-store';
 
 export type AbsorbedEffects = {
   id: string;
@@ -197,7 +198,7 @@ export const useGameStore = create<GameStore>()(
                 const lvlNum =
                   parseInt(r.levelId.replace(/\D/g, ''), 10) || null;
                 if (lvlNum) {
-                  player.unlockLevel(lvlNum + 1);
+                  player.unlockLevel((lvlNum + 1).toString());
                   player.applyLevelUnlocks(lvlNum + 1);
                 }
               })
@@ -764,6 +765,11 @@ export const useGameStore = create<GameStore>()(
 
       // === Load/reset ===
       loadLevel: lvl => {
+        const player = usePlayerStore.getState();
+        if (!player.isLevelUnlocked(lvl.id)) {
+          console.warn(`Level ${lvl} is locked for current player`);
+          return; // o lanzar error manejable
+        }
         const size = getResponsiveBoardSize(lvl);
 
         const initial = lvl.initialMap.map((s, idx) => ({

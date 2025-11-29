@@ -1,15 +1,16 @@
 // src/ui/components/LevelCard/index.tsx
 import {useNavigate} from 'react-router-dom';
-import {Lock, Star} from 'lucide-react';
 import {
-  Planet,
-  PlanetIcon,
+  LevelsWrapper,
+  LevelImg,
   NodeWrapper,
   LevelName,
   ScoreBadge,
+  SectionLevelWrapper,
 } from './LevelCard.styled';
 
 import type {LevelConfig} from '@/core/types';
+import {Lock} from 'lucide-react';
 
 interface IProps {
   level: LevelConfig;
@@ -33,24 +34,31 @@ export function LevelCard({
   };
 
   return (
-    <NodeWrapper $index={index}>
-      <Planet $unlocked={unlocked} onClick={handleClick}>
-        <PlanetIcon>
-          {completed ? (
-            <Star size={28} strokeWidth={2.2} />
-          ) : unlocked ? (
-            <Star size={22} strokeWidth={1.4} />
-          ) : (
-            <Lock size={26} strokeWidth={2.2} />
+    <SectionLevelWrapper>
+      <NodeWrapper $index={index}>
+        <LevelsWrapper $unlocked={unlocked} onClick={handleClick}>
+          {!unlocked && (
+            <div
+              style={{
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Lock size={35} />
+            </div>
           )}
-        </PlanetIcon>
-      </Planet>
+          <LevelImg src={level.image} />
+        </LevelsWrapper>
 
-      <LevelName> {level.name} </LevelName>
+        <LevelName> {level.name} </LevelName>
 
-      {completed && highScore != null && (
-        <ScoreBadge>⭐ {highScore}</ScoreBadge>
-      )}
-    </NodeWrapper>
+        {completed && highScore != null && (
+          <ScoreBadge>⭐ {highScore}</ScoreBadge>
+        )}
+      </NodeWrapper>
+    </SectionLevelWrapper>
   );
 }

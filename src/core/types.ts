@@ -54,6 +54,7 @@ export type ResponsiveBoardSize = {
 export type LevelConfig = {
   id: string;
   name: string;
+  image: string;
 
   boardSize: ResponsiveBoardSize;
   enemyCount: number;

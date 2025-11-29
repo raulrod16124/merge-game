@@ -4,7 +4,6 @@ import {useUserStore} from '@/state/user-store';
 import {useGameStore} from '@/state/game-store';
 import {COLORS} from '@/ui/constants';
 import {STORE_ITEMS} from '@/data/store/store-items';
-import {X} from 'lucide-react';
 import {usePlayerStore} from '@/state/player-store';
 
 const Wrapper = styled.div`
