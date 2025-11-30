@@ -100,7 +100,6 @@ export default function Store() {
                 {/* INFO */}
                 <CardInfo>
                   <h4>{item.name}</h4>
-                  <p>{item.description}</p>
 
                   <div className="stock">
                     Stock: <b>{qty}</b>

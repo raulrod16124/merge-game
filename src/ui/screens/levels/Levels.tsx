@@ -92,6 +92,7 @@ export function Levels() {
       {/* ---- PANEL DE NIVELES DE LA SECCIÓN ---- */}
       {selectedSection && (
         <LevelsPanel>
+          <StarField />
           <h2>{levelsOfSection[0].name} </h2>
           <CloseIconWrapper onClick={() => setSelectedSection(null)}>
             <X size={22} />
