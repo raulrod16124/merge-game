@@ -12,6 +12,9 @@ import {
 import type {LevelConfig} from '@/core/types';
 import {Lock} from 'lucide-react';
 
+// <-- NUEVO: importar el store del juego
+import {useGameStore} from '@/state/game-store';
+
 interface IProps {
   level: LevelConfig;
   unlocked: boolean;
@@ -30,7 +33,18 @@ export function LevelCard({
   const nav = useNavigate();
 
   const handleClick = () => {
-    if (unlocked) nav(`/play/${level.id}`);
+    if (!unlocked) return;
+
+    // 1) Cargar el nivel en el game-store para inicializar boardSize, timeLeft, items, timer...
+    try {
+      // loadLevel está sincronous y hace set() internamente
+      useGameStore.getState().loadLevel(level);
+    } catch (e) {
+      console.warn('Failed to load level before navigation', e);
+    }
+
+    // 2) navegar a la pantalla de juego
+    nav(`/play/${level.id}`);
   };
 
   return (

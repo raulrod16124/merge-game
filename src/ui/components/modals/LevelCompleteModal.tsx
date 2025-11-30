@@ -161,7 +161,9 @@ export function LevelCompleteModal({
           <Button
             variant="primary"
             fullWidth={true}
-            onClick={() => onNextLevel(nextLevel)}>
+            onClick={() => {
+              onNextLevel(nextLevel);
+            }}>
             Próximo nivel
           </Button>
           <Button

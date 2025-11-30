@@ -198,8 +198,9 @@ export const useGameStore = create<GameStore>()(
                 const lvlNum =
                   parseInt(r.levelId.replace(/\D/g, ''), 10) || null;
                 if (lvlNum) {
-                  player.unlockLevel((lvlNum + 1).toString());
-                  player.applyLevelUnlocks(lvlNum + 1);
+                  const nextLevelId = `level${String(lvlNum + 1).padStart(2, '0')}`; // asegura formato "levelNN"
+                  player.unlockLevel(nextLevelId);
+                  player.applyLevelUnlocks(lvlNum + 1); // applyLevelUnlocks espera un número
                 }
               })
               .catch(() => {});
