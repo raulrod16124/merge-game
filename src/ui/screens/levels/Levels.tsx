@@ -12,7 +12,6 @@ import {
   LevelsPanelScroller,
   CloseIconWrapper,
 } from './styles';
-import StarField from '@/ui/components/StarField';
 import {X} from 'lucide-react';
 
 const SECTIONS = [

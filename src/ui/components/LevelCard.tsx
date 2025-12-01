@@ -12,9 +12,6 @@ import {
 import type {LevelConfig} from '@/core/types';
 import {Lock} from 'lucide-react';
 
-// <-- NUEVO: importar el store del juego
-import {useGameStore} from '@/state/game-store';
-
 interface IProps {
   level: LevelConfig;
   unlocked: boolean;
