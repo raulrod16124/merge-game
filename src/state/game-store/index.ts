@@ -154,7 +154,7 @@ export const useGameStore = create<GameStore>()(
     return {
       // === initial state ===
       items: [],
-      boardSize: {cols: 6, rows: 6},
+      boardSize: {cols: 4, rows: 6},
       currentLevel: null,
       score: 0,
       moves: 0,
@@ -799,7 +799,6 @@ export const useGameStore = create<GameStore>()(
         });
 
         get().spawnNextItem();
-        get().stopTimer();
         get().startTimer();
       },
 

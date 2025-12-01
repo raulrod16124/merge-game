@@ -21,6 +21,13 @@ import React from 'react';
 import {HUDFreezeCounter} from './animations/HUDFreezeCounter';
 import {FreezeOverlay} from './animations/FreezeOverlay';
 
+/**
+ * Parche de performance mínimo:
+ * - Evita setCellRect en cada render usando requestAnimationFrame por celda
+ * - Reduce búsquedas repetidas creando un map de items por posición
+ * - Mantiene la lógica existente e interfaz visual sin cambios
+ */
+
 export function GameBoard() {
   const {
     items,
@@ -33,7 +40,7 @@ export function GameBoard() {
     absorbedEffects,
   } = useGameStore();
 
-  const boardRef = React.useRef<HTMLDivElement>(null);
+  const boardRef = React.useRef<HTMLDivElement | null>(null);
   const boardRect = boardRef.current?.getBoundingClientRect();
 
   const destroyAnimations = useGameStore(s => s.destroyAnimations);
@@ -44,6 +51,30 @@ export function GameBoard() {
   const onClickEmpty = (pos: {x: number; y: number}) => {
     addItem(pos);
   };
+
+  // raf handles per cell to avoid stacking many RAFs
+  const rafsRef = React.useRef<Record<string, number | null>>({});
+
+  // cleanup RAFs on unmount
+  React.useEffect(() => {
+    return () => {
+      const rafs = rafsRef.current;
+      for (const k in rafs) {
+        const id = rafs[k];
+        if (typeof id === 'number') cancelAnimationFrame(id);
+      }
+      rafsRef.current = {};
+    };
+  }, []);
+
+  // Build a quick lookup map for items to avoid find() per cell
+  const itemsMap = React.useMemo(() => {
+    const m = new Map<string, (typeof items)[0]>();
+    for (const it of items) {
+      m.set(`${it.pos.x},${it.pos.y}`, it);
+    }
+    return m;
+  }, [items]);
 
   return (
     <BoardWrapper ref={boardRef}>
@@ -57,34 +88,58 @@ export function GameBoard() {
             {Array.from({length: cols * rows}).map((_, index) => {
               const x = index % cols;
               const y = Math.floor(index / cols);
-              const item = items.find(i => i.pos.x === x && i.pos.y === y);
+              const key = `${x},${y}`;
+              const item = itemsMap.get(key) ?? null;
 
               return (
                 <div
                   key={`${x}-${y}`}
                   ref={el => {
                     if (!el) return;
-                    const rect = el.getBoundingClientRect();
-                    const key = `${x},${y}`;
-                    const prev = useGameStore.getState().cellRects[key];
 
-                    const newRect = {
-                      size: rect.width,
-                      centerX: rect.left + rect.width / 2,
-                      centerY: rect.top + rect.height / 2,
-                    };
-
-                    if (
-                      !prev ||
-                      prev.size !== newRect.size ||
-                      prev.centerX !== newRect.centerX ||
-                      prev.centerY !== newRect.centerY
-                    ) {
-                      useGameStore.getState().setCellRect(key, newRect);
+                    // cancel any pending RAF for this cell
+                    const prevRaf = rafsRef.current[key];
+                    if (typeof prevRaf === 'number') {
+                      cancelAnimationFrame(prevRaf);
+                      rafsRef.current[key] = null;
                     }
+
+                    // schedule a single RAF to compute rect and update store if changed
+                    rafsRef.current[key] = requestAnimationFrame(() => {
+                      try {
+                        const rect = el.getBoundingClientRect();
+                        const prev = useGameStore.getState().cellRects[key];
+
+                        const newRect = {
+                          size: rect.width,
+                          centerX: rect.left + rect.width / 2,
+                          centerY: rect.top + rect.height / 2,
+                        };
+
+                        if (
+                          !prev ||
+                          prev.size !== newRect.size ||
+                          prev.centerX !== newRect.centerX ||
+                          prev.centerY !== newRect.centerY
+                        ) {
+                          useGameStore.getState().setCellRect(key, newRect);
+                        }
+                      } catch (e) {
+                        // defensivo: si algo falla, no romper render
+                        // eslint-disable-next-line no-console
+                        console.warn('setCellRect failed', e);
+                      } finally {
+                        rafsRef.current[key] = null;
+                      }
+                    });
                   }}
                   style={{width: '100%', height: '100%'}}>
-                  <Tile x={x} y={y} item={item} onClickEmpty={onClickEmpty} />
+                  <Tile
+                    x={x}
+                    y={y}
+                    item={item ?? undefined}
+                    onClickEmpty={onClickEmpty}
+                  />
                 </div>
               );
             })}

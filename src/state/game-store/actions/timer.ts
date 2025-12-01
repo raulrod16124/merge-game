@@ -7,8 +7,7 @@ export const createTimer = (
   get: () => GameStore,
 ) => ({
   startTimer: () => {
-    const {_timerId} = get();
-    if (_timerId) return;
+    if (get()._timerId) return;
 
     const id = window.setInterval(() => {
       set(s => ({timeLeft: s.timeLeft - 1}));

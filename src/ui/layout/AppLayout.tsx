@@ -14,6 +14,7 @@ interface Props {
   showBack?: boolean;
   hideHeader?: boolean;
   secondaryBg?: boolean;
+  renderStarts?: boolean;
 }
 
 export default function AppLayout({
@@ -23,6 +24,7 @@ export default function AppLayout({
   showBack = true,
   hideHeader = false,
   secondaryBg = false,
+  renderStarts = false,
 }: Props) {
   const {pathname} = useLocation();
   const navigate = useNavigate();
@@ -45,7 +47,7 @@ export default function AppLayout({
   return (
     <Wrapper $secondaryBg={secondaryBg}>
       <Content>
-        <StarField />
+        {renderStarts && <StarField />}
         {!hideHeader && (
           <Header>
             {showBack ? (

@@ -34,16 +34,6 @@ export function LevelCard({
 
   const handleClick = () => {
     if (!unlocked) return;
-
-    // 1) Cargar el nivel en el game-store para inicializar boardSize, timeLeft, items, timer...
-    try {
-      // loadLevel está sincronous y hace set() internamente
-      useGameStore.getState().loadLevel(level);
-    } catch (e) {
-      console.warn('Failed to load level before navigation', e);
-    }
-
-    // 2) navegar a la pantalla de juego
     nav(`/play/${level.id}`);
   };
 

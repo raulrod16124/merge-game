@@ -72,7 +72,7 @@ export function BoardScreen() {
     }
 
     if (!currentLevel || currentLevel.id !== lvl.id) {
-      loadLevel(lvl);
+      setTimeout(() => loadLevel(lvl), 0);
       setModalState(null);
     }
   }, [levelId, currentLevel, loadLevel, navigate]);
