@@ -1,5 +1,7 @@
 // src/data/cosmicEvolution.ts
 
+import type {AvatarVariant} from '@/ui/components/cosmic-avatar/types';
+
 export type EvolutionProfile = {
   auraColor: string;
   auraIntensity: number; // multiplica el brillo del aura
@@ -10,7 +12,7 @@ export type EvolutionProfile = {
 };
 
 export const COSMIC_EVOLUTION: Record<
-  'humanoid' | 'abstract' | 'hybrid',
+  AvatarVariant,
   Record<number, EvolutionProfile>
 > = {
   humanoid: {

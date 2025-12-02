@@ -5,7 +5,7 @@ import {useUserStore} from '@/state/user-store';
 import {CosmicAvatar} from '@/ui/components/cosmic-avatar';
 import {useEffect, useState} from 'react';
 import {Button} from '@/common/Button';
-import type {AvatarVariant} from '../cosmic-avatar/types';
+import {AvatarVariant} from '../cosmic-avatar/types';
 
 const Backdrop = styled.div`
   position: fixed;
@@ -38,7 +38,7 @@ export function CosmicEvolutionModal() {
   const clearLevelFlag = () =>
     usePlayerStore.setState({lastEvolutionLevel: null});
 
-  const currentVariant = useUserStore(s => s.avatar?.variant);
+  const currentVariant = useUserStore(s => s.avatar);
 
   const [previousVariant, setPreviousVariant] = useState<AvatarVariant | null>(
     null,
@@ -53,7 +53,7 @@ export function CosmicEvolutionModal() {
     if (level) {
       // guardar solo 1 vez
       if (!previousVariant) {
-        setPreviousVariant(currentVariant ?? 'hybrid');
+        setPreviousVariant(currentVariant ?? AvatarVariant.HYBRID);
       }
       // inicializar animación
       setAnimationStage('before');
@@ -91,7 +91,9 @@ export function CosmicEvolutionModal() {
                   initial={{opacity: 1}}
                   animate={{opacity: 0.2, scale: 0.9}}
                   transition={{duration: 0.6}}>
-                  <CosmicAvatar forceVariant={previousVariant ?? 'hybrid'} />
+                  <CosmicAvatar
+                    forceVariant={previousVariant ?? AvatarVariant.HYBRID}
+                  />
                 </motion.div>
               )}
 
@@ -101,7 +103,9 @@ export function CosmicEvolutionModal() {
                   animate={{scale: 1.2, opacity: 0}}
                   transition={{duration: 0.6, ease: 'easeOut'}}
                   style={{position: 'absolute'}}>
-                  <CosmicAvatar forceVariant={previousVariant ?? 'hybrid'} />
+                  <CosmicAvatar
+                    forceVariant={previousVariant ?? AvatarVariant.HYBRID}
+                  />
                 </motion.div>
               )}
 

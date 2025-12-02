@@ -7,23 +7,20 @@ import {CosmicAvatar} from '@/ui/components/cosmic-avatar';
 import {Button} from '@/common/Button';
 
 import {VariantSelector, PreviewArea} from './styles';
-import type {AvatarVariant} from '@/ui/components/cosmic-avatar/types';
+import {AvatarVariant} from '@/ui/components/cosmic-avatar/types';
 import {usePlayerStore} from '@/state';
+import {VARIANT_SELECTOR} from '@/ui/constants';
 
 export default function EditAvatar() {
   const navigate = useNavigate();
   const {avatar, setAvatarVariant} = useUserStore();
 
-  const [temp, setTemp] = useState<AvatarVariant>(avatar ?? 'hybrid');
-
-  const variants = [
-    {key: 'abstract', label: 'Abstract'},
-    {key: 'humanoid', label: 'Humanoide'},
-    {key: 'hybrid', label: 'Híbrido'},
-  ];
+  const [temp, setTemp] = useState<AvatarVariant>(
+    avatar ?? AvatarVariant.HYBRID,
+  );
 
   const save = () => {
-    const avatarOptions = variants.map(v => v.key);
+    const avatarOptions = VARIANT_SELECTOR.map(v => v.key);
     if (avatarOptions.includes(temp)) {
       console.log({temp});
       setAvatarVariant(temp);
@@ -39,7 +36,7 @@ export default function EditAvatar() {
       </PreviewArea>
 
       <VariantSelector>
-        {variants.map(v => (
+        {VARIANT_SELECTOR.map(v => (
           <Button
             variant="tertiary"
             key={v.key}

@@ -6,12 +6,13 @@ import {useNavigate} from 'react-router-dom';
 import {CosmicAvatar} from '@/ui/components/cosmic-avatar';
 import {Button} from '@/common/Button';
 
-import {Wrapper, AvatarPreview, SelectorGrid, OptionCard} from './styles';
-import type {AvatarVariant} from '@/ui/components/cosmic-avatar/types';
+import {Wrapper, AvatarPreview, SelectorGrid} from './styles';
+import {AvatarVariant} from '@/ui/components/cosmic-avatar/types';
+import {VARIANT_SELECTOR} from '@/ui/constants';
 
 export default function Login() {
   const [name, setName] = useState('');
-  const [variant, setVariant] = useState<AvatarVariant>('hybrid');
+  const [variant, setVariant] = useState<AvatarVariant>(AvatarVariant.HYBRID);
 
   const authenticated = useUserStore(s => s.authenticated);
   const authenticate = useUserStore(s => s.authenticate);
@@ -19,7 +20,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (authenticated) navigate('/home');
+    //if (authenticated) navigate('/home');
   }, [authenticated, navigate]);
 
   const handleEnter = async () => {
@@ -32,7 +33,11 @@ export default function Login() {
       console.error('Login error:', err);
     }
   };
-
+  console.log({
+    abstract: variant === AvatarVariant.ABSTRACT,
+    humanoid: variant === AvatarVariant.HUMANOID,
+    hybrid: variant === AvatarVariant.HYBRID,
+  });
   return (
     <Wrapper>
       <h1>Bienvenido</h1>
@@ -45,23 +50,15 @@ export default function Login() {
 
       {/* SELECTOR */}
       <SelectorGrid>
-        <OptionCard
-          $active={variant === 'abstract'}
-          onClick={() => setVariant('abstract')}>
-          Abstracto
-        </OptionCard>
-
-        <OptionCard
-          $active={variant === 'humanoid'}
-          onClick={() => setVariant('humanoid')}>
-          Humanoide
-        </OptionCard>
-
-        <OptionCard
-          $active={variant === 'hybrid'}
-          onClick={() => setVariant('hybrid')}>
-          Híbrido
-        </OptionCard>
+        {VARIANT_SELECTOR.map(v => (
+          <Button
+            variant="tertiary"
+            key={v.key}
+            selected={variant === v.key}
+            onClick={() => setVariant(v.key as AvatarVariant)}>
+            {v.label}
+          </Button>
+        ))}
       </SelectorGrid>
 
       {/* NAME */}

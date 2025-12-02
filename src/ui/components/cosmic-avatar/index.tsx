@@ -13,7 +13,7 @@ import {useUserStore} from '@/state/user-store';
 import {COSMIC_EVOLUTION} from '@/data/cosmicEvolution';
 import {computeCosmicProgress} from '@/data/cosmicXP';
 import LevelUpBurst from './LevelUpBurst';
-import type {AvatarVariant} from './types';
+import {AvatarVariant} from './types';
 
 const Wrapper = styled.div`
   position: relative;
@@ -75,17 +75,19 @@ export function CosmicAvatar({variant, forceVariant, hideProgress}: Props) {
     variant ??
     (typeof userVariant === 'string' ? userVariant : undefined) ??
     (typeof playerVariant === 'string' ? playerVariant : undefined) ??
-    'hybrid';
+    AvatarVariant.HYBRID;
 
   const finalVariant = resolvedVariant as AvatarVariant;
 
   const progress = usePlayerStore(s => s.cosmicProgress);
-  const variantProgress = progress[finalVariant] ?? progress['hybrid'];
+  const variantProgress =
+    progress[finalVariant] ?? progress[AvatarVariant.HYBRID];
 
   const xp = variantProgress.xp;
   const level = variantProgress.level;
 
-  const evoBase = COSMIC_EVOLUTION[finalVariant] || COSMIC_EVOLUTION['hybrid'];
+  const evoBase =
+    COSMIC_EVOLUTION[finalVariant] || COSMIC_EVOLUTION[AvatarVariant.HYBRID];
 
   const profile = evoBase[level] ?? evoBase[1];
 
@@ -113,13 +115,13 @@ export function CosmicAvatar({variant, forceVariant, hideProgress}: Props) {
         <CosmicCore glow={profile.coreGlow} />
       </CosmicAura>
 
-      {finalVariant === 'abstract' && (
+      {finalVariant === AvatarVariant.ABSTRACT && (
         <AbstractShape detail={profile.shapeDetail} />
       )}
-      {finalVariant === 'humanoid' && (
+      {finalVariant === AvatarVariant.HUMANOID && (
         <HumanoidShape detail={profile.shapeDetail} />
       )}
-      {finalVariant === 'hybrid' && (
+      {finalVariant === AvatarVariant.HYBRID && (
         <HybridShape detail={profile.shapeDetail} />
       )}
 

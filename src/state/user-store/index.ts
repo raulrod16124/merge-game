@@ -2,7 +2,7 @@
 import {create} from 'zustand';
 import {doc, setDoc, getDoc, serverTimestamp} from 'firebase/firestore';
 import {signInAnonIfNeeded, db} from '@/core/firebase';
-import type {AvatarVariant} from '@/ui/components/cosmic-avatar/types';
+import {AvatarVariant} from '@/ui/components/cosmic-avatar/types';
 import {usePlayerStore} from '../player-store';
 
 type Inventory = Record<string, number>;
@@ -47,7 +47,7 @@ export const useUserStore = create<UserState>((set, get) => ({
   loading: false,
 
   name: null,
-  avatar: 'humanoid' as AvatarVariant,
+  avatar: AvatarVariant.HUMANOID,
   coins: 0,
   inventory: {},
   combinations: {},
@@ -55,7 +55,7 @@ export const useUserStore = create<UserState>((set, get) => ({
   // ------------------------------
   // AUTHENTICATION FLOW
   // ------------------------------
-  authenticate: async (name, variant = 'hybrid') => {
+  authenticate: async (name, variant = AvatarVariant.HYBRID) => {
     const fbUser = await signInAnonIfNeeded();
 
     const newUser = {
@@ -95,7 +95,7 @@ export const useUserStore = create<UserState>((set, get) => ({
       uid: null,
       authenticated: false,
       name: null,
-      avatar: 'humanoid',
+      avatar: AvatarVariant.HUMANOID,
       coins: 0,
       inventory: {},
       combinations: {},

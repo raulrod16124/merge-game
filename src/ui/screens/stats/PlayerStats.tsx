@@ -8,9 +8,9 @@ export default function PlayerStats() {
   const completedLevels = usePlayerStore(s => s.completedLevels);
   const highestLevelUnlocked = usePlayerStore(s => s.highestLevelUnlocked);
   const achievements = usePlayerStore(s => s.achievements);
+  const avatarVariant = usePlayerStore(s => s.avatarVariant);
 
-  const variant = 'hybrid'; // o el que use tu avatar
-  const avatar = progress[variant];
+  const avatar = progress[avatarVariant];
   const levelXP = avatar?.xp ?? 0;
   const level = avatar?.level ?? 1;
 

@@ -9,7 +9,7 @@ import {db} from '@/core/firebase';
 import {useUserStore} from '@/state/user-store';
 import {levelIdToIndex} from '@/data/levelIndexMap';
 import {SECTION_UNLOCKS} from '@/data/sectionUnlocks';
-import type {AvatarVariant} from '@/ui/components/cosmic-avatar/types';
+import {AvatarVariant} from '@/ui/components/cosmic-avatar/types';
 
 export type AchievementId = string;
 
@@ -44,7 +44,7 @@ export type PlayerProgressState = {
     abstract: {xp: number; level: number};
     hybrid: {xp: number; level: number};
   };
-  avatarVariant: 'humanoid' | 'abstract' | 'hybrid';
+  avatarVariant: AvatarVariant;
   lastEvolutionLevel: number | null;
   completedLevelUnlocks: Record<number, boolean>;
   unlockedSections: number[]; // e.g. [1]
@@ -98,7 +98,7 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
     abstract: {xp: 0, level: 1},
     hybrid: {xp: 0, level: 1},
   },
-  avatarVariant: 'humanoid',
+  avatarVariant: AvatarVariant.HUMANOID,
   lastEvolutionLevel: null,
   completedLevelUnlocks: {},
   triggerCosmicEvolution: null,
@@ -387,7 +387,7 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
         {
           uid,
           name: name ?? 'Unknown',
-          avatar: {variant: avatar ?? 'hybrid'},
+          avatar: {variant: avatar ?? AvatarVariant.HYBRID},
 
           // Valores exportados al ranking
           rankScoreGlobal,
@@ -549,7 +549,7 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
         abstract: {xp: 0, level: 1},
         hybrid: {xp: 0, level: 1},
       },
-      avatarVariant: 'humanoid',
+      avatarVariant: AvatarVariant.HUMANOID,
       lastEvolutionLevel: null,
       completedLevelUnlocks: {},
       triggerCosmicEvolution: null,

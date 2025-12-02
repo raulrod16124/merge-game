@@ -50,31 +50,9 @@ export const AvatarPreview = styled.div`
 `;
 
 export const SelectorGrid = styled.div`
-  width: 100%;
   max-width: 360px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 12px;
   margin-bottom: 12px;
-`;
-
-export const OptionCard = styled.button<{$active: boolean}>`
-  padding: 14px 10px;
-  border-radius: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  border: none;
-  font-size: 0.9rem;
-
-  background: ${({$active}) =>
-    $active ? COLORS.secondary : COLORS.tertiaryDark};
-
-  color: ${({$active}) => ($active ? COLORS.white : '#CCC')};
-
-  transition: 0.15s;
-
-  &:hover {
-    background: ${COLORS.tertiary};
-    transform: translateY(-2px);
-  }
 `;

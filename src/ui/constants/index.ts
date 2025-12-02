@@ -1,5 +1,7 @@
 // src/ui/constants/cosmicData.ts
 
+import {AvatarVariant} from '../components/cosmic-avatar/types';
+
 export const HEADER_HEIGHT = 72;
 
 export type CosmicType =
@@ -67,3 +69,9 @@ export const VARIANT_COLORS: Record<string, string> = {
   abstract: '#7b2ff7', // violeta cósmico
   hybrid: '#4cc9f0', // azul energía
 };
+
+export const VARIANT_SELECTOR = [
+  {key: AvatarVariant.ABSTRACT, label: 'Abstract'},
+  {key: AvatarVariant.HUMANOID, label: 'Humanoide'},
+  {key: AvatarVariant.HYBRID, label: 'Híbrido'},
+];

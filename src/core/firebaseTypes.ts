@@ -1,6 +1,7 @@
 // src/core/types/firebase.ts
 
 import type {PowerupType} from '@/core/types';
+import type {AvatarVariant} from '@/ui/components/cosmic-avatar/types';
 
 export type CosmicProgress = {
   xp: number;
@@ -18,7 +19,7 @@ export type PlayerDoc = {
     abstract: CosmicProgress;
     hybrid: CosmicProgress;
   };
-  avatarVariant: 'humanoid' | 'abstract' | 'hybrid';
+  avatarVariant: AvatarVariant;
   completedLevelUnlocks: Record<number, boolean>;
   lastUpdated?: {seconds: number; nanoseconds: number} | string;
   rankScore?: number;

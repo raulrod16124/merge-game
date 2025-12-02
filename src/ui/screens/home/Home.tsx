@@ -1,7 +1,6 @@
 // src/ui/screens/home/Home.tsx
 import {useNavigate} from 'react-router-dom';
 import {useUserStore} from '@/state/user-store';
-import {usePlayerStore} from '@/state';
 import {Button} from '@/common/Button';
 import {
   Coins,
