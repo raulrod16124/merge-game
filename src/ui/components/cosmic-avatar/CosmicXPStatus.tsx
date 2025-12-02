@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import {usePlayerStore} from '@/state/player-store';
 import {computeCosmicProgress} from '@/data/cosmicXP';
 import {formatCoins} from '@/utils/formatCoins';
+import {COSMIC_EVOLUTION} from '@/data/cosmicEvolution';
 
 const Wrapper = styled.div`
   display: flex;
@@ -19,22 +20,24 @@ const Bar = styled.div`
   overflow: hidden;
 `;
 
-const Fill = styled.div<{pct: number}>`
+const Fill = styled.div<{pct: number; firstColor: string; secondColor: string}>`
   height: 100%;
   width: ${p => p.pct}%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #ffb347, #ffea61);
+  background: ${p =>
+    `linear-gradient(90deg, ${p.firstColor}, ${p.secondColor})`};
   transition: width 0.3s ease-out;
 `;
 
 export function CosmicXPStatus() {
   const avatarVariant = usePlayerStore(s => s.avatarVariant);
-  const progress = usePlayerStore(s => s.cosmicProgress[avatarVariant]);
-
-  const xp = progress?.xp ?? 0;
-  const level = progress?.level ?? 1;
+  const {xp, level} = usePlayerStore(s => s.cosmicProgress[avatarVariant]);
 
   const {progressPercent, nextLevelXP} = computeCosmicProgress(level, xp);
+
+  const evoBase = COSMIC_EVOLUTION[avatarVariant];
+
+  const profile = evoBase[level] ?? evoBase[1];
 
   return (
     <Wrapper>
@@ -46,7 +49,11 @@ export function CosmicXPStatus() {
         {nextLevelXP ? ` / ${formatCoins(nextLevelXP)}` : ''}
       </div>
       <Bar>
-        <Fill pct={Math.max(0, Math.min(100, progressPercent))} />
+        <Fill
+          pct={Math.max(0, Math.min(100, progressPercent))}
+          firstColor={profile.auraColor}
+          secondColor={profile.auraColor}
+        />
       </Bar>
     </Wrapper>
   );

@@ -27,37 +27,50 @@ const Wrapper = styled.div`
 
 const BadgeWrap = styled.div`
   position: absolute;
-  right: -6px;
-  top: -6px;
+  right: -4px;
+  top: -4px;
   width: 48px;
   height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: 40;
-  pointer-events: none;
-`;
-
-const Ring = styled.svg`
-  transform: rotate(-90deg);
-  width: 48px;
-  height: 48px;
-`;
-
-const LevelNumber = styled.div`
-  position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: rgba(10, 10, 12, 0.9);
-  color: white;
-  font-weight: 700;
-  font-size: 0.85rem;
-  z-index: 41;
   pointer-events: none;
+`;
+
+const LevelOrb = styled.div<{color: string}>`
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: ${({color}) =>
+    `radial-gradient(circle at 50% 45%, ${color}, rgba(10,10,20,0.6))`};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 800;
+  font-size: 0.9rem;
+  box-shadow:
+    0 0 8px ${({color}) => color},
+    0 0 8px ${({color}) => color} inset,
+    0 0 3px rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+  animation: pulseOrb 3s infinite ease-in-out;
+
+  @keyframes pulseOrb {
+    0% {
+      transform: scale(1);
+      box-shadow: 0 0 10px ${({color}) => color};
+    }
+    50% {
+      transform: scale(1.07);
+      box-shadow: 0 0 16px ${({color}) => color};
+    }
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 10px ${({color}) => color};
+    }
+  }
 `;
 
 type Props = {
@@ -67,36 +80,19 @@ type Props = {
 };
 
 export function CosmicAvatar({variant, forceVariant, hideProgress}: Props) {
-  const userVariant = useUserStore(s => s.avatar);
-  const playerVariant = usePlayerStore(s => s.avatarVariant);
+  // Obtener variante oficial del avatar cósmico
+  const finalVariant =
+    forceVariant ?? variant ?? usePlayerStore(s => s.avatarVariant);
 
-  const resolvedVariant =
-    forceVariant ??
-    variant ??
-    (typeof userVariant === 'string' ? userVariant : undefined) ??
-    (typeof playerVariant === 'string' ? playerVariant : undefined) ??
-    AvatarVariant.HYBRID;
-
-  const finalVariant = resolvedVariant as AvatarVariant;
-
-  const progress = usePlayerStore(s => s.cosmicProgress);
-  const variantProgress =
-    progress[finalVariant] ?? progress[AvatarVariant.HYBRID];
-
-  const xp = variantProgress.xp;
-  const level = variantProgress.level;
+  // Progreso oficial del avatar
+  const {xp, level} = usePlayerStore(s => s.cosmicProgress[finalVariant]);
 
   const evoBase =
     COSMIC_EVOLUTION[finalVariant] || COSMIC_EVOLUTION[AvatarVariant.HYBRID];
 
   const profile = evoBase[level] ?? evoBase[1];
 
-  const {progressPercent, nextLevelXP} = computeCosmicProgress(level, xp);
-
-  const R = 20;
-  const C = 2 * Math.PI * R;
-  const pct = Math.max(0, Math.min(100, progressPercent));
-  const dash = (C * pct) / 100;
+  const {nextLevelXP} = computeCosmicProgress(level, xp);
 
   const title = nextLevelXP
     ? `Nivel ${level} — XP ${xp} / ${nextLevelXP}`
@@ -127,25 +123,7 @@ export function CosmicAvatar({variant, forceVariant, hideProgress}: Props) {
 
       {!hideProgress && (
         <BadgeWrap title={title}>
-          <Ring viewBox="0 0 48 48" aria-hidden>
-            <g fill="none" strokeWidth="3" strokeLinecap="round">
-              <circle cx="24" cy="24" r={R} stroke="rgba(255,255,255,0.06)" />
-              <circle
-                cx="24"
-                cy="24"
-                r={R}
-                stroke="url(#grad)"
-                strokeDasharray={`${dash} ${C - dash}`}
-              />
-              <defs>
-                <linearGradient id="grad" x1="0" x2="1">
-                  <stop offset="0%" stopColor={profile.auraColor} />
-                  <stop offset="100%" stopColor="#ffffff" stopOpacity="0.9" />
-                </linearGradient>
-              </defs>
-            </g>
-          </Ring>
-          <LevelNumber>{level}</LevelNumber>
+          <LevelOrb color={profile.auraColor}>{level}</LevelOrb>
         </BadgeWrap>
       )}
     </Wrapper>
