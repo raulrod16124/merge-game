@@ -341,7 +341,6 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
   updateLeaderboardScores: async () => {
     const uid = useUserStore.getState().uid;
     const name = useUserStore.getState().name;
-    const avatar = useUserStore.getState().avatar;
 
     if (!uid) return;
 

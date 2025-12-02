@@ -4,15 +4,13 @@ import {ACHIEVEMENTS} from '@/data/achievements';
 import AppLayout from '@/ui/layout';
 
 export default function PlayerStats() {
-  const progress = usePlayerStore(s => s.cosmicProgress);
   const completedLevels = usePlayerStore(s => s.completedLevels);
   const highestLevelUnlocked = usePlayerStore(s => s.highestLevelUnlocked);
   const achievements = usePlayerStore(s => s.achievements);
-  const avatarVariant = usePlayerStore(s => s.avatarVariant);
+  const cosmicProgress = usePlayerStore(s => s.cosmicProgress);
 
-  const avatar = progress[avatarVariant];
-  const levelXP = avatar?.xp ?? 0;
-  const level = avatar?.level ?? 1;
+  const levelXP = cosmicProgress?.xp ?? 0;
+  const level = cosmicProgress?.level ?? 1;
 
   // niveles
   const levelEntries = Object.values(completedLevels);

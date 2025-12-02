@@ -4,7 +4,6 @@ import {usePlayerStore} from '@/state/player-store';
 import {useUserStore} from '@/state/user-store';
 import {computeCosmicProgress} from '@/data/cosmicXP';
 import {formatCoins} from '@/utils/formatCoins';
-import {COSMIC_EVOLUTION} from '@/data/cosmicEvolution';
 
 const Wrapper = styled.div`
   display: flex;
@@ -35,9 +34,6 @@ export function CosmicXPStatus() {
   const {xp, level} = usePlayerStore(s => s.cosmicProgress);
 
   const {progressPercent, nextLevelXP} = computeCosmicProgress(level, xp);
-
-  const evo = COSMIC_EVOLUTION[appearance.shape];
-  const profile = evo[level] ?? evo[1];
 
   return (
     <Wrapper>
