@@ -10,9 +10,6 @@ const AppWrapper = styled.div`
   min-height: 100dvh;
   height: 100dvh;
   overflow-y: hidden;
-  overflow-x: hidden;
-
-  border: 1px solid blue;
 `;
 
 export default function App() {
