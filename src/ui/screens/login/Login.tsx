@@ -20,7 +20,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    //if (authenticated) navigate('/home');
+    if (authenticated) navigate('/home');
   }, [authenticated, navigate]);
 
   const handleEnter = async () => {
