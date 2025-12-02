@@ -2,7 +2,10 @@
 import {create} from 'zustand';
 import {doc, setDoc, getDoc, serverTimestamp} from 'firebase/firestore';
 import {signInAnonIfNeeded, db} from '@/core/firebase';
-import {AvatarVariant} from '@/ui/components/cosmic-avatar/types';
+import {
+  AvatarVariant,
+  type AvatarAppearance,
+} from '@/ui/components/cosmic-avatar/types';
 import {usePlayerStore} from '../player-store';
 
 type Inventory = Record<string, number>;
@@ -14,20 +17,20 @@ type UserState = {
   loading: boolean;
 
   name: string | null;
-  avatar: AvatarVariant;
+  avatar: AvatarAppearance;
   coins: number;
   inventory: Inventory;
   combinations: Combinations;
 
-  authenticate: (name: string, variant?: AvatarVariant) => Promise<void>;
+  authenticate: (name: string, variant?: AvatarAppearance) => Promise<void>;
   logout: () => Promise<void>;
   loadFromStorage: () => void;
 
   syncToFirebase: () => Promise<void>;
   loadFromFirebase: (uid: string) => Promise<void>;
 
-  setAvatarVariant: (variant: AvatarVariant) => Promise<void>;
-  persistAvatar: (avatar: AvatarVariant) => Promise<void>;
+  setAvatarAppearance: (appearance: AvatarAppearance) => Promise<void>;
+  persistAvatar: (avatar: AvatarAppearance) => Promise<void>;
 
   addCoins: (amount: number) => void;
   addInventoryItem: (itemId: string, qty?: number) => void;
@@ -47,7 +50,12 @@ export const useUserStore = create<UserState>((set, get) => ({
   loading: false,
 
   name: null,
-  avatar: AvatarVariant.HUMANOID,
+  avatar: {
+    shape: AvatarVariant.HYBRID,
+    color: '#4cc9f0',
+    accessories: [],
+  },
+
   coins: 0,
   inventory: {},
   combinations: {},
@@ -55,14 +63,14 @@ export const useUserStore = create<UserState>((set, get) => ({
   // ------------------------------
   // AUTHENTICATION FLOW
   // ------------------------------
-  authenticate: async (name, variant = AvatarVariant.HYBRID) => {
+  authenticate: async (name, avatar) => {
     const fbUser = await signInAnonIfNeeded();
 
     const newUser = {
       uid: fbUser.uid,
       authenticated: true,
       name,
-      avatar: variant,
+      avatar,
       coins: 0,
       inventory: {},
       combinations: {},
@@ -95,7 +103,11 @@ export const useUserStore = create<UserState>((set, get) => ({
       uid: null,
       authenticated: false,
       name: null,
-      avatar: AvatarVariant.HUMANOID,
+      avatar: {
+        shape: AvatarVariant.HYBRID,
+        color: '#4cc9f0',
+        accessories: [],
+      },
       coins: 0,
       inventory: {},
       combinations: {},
@@ -188,10 +200,28 @@ export const useUserStore = create<UserState>((set, get) => ({
     }
   },
 
-  setAvatarVariant: async variant => {
-    get();
-    await get().persistAvatar(variant as AvatarVariant);
-    set({avatar: variant});
+  setAvatarAppearance: async (appearance: AvatarAppearance) => {
+    const uid = get().uid;
+    if (!uid) return;
+
+    await setDoc(
+      doc(db, 'users', uid),
+      {
+        avatar: appearance,
+        lastUpdated: serverTimestamp(),
+      },
+      {merge: true},
+    );
+
+    // Persist local
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const u = JSON.parse(raw);
+      u.avatar = appearance;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
+    }
+
+    set({avatar: appearance});
   },
 
   // ------------------------------

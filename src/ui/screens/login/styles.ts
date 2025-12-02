@@ -1,58 +1,51 @@
+// src/ui/screens/login/styles.ts
 import styled from 'styled-components';
-import {COLORS} from '@/ui/constants';
 
 export const Wrapper = styled.div`
-  padding: 40px 24px;
-  text-align: center;
-  min-height: 100vh;
-  background: #0b1220;
-  color: ${COLORS.white};
-
+  padding: 2dvh 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  align-items: center;
-
-  h1 {
-    font-size: 2.4rem;
-    font-weight: 800;
-    margin: 0;
-    margin-bottom: 4px;
-  }
-
-  p {
-    max-width: 300px;
-    opacity: 0.8;
-    margin-bottom: 12px;
-  }
-
-  input {
-    padding: 14px 5px;
-    width: 100%;
-    max-width: 320px;
-    border-radius: 12px;
-    border: none;
-    font-size: 1rem;
-    margin-top: 12px;
-    background: ${COLORS.tertiaryDark};
-    color: ${COLORS.white};
-    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.35);
-
-    &:focus {
-      background: ${COLORS.tertiary};
-    }
-  }
+  gap: 12px;
+  text-align: center;
 `;
 
 export const AvatarPreview = styled.div`
-  margin-top: 12px;
-  transform: scale(0.85);
+  display: flex;
+  justify-content: center;
 `;
 
 export const SelectorGrid = styled.div`
-  max-width: 360px;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 12px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+`;
+
+export const SectionTitle = styled.h3`
+  color: white;
+  margin-bottom: 1dvh;
+  font-size: 1rem;
+  opacity: 0.9;
+  text-align: center;
+`;
+
+export const ColorSelector = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+`;
+
+export const ColorDot = styled.button<{$color: string; $active: boolean}>`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: ${({$color}) => $color};
+  border: ${({$active}) => ($active ? '3px solid white' : '2px solid #555')};
+  box-shadow: 0 0 10px ${({$color}) => $color}80;
+  transition: transform 0.2s ease;
+  cursor: pointer;
+
+  &:active {
+    transform: scale(0.92);
+  }
 `;

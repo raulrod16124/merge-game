@@ -1,3 +1,4 @@
+// src/ui/screens/edit-avatar/EditAvatar.tsx
 import {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useUserStore} from '@/state/user-store';
@@ -6,49 +7,89 @@ import AppLayout from '@/ui/layout';
 import {CosmicAvatar} from '@/ui/components/cosmic-avatar';
 import {Button} from '@/common/Button';
 
-import {VariantSelector, PreviewArea} from './styles';
+import {
+  PageContent,
+  PreviewArea,
+  ShapeSelector,
+  ColorSelector,
+  ColorDot,
+  SectionTitle,
+} from './styles';
 import {AvatarVariant} from '@/ui/components/cosmic-avatar/types';
-import {usePlayerStore} from '@/state';
-import {VARIANT_SELECTOR} from '@/ui/constants';
+import {VARIANT_COLORS, VARIANT_SELECTOR} from '@/ui/constants';
 
 export default function EditAvatar() {
   const navigate = useNavigate();
-  const {avatar, setAvatarVariant} = useUserStore();
+  const {avatar, setAvatarAppearance} = useUserStore();
 
-  const [temp, setTemp] = useState<AvatarVariant>(
-    avatar ?? AvatarVariant.HYBRID,
+  // TEMPORAL EDITING STATE
+  const [tempShape, setTempShape] = useState<AvatarVariant>(
+    avatar.shape ?? AvatarVariant.HYBRID,
+  );
+
+  const [tempColor, setTempColor] = useState<string>(
+    avatar.color ?? VARIANT_COLORS[AvatarVariant.HYBRID],
   );
 
   const save = () => {
-    const avatarOptions = VARIANT_SELECTOR.map(v => v.key);
-    if (avatarOptions.includes(temp)) {
-      console.log({temp});
-      setAvatarVariant(temp);
-      usePlayerStore.setState({avatarVariant: temp});
-      navigate('/profile');
-    }
+    setAvatarAppearance({
+      shape: tempShape,
+      color: tempColor,
+      accessories: avatar.accessories ?? [],
+    });
+    navigate('/profile');
   };
 
   return (
     <AppLayout title="Editar Avatar" prevRoute="/profile">
-      <PreviewArea>
-        <CosmicAvatar variant={temp} hideProgress={true} />
-      </PreviewArea>
+      <PageContent>
+        {/* PREVIEW */}
+        <PreviewArea>
+          <CosmicAvatar
+            forceAppearance={{
+              shape: tempShape,
+              color: tempColor,
+              accessories: avatar.accessories ?? [],
+            }}
+            hideProgress={true}
+          />
+        </PreviewArea>
 
-      <VariantSelector>
-        {VARIANT_SELECTOR.map(v => (
-          <Button
-            variant="tertiary"
-            key={v.key}
-            selected={temp === v.key}
-            onClick={() => setTemp(v.key as AvatarVariant)}>
-            {v.label}
-          </Button>
-        ))}
-        <Button variant="primary" onClick={save} styles={{marginTop: '30px'}}>
+        {/* SHAPE SELECTOR */}
+        <SectionTitle>Forma del ser cósmico</SectionTitle>
+        <ShapeSelector>
+          {VARIANT_SELECTOR.map(v => (
+            <Button
+              key={v.key}
+              variant="tertiary"
+              selected={tempShape === v.key}
+              onClick={() => setTempShape(v.key as AvatarVariant)}>
+              {v.label}
+            </Button>
+          ))}
+        </ShapeSelector>
+
+        {/* COLOR SELECTOR */}
+        <SectionTitle>Color energético</SectionTitle>
+        <ColorSelector>
+          {Object.values(VARIANT_COLORS).map(color => (
+            <ColorDot
+              key={color}
+              $color={color}
+              $active={tempColor === color}
+              onClick={() => setTempColor(color)}
+            />
+          ))}
+        </ColorSelector>
+
+        <Button
+          variant="primary"
+          onClick={save}
+          fullWidth={true}
+          styles={{marginTop: '28px'}}>
           Guardar Cambios
         </Button>
-      </VariantSelector>
+      </PageContent>
     </AppLayout>
   );
 }

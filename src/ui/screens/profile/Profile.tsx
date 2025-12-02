@@ -19,14 +19,14 @@ import {CosmicXPStatus} from '@/ui/components/cosmic-avatar/CosmicXPStatus';
 
 export default function Profile() {
   const navigate = useNavigate();
-  const {name, avatar} = useUserStore();
+  const {name} = useUserStore();
 
   return (
     <AppLayout title="Perfil" showBack={true} prevRoute="/home">
       <Section>
         {/* Avatar con edit */}
         <AvatarWrapper>
-          <CosmicAvatar variant={avatar} />
+          <CosmicAvatar />
           <CosmicXPStatus />
           <EditIcon onClick={() => navigate('/edit-avatar')}>
             <Pencil size={20} strokeWidth={2.4} color={COLORS.primary} />

@@ -1,3 +1,5 @@
+// src/ui/components/cosmic-avatar/CosmicEvolutionModal.tsx
+
 import {motion, AnimatePresence} from 'framer-motion';
 import styled from 'styled-components';
 import {usePlayerStore} from '@/state/player-store';
@@ -5,7 +7,7 @@ import {useUserStore} from '@/state/user-store';
 import {CosmicAvatar} from '@/ui/components/cosmic-avatar';
 import {useEffect, useState} from 'react';
 import {Button} from '@/common/Button';
-import {AvatarVariant} from '../cosmic-avatar/types';
+import {AvatarVariant, type AvatarAppearance} from '../cosmic-avatar/types';
 
 const Backdrop = styled.div`
   position: fixed;
@@ -38,38 +40,47 @@ export function CosmicEvolutionModal() {
   const clearLevelFlag = () =>
     usePlayerStore.setState({lastEvolutionLevel: null});
 
-  const currentVariant = useUserStore(s => s.avatar);
+  const currentAppearance = useUserStore(s => s.avatar);
+  const [previousAppearance, setPreviousAppearance] =
+    useState<AvatarAppearance | null>(null);
 
-  const [previousVariant, setPreviousVariant] = useState<AvatarVariant | null>(
-    null,
-  );
-
-  /** Control interno para evitar que se dispare varias veces */
   const [animationStage, setAnimationStage] = useState<
     'before' | 'pulse' | 'after'
   >('before');
 
   useEffect(() => {
     if (level) {
-      // guardar solo 1 vez
-      if (!previousVariant) {
-        setPreviousVariant(currentVariant ?? AvatarVariant.HYBRID);
+      if (!previousAppearance) {
+        setPreviousAppearance(
+          currentAppearance ?? {
+            shape: AvatarVariant.HYBRID,
+            color: '#4cc9f0',
+            accessories: [],
+          },
+        );
       }
-      // inicializar animación
+
       setAnimationStage('before');
-      const timer1 = setTimeout(() => setAnimationStage('pulse'), 600);
-      const timer2 = setTimeout(() => setAnimationStage('after'), 1200);
+      const t1 = setTimeout(() => setAnimationStage('pulse'), 600);
+      const t2 = setTimeout(() => setAnimationStage('after'), 1200);
+
       return () => {
-        clearTimeout(timer1);
-        clearTimeout(timer2);
+        clearTimeout(t1);
+        clearTimeout(t2);
       };
     } else {
-      setPreviousVariant(null);
+      setPreviousAppearance(null);
     }
   }, [level]);
 
-  /** Si no hay nivel → no renderizar */
   if (!level) return null;
+
+  const safePrevAppearance: AvatarAppearance = previousAppearance ??
+    currentAppearance ?? {
+      shape: AvatarVariant.HYBRID,
+      color: '#4cc9f0',
+      accessories: [],
+    };
 
   return (
     <Backdrop>
@@ -85,26 +96,27 @@ export function CosmicEvolutionModal() {
             <p>Nivel {level}</p>
 
             <AvatarWrap>
-              {/* ------------ ANIMACIÓN DE EVOLUCIÓN ------------- */}
               {animationStage === 'before' && (
                 <motion.div
                   initial={{opacity: 1}}
                   animate={{opacity: 0.2, scale: 0.9}}
                   transition={{duration: 0.6}}>
                   <CosmicAvatar
-                    forceVariant={previousVariant ?? AvatarVariant.HYBRID}
+                    forceAppearance={safePrevAppearance}
+                    hideProgress
                   />
                 </motion.div>
               )}
 
               {animationStage === 'pulse' && (
                 <motion.div
-                  initial={{scale: 1, opacity: 0.3}}
-                  animate={{scale: 1.2, opacity: 0}}
-                  transition={{duration: 0.6, ease: 'easeOut'}}
+                  initial={{opacity: 0.4, scale: 1}}
+                  animate={{opacity: 0, scale: 1.3}}
+                  transition={{duration: 0.6}}
                   style={{position: 'absolute'}}>
                   <CosmicAvatar
-                    forceVariant={previousVariant ?? AvatarVariant.HYBRID}
+                    forceAppearance={safePrevAppearance}
+                    hideProgress
                   />
                 </motion.div>
               )}
@@ -114,7 +126,7 @@ export function CosmicEvolutionModal() {
                   initial={{opacity: 0, scale: 0.7}}
                   animate={{opacity: 1, scale: 1}}
                   transition={{duration: 0.5}}>
-                  <CosmicAvatar />
+                  <CosmicAvatar hideProgress />
                 </motion.div>
               )}
             </AvatarWrap>
@@ -122,8 +134,8 @@ export function CosmicEvolutionModal() {
             <Button
               variant="primary"
               onClick={() => {
-                clearLevelFlag(); // 🔥 muy importante
-                setPreviousVariant(null);
+                clearLevelFlag();
+                setPreviousAppearance(null);
               }}>
               Continuar
             </Button>

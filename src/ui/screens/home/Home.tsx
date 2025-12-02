@@ -37,9 +37,8 @@ import {formatCoins} from '@/utils/formatCoins';
 
 export default function Home() {
   const navigate = useNavigate();
-  const {name, coins, avatar} = useUserStore();
-  const avatarVariant = usePlayerStore(s => s.avatarVariant);
-  const progress = usePlayerStore(s => s.cosmicProgress[avatarVariant]);
+  const {name, coins} = useUserStore();
+  const progress = usePlayerStore(s => s.cosmicProgress);
 
   return (
     <Container>
@@ -66,7 +65,7 @@ export default function Home() {
 
       <Content>
         <AvatarWrap>
-          <CosmicAvatar variant={avatar} />
+          <CosmicAvatar />
           <CosmicXPStatus />
         </AvatarWrap>
 

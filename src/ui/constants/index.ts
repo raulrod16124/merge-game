@@ -64,10 +64,10 @@ export const COLORS = {
 };
 
 // color por variante
-export const VARIANT_COLORS: Record<string, string> = {
-  humanoid: '#ffb703', // dorado
-  abstract: '#7b2ff7', // violeta cósmico
-  hybrid: '#4cc9f0', // azul energía
+export const VARIANT_COLORS: Record<AvatarVariant, string> = {
+  [AvatarVariant.HUMANOID]: '#ffb703',
+  [AvatarVariant.ABSTRACT]: '#7b2ff7',
+  [AvatarVariant.HYBRID]: '#4cc9f0',
 };
 
 export const VARIANT_SELECTOR = [

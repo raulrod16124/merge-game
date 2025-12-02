@@ -9,7 +9,6 @@ import {db} from '@/core/firebase';
 import {useUserStore} from '@/state/user-store';
 import {levelIdToIndex} from '@/data/levelIndexMap';
 import {SECTION_UNLOCKS} from '@/data/sectionUnlocks';
-import {AvatarVariant} from '@/ui/components/cosmic-avatar/types';
 
 export type AchievementId = string;
 
@@ -40,11 +39,9 @@ export type PlayerProgressState = {
   achievements: Record<AchievementId, boolean>;
   coins: number;
   cosmicProgress: {
-    humanoid: {xp: number; level: number};
-    abstract: {xp: number; level: number};
-    hybrid: {xp: number; level: number};
+    xp: number;
+    level: number;
   };
-  avatarVariant: AvatarVariant;
   lastEvolutionLevel: number | null;
   completedLevelUnlocks: Record<number, boolean>;
   unlockedSections: number[]; // e.g. [1]
@@ -63,7 +60,6 @@ export type PlayerProgressState = {
   isLevelUnlocked: (levelId: string) => boolean;
   isSectionUnlocked: (sectionNumber: number) => boolean;
   completeLevel: (levelId: string, score?: number) => void;
-  setAvatarVariant: (avatar: AvatarVariant) => void;
 
   triggerCosmicEvolution: ((lvl: number) => void) | null;
   setEvolutionHandler: (fn: (lvl: number) => void) => void;
@@ -94,11 +90,9 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
   achievements: {},
   coins: 0,
   cosmicProgress: {
-    humanoid: {xp: 0, level: 1},
-    abstract: {xp: 0, level: 1},
-    hybrid: {xp: 0, level: 1},
+    xp: 0,
+    level: 1,
   },
-  avatarVariant: AvatarVariant.HUMANOID,
   lastEvolutionLevel: null,
   completedLevelUnlocks: {},
   triggerCosmicEvolution: null,
@@ -117,13 +111,6 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
     } catch (e) {
       console.warn('Failed loading player cache', e);
     }
-  },
-
-  setAvatarVariant: avatar => {
-    set(state => ({
-      ...state,
-      avatarVariant: avatar,
-    }));
   },
 
   saveCache: () => {
@@ -320,8 +307,7 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
   // COSMIC XP SYSTEM
   // -----------------------------
   addXP: amt => {
-    const variant = get().avatarVariant;
-    const prog = get().cosmicProgress[variant];
+    const prog = get().cosmicProgress;
     const totalXP = prog.xp + amt;
 
     const levelKeys = Object.keys(LEVEL_XP_TABLE).map(n => parseInt(n, 10));
@@ -333,15 +319,9 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
     }
 
     if (newLevel > maxDefinedLevel) newLevel = maxDefinedLevel;
-    console.log({
-      cosmicProgress: get().cosmicProgress,
-      [variant]: {xp: totalXP, level: newLevel},
-    });
+
     set({
-      cosmicProgress: {
-        ...get().cosmicProgress,
-        [variant]: {xp: totalXP, level: newLevel},
-      },
+      cosmicProgress: {xp: totalXP, level: newLevel},
     });
 
     // Solo disparar evolución si REALMENTE el nivel es nuevo y NO ha sido mostrado
@@ -367,25 +347,11 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
 
     const state = get();
 
-    // Ranking 1: Global
     const rankScoreGlobal =
       state.highestLevelUnlocked * 100000 + (state.coins ?? 0);
 
-    // Ranking 2: Mayor nivel de ser cósmico
-    // Puede ser del avatar activo o el mayor de todos
-    const cosmicLevels = [
-      state.cosmicProgress.humanoid.level,
-      state.cosmicProgress.abstract.level,
-      state.cosmicProgress.hybrid.level,
-    ];
-    const rankCosmicLevel = Math.max(...cosmicLevels);
-
-    // Ranking 3: XP total combinada entre variantes
-    const totalXP =
-      state.cosmicProgress.humanoid.xp +
-      state.cosmicProgress.abstract.xp +
-      state.cosmicProgress.hybrid.xp;
-    const rankTotalCosmicXP = totalXP;
+    const rankCosmicLevel = state.cosmicProgress.level;
+    const rankTotalCosmicXP = state.cosmicProgress.xp;
 
     try {
       await setDoc(
@@ -393,7 +359,6 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
         {
           uid,
           name: name ?? 'Unknown',
-          avatar: {variant: avatar ?? AvatarVariant.HYBRID},
 
           // Valores exportados al ranking
           rankScoreGlobal,
@@ -503,7 +468,6 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
       achievements: s.achievements,
       coins: s.coins,
       cosmicProgress: s.cosmicProgress,
-      avatarVariant: s.avatarVariant,
       completedLevelUnlocks: s.completedLevelUnlocks,
       unlockedLevels: s.unlockedLevels,
       unlockedSections: s.unlockedSections,
@@ -542,7 +506,6 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
         achievements: data.achievements ?? {},
         coins: data.coins ?? 0,
         cosmicProgress: data.cosmicProgress ?? get().cosmicProgress,
-        avatarVariant: data.avatarVariant ?? get().avatarVariant,
         completedLevelUnlocks: data.completedLevelUnlocks ?? {},
         completedLevels: fixedCompleted,
         unlockedLevels: data.unlockedLevels ?? ['level01'],
@@ -563,12 +526,7 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
       unlockedMaps: [],
       achievements: {},
       coins: 0,
-      cosmicProgress: {
-        humanoid: {xp: 0, level: 1},
-        abstract: {xp: 0, level: 1},
-        hybrid: {xp: 0, level: 1},
-      },
-      avatarVariant: AvatarVariant.HUMANOID,
+      cosmicProgress: {xp: 0, level: 1},
       completedLevelUnlocks: {},
       triggerCosmicEvolution: null,
     }),

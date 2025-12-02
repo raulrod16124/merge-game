@@ -2,15 +2,12 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ======================================
-    // USERS COLLECTION (perfil + inventario)
-    // ======================================
+    // ===========================
+    // USERS COLLECTION
+    // ===========================
     match /users/{userId} {
-
-      // Solo el usuario dueño del documento puede leerlo / escribirlo
       allow read, write: if request.auth != null && request.auth.uid == userId;
-
-      // Validación opcional de campos esperados
+      
       allow update, create: if request.auth != null
         && request.auth.uid == userId
         && isValidUser(request.resource.data);
@@ -19,7 +16,8 @@ service cloud.firestore {
         return data.uid is string
           && data.name is string
           && data.avatar is map
-          && data.avatar.variant is string
+          && data.avatar.shape is string
+          && data.avatar.color is string
           && data.inventory is map
           && data.combinations is map
           && data.coins is number
@@ -27,9 +25,9 @@ service cloud.firestore {
       }
     }
 
-    // ======================================
-    // PROGRESS COLLECTION (niveles + XP + scores)
-    // ======================================
+    // ===========================
+    // PROGRESS COLLECTION
+    // ===========================
     match /progress/{userId} {
 
       allow read, write: if request.auth != null && request.auth.uid == userId;
@@ -45,21 +43,20 @@ service cloud.firestore {
           && data.achievements is map
           && data.coins is number
           && data.cosmicProgress is map
-          && data.avatarVariant is string
+          && data.cosmicProgress.xp is number
+          && data.cosmicProgress.level is number
           && data.completedLevelUnlocks is map
           && data.completedLevels is map
           && data.unlockedLevels is list
-          && data.unlockedSections is list
+          && data.unlockedSections is list;
       }
     }
 
-
-    // ======================================
-    // LEADERBOARD (si lo implementas)
-    // ======================================
+    // ===========================
+    // LEADERBOARD
+    // ===========================
     match /leaderboard/{uid} {
-
-      allow read: if true; // ranking público
+      allow read: if true;
 
       allow write: if request.auth != null
         && request.auth.uid == uid

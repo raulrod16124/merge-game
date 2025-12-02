@@ -8,17 +8,16 @@ import {AbstractShape} from './AbstractShape';
 import {HumanoidShape} from './HumanoidShape';
 import {HybridShape} from './HybridShape';
 
-import {usePlayerStore} from '@/state/player-store';
 import {useUserStore} from '@/state/user-store';
+import {usePlayerStore} from '@/state/player-store';
 import {COSMIC_EVOLUTION} from '@/data/cosmicEvolution';
-import {computeCosmicProgress} from '@/data/cosmicXP';
 import LevelUpBurst from './LevelUpBurst';
-import {AvatarVariant} from './types';
+import {AvatarVariant, type AvatarAppearance} from './types';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{$width?: string; $height?: string}>`
   position: relative;
-  width: 180px;
-  height: 200px;
+  width: ${({$width}) => ($width ? `${$width}px` : '180px')};
+  height: ${({$height}) => ($height ? `${$height}px` : '200px')};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -54,7 +53,6 @@ const LevelOrb = styled.div<{color: string}>`
     0 0 8px ${({color}) => color},
     0 0 8px ${({color}) => color} inset,
     0 0 3px rgba(255, 255, 255, 0.35);
-  pointer-events: none;
   animation: pulseOrb 3s infinite ease-in-out;
 
   @keyframes pulseOrb {
@@ -74,56 +72,66 @@ const LevelOrb = styled.div<{color: string}>`
 `;
 
 type Props = {
-  variant?: AvatarVariant; // Forzar variante manualmente
-  forceVariant?: AvatarVariant; // Para animaciones / transiciones
+  forceAppearance?: AvatarAppearance;
   hideProgress?: boolean;
+  avatarSize?: {
+    width: string;
+    height: string;
+  };
 };
 
-export function CosmicAvatar({variant, forceVariant, hideProgress}: Props) {
-  // Obtener variante oficial del avatar cósmico
-  const finalVariant =
-    forceVariant ?? variant ?? usePlayerStore(s => s.avatarVariant);
+export function CosmicAvatar({
+  forceAppearance,
+  hideProgress,
+  avatarSize,
+}: Props) {
+  const appearance = useUserStore(s => s.avatar);
+  const appearanceReference = forceAppearance ?? appearance;
+  const {level} = usePlayerStore(s => s.cosmicProgress);
 
-  // Progreso oficial del avatar
-  const {xp, level} = usePlayerStore(s => s.cosmicProgress[finalVariant]);
-
-  const evoBase =
-    COSMIC_EVOLUTION[finalVariant] || COSMIC_EVOLUTION[AvatarVariant.HYBRID];
-
-  const profile = evoBase[level] ?? evoBase[1];
-
-  const {nextLevelXP} = computeCosmicProgress(level, xp);
-
-  const title = nextLevelXP
-    ? `Nivel ${level} — XP ${xp} / ${nextLevelXP}`
-    : `Nivel ${level} — XP ${xp} (máximo)`;
+  // Perfil evolutivo basado SOLO en el nivel
+  const evo = COSMIC_EVOLUTION[appearanceReference.shape];
+  const profile = evo[level] ?? evo[1];
 
   return (
-    <Wrapper>
+    <Wrapper $width={avatarSize?.width} $height={avatarSize?.height}>
       <LevelUpBurst trigger={level} />
 
       <CosmicParticles
         count={profile.particleCount}
-        color={profile.auraColor}
+        color={appearanceReference.color}
       />
 
-      <CosmicAura color={profile.auraColor} intensity={profile.auraIntensity}>
+      <CosmicAura
+        color={appearanceReference.color}
+        intensity={profile.auraIntensity}>
         <CosmicCore glow={profile.coreGlow} />
       </CosmicAura>
 
-      {finalVariant === AvatarVariant.ABSTRACT && (
-        <AbstractShape detail={profile.shapeDetail} />
+      {appearanceReference.shape === AvatarVariant.ABSTRACT && (
+        <AbstractShape
+          detail={profile.shapeDetail}
+          color={appearanceReference.color}
+        />
       )}
-      {finalVariant === AvatarVariant.HUMANOID && (
-        <HumanoidShape detail={profile.shapeDetail} />
+
+      {appearanceReference.shape === AvatarVariant.HUMANOID && (
+        <HumanoidShape
+          detail={profile.shapeDetail}
+          color={appearanceReference.color}
+        />
       )}
-      {finalVariant === AvatarVariant.HYBRID && (
-        <HybridShape detail={profile.shapeDetail} />
+
+      {appearanceReference.shape === AvatarVariant.HYBRID && (
+        <HybridShape
+          detail={profile.shapeDetail}
+          color={appearanceReference.color}
+        />
       )}
 
       {!hideProgress && (
-        <BadgeWrap title={title}>
-          <LevelOrb color={profile.auraColor}>{level}</LevelOrb>
+        <BadgeWrap>
+          <LevelOrb color={appearanceReference.color}>{level}</LevelOrb>
         </BadgeWrap>
       )}
     </Wrapper>
