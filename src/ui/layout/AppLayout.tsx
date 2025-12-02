@@ -66,7 +66,6 @@ export default function AppLayout({
 
         {children}
         <HudNotifications />
-        <CosmicEvolutionModal />
         {/* bottom tab bar (mobile style) */}
         {routesForTabBar.includes(pathname) && (
           <TabBar role="tablist" aria-label="Main navigation">

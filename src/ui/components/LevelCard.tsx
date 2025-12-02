@@ -10,7 +10,8 @@ import {
 } from './LevelCard.styled';
 
 import type {LevelConfig} from '@/core/types';
-import {Lock} from 'lucide-react';
+import {Lock, Star} from 'lucide-react';
+import {COLORS} from '../constants/index';
 
 interface IProps {
   level: LevelConfig;
@@ -57,7 +58,10 @@ export function LevelCard({
         <LevelName> {level.name} </LevelName>
 
         {completed && highScore != null && (
-          <ScoreBadge>⭐ {highScore}</ScoreBadge>
+          <ScoreBadge>
+            <Star size={15} fill={COLORS.primary} />
+            {highScore}
+          </ScoreBadge>
         )}
       </NodeWrapper>
     </SectionLevelWrapper>

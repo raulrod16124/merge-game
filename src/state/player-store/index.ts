@@ -178,11 +178,12 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
   },
 
   completeLevel: (levelId: string, score?: number) => {
+    const fixedId = `level${String(levelId.replace(/\D/g, '')).padStart(2, '0')}`;
     set(state => {
       const now = Date.now();
       const completedLevels = {...(state.completedLevels || {})};
-      completedLevels[levelId] = {
-        score: score ?? completedLevels[levelId]?.score ?? 0,
+      completedLevels[fixedId] = {
+        score: score ?? completedLevels[fixedId]?.score ?? 0,
         completedAt: now,
       };
 
@@ -191,7 +192,7 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
 
     // desbloquear siguiente nivel según index
     try {
-      const idx = levelIdToIndex(levelId);
+      const idx = levelIdToIndex(fixedId);
       const nextIndex = idx + 1;
       if (nextIndex <= 50) {
         const nextLevelId = `level${String(nextIndex).padStart(2, '0')}`;
@@ -199,7 +200,7 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
       }
 
       // comprobar si completamos una sección entera -> desbloquear siguiente sección
-      const currentIndex = levelIdToIndex(levelId);
+      const currentIndex = levelIdToIndex(fixedId);
       const sectionEntry = Object.values(SECTION_UNLOCKS).find(
         s =>
           currentIndex >= s.startLevelIndex && currentIndex <= s.endLevelIndex,
@@ -236,18 +237,19 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
   clearNewAchievements: () => set({newAchievements: []}),
 
   markLevelCompleted: (levelId: string, score: number) => {
-    const existing = get().completedLevels[levelId];
+    const fixedId = `level${String(levelId.replace(/\D/g, '')).padStart(2, '0')}`;
+    const existing = get().completedLevels[fixedId];
 
     const improved = !existing || score > existing.score;
 
     set(state => ({
       completedLevels: {
         ...state.completedLevels,
-        [levelId]: improved ? {score, completedAt: Date.now()} : existing,
+        [fixedId]: improved ? {score, completedAt: Date.now()} : existing,
       },
       highestLevelUnlocked: Math.max(
         state.highestLevelUnlocked,
-        parseInt(levelId.replace(/\D/g, '')) + 1,
+        parseInt(fixedId.replace(/\D/g, '')) + 1,
       ),
     }));
 
@@ -331,7 +333,10 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
     }
 
     if (newLevel > maxDefinedLevel) newLevel = maxDefinedLevel;
-
+    console.log({
+      cosmicProgress: get().cosmicProgress,
+      [variant]: {xp: totalXP, level: newLevel},
+    });
     set({
       cosmicProgress: {
         ...get().cosmicProgress,
@@ -339,7 +344,8 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
       },
     });
 
-    if (newLevel > prog.level) {
+    // Solo disparar evolución si REALMENTE el nivel es nuevo y NO ha sido mostrado
+    if (newLevel > prog.level && get().lastEvolutionLevel !== newLevel) {
       const evo = get().triggerCosmicEvolution;
       evo?.(newLevel);
     }
@@ -499,7 +505,8 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
       cosmicProgress: s.cosmicProgress,
       avatarVariant: s.avatarVariant,
       completedLevelUnlocks: s.completedLevelUnlocks,
-      lastEvolutionLevel: s.lastEvolutionLevel,
+      unlockedLevels: s.unlockedLevels,
+      unlockedSections: s.unlockedSections,
       lastUpdated: serverTimestamp(),
     };
 
@@ -518,6 +525,16 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
 
       const data = snap.data();
 
+      const fixedCompleted: Record<string, any> = {};
+      if (data.completedLevels) {
+        for (const key of Object.keys(data.completedLevels)) {
+          const fixedKey = key.startsWith('level')
+            ? key
+            : `level${String(key).padStart(2, '0')}`;
+          fixedCompleted[fixedKey] = data.completedLevels[key];
+        }
+      }
+
       set({
         highestLevelUnlocked: data.highestLevelUnlocked ?? 1,
         unlockedPowerups: data.unlockedPowerups ?? [],
@@ -527,7 +544,9 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
         cosmicProgress: data.cosmicProgress ?? get().cosmicProgress,
         avatarVariant: data.avatarVariant ?? get().avatarVariant,
         completedLevelUnlocks: data.completedLevelUnlocks ?? {},
-        lastEvolutionLevel: data.lastEvolutionLevel ?? null,
+        completedLevels: fixedCompleted,
+        unlockedLevels: data.unlockedLevels ?? ['level01'],
+        unlockedSections: data.unlockedSections ?? [1],
       });
 
       get().saveCache();
@@ -550,7 +569,6 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
         hybrid: {xp: 0, level: 1},
       },
       avatarVariant: AvatarVariant.HUMANOID,
-      lastEvolutionLevel: null,
       completedLevelUnlocks: {},
       triggerCosmicEvolution: null,
     }),

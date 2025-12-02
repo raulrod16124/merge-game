@@ -191,27 +191,30 @@ export const useGameStore = create<GameStore>()(
       levelResult: null,
       setLevelResult: r => {
         set(() => ({levelResult: r}));
-        try {
-          if (r && r.status === 'win') {
-            // unlock progression
-            // Note: import usePlayerStore lazily to avoid circular import at module top-level
-            import('@/state/player-store')
-              .then(mod => {
-                const player = mod.usePlayerStore.getState();
-                // unlock next level (assumes levelId is numeric-ish)
-                const lvlNum =
-                  parseInt(r.levelId.replace(/\D/g, ''), 10) || null;
-                if (lvlNum) {
-                  const nextLevelId = `level${String(lvlNum + 1).padStart(2, '0')}`; // asegura formato "levelNN"
-                  player.unlockLevel(nextLevelId);
-                  player.applyLevelUnlocks(lvlNum + 1); // applyLevelUnlocks espera un número
-                }
-              })
-              .catch(() => {});
-          }
-        } catch (e) {
-          console.warn('apply level unlocks failed', e);
-        }
+
+        if (!r || r.status !== 'win') return;
+
+        const lvlNum = parseInt(r.levelId.replace(/\D/g, ''), 10);
+        if (!lvlNum) return;
+
+        const fixedId = `level${String(lvlNum).padStart(2, '0')}`;
+
+        // Importamos player-store de forma lazy para evitar ciclos
+        import('@/state/player-store')
+          .then(mod => {
+            const player = mod.usePlayerStore.getState();
+
+            // 1. Guardar progreso real del nivel
+            player.completeLevel(fixedId);
+
+            // 2. Desbloquear el siguiente nivel
+            const nextLevelId = `level${String(lvlNum + 1).padStart(2, '0')}`;
+            player.unlockLevel(nextLevelId);
+
+            // 3. Aplicar recompensas por nivel (powerups/maps/etc)
+            player.applyLevelUnlocks(lvlNum);
+          })
+          .catch(() => {});
       },
 
       // === move action + selectCell handling for powerups ===
@@ -770,22 +773,23 @@ export const useGameStore = create<GameStore>()(
 
       safeLoadLevel: (lvl: LevelConfig) => {
         const state = get();
-
+        // 🔥 normalizar id
+        const fixedId = `level${String(lvl.id.replace(/\D/g, '')).padStart(2, '0')}`;
         // Si ya está cargado este nivel correctamente, no recargamos
         if (
-          state.lastLoadedLevelId === lvl.id &&
-          state.currentLevel?.id === lvl.id
+          state.lastLoadedLevelId === fixedId &&
+          state.currentLevel?.id === fixedId
         ) {
           return;
         }
 
         // Guardamos cual es el ultimo nivel cargado
-        set({lastLoadedLevelId: lvl.id});
+        set({lastLoadedLevelId: fixedId});
 
         // Validar bloqueo
         const player = usePlayerStore.getState();
-        if (!player.isLevelUnlocked(lvl.id)) {
-          console.warn(`Level ${lvl.id} is locked for current player`);
+        if (!player.isLevelUnlocked(fixedId)) {
+          console.warn(`Level ${fixedId} is locked for current player`);
           return;
         }
 

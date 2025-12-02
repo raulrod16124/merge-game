@@ -25,7 +25,7 @@ const SECTIONS = [
 export function Levels() {
   const highestUnlocked = usePlayerStore(s => s.highestLevelUnlocked);
   const unlockedSections = usePlayerStore(s => s.unlockedSections);
-
+  console.log({unlockedSections});
   // sección seleccionada
   const [selectedSection, setSelectedSection] = useState<number | null>(null);
 
@@ -67,6 +67,8 @@ export function Levels() {
       })
     : [];
 
+  console.log({levelsOfSection, highestUnlocked});
+
   return (
     <AppLayout title="Mapa Cósmico" prevRoute="/home">
       {/* ---- CARRUSEL DE SECCIONES ---- */}
@@ -96,8 +98,9 @@ export function Levels() {
 
           <LevelsPanelScroller>
             {levelsOfSection.map((lvl, i) => {
-              const index = Number(lvl.id.replace('level', ''));
-              const unlocked = index <= highestUnlocked;
+              const unlocked = usePlayerStore
+                .getState()
+                .isLevelUnlocked(lvl.id);
               const completedLevels = usePlayerStore.getState().completedLevels;
               const completed = Boolean(completedLevels?.[lvl.id]);
               const highScore = completedLevels?.[lvl.id]?.score ?? null;

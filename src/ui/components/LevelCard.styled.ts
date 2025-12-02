@@ -1,5 +1,6 @@
 // src/ui/components/LevelCard/LevelCard.styled.ts
 import styled from 'styled-components';
+import {COLORS} from '../constants';
 
 /* Contenedor individual del nodo */
 export const NodeWrapper = styled.div<{$index: number}>`
@@ -61,7 +62,12 @@ export const ScoreBadge = styled.div`
   padding: 4px 10px;
   border-radius: 12px;
   color: white;
-  font-size: 13px;
+  font-size: 1rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: ${COLORS.primary};
 `;
 
 export const SectionLevelWrapper = styled.div`

@@ -23,6 +23,7 @@ import NewUnlockModal from '@/ui/components/modals/NewUnlockModal';
 import {useAchievementStore, usePlayerStore} from '@/state';
 
 import {LEVEL_XP_REWARD} from '@/data/levelXPRewards';
+import {CosmicEvolutionModal} from '@/ui/components/modals/CosmicEvolutionModal';
 
 /**
  * BoardScreen FINAL — versión SAFE, estable, sin doble carga.
@@ -200,6 +201,7 @@ export function BoardScreen() {
   return (
     <AppLayout prevRoute="/home" hideHeader>
       <BoardScreenWrapper>
+        <CosmicEvolutionModal />
         <HUDColumn>
           <GameHeader
             // @ts-ignore

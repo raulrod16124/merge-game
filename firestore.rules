@@ -47,7 +47,9 @@ service cloud.firestore {
           && data.cosmicProgress is map
           && data.avatarVariant is string
           && data.completedLevelUnlocks is map
-          && data.completedLevels is map; // ⭐ NUEVO
+          && data.completedLevels is map
+          && data.unlockedLevels is list
+          && data.unlockedSections is list
       }
     }
 

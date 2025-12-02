@@ -33,11 +33,7 @@ export default function Login() {
       console.error('Login error:', err);
     }
   };
-  console.log({
-    abstract: variant === AvatarVariant.ABSTRACT,
-    humanoid: variant === AvatarVariant.HUMANOID,
-    hybrid: variant === AvatarVariant.HYBRID,
-  });
+
   return (
     <Wrapper>
       <h1>Bienvenido</h1>
