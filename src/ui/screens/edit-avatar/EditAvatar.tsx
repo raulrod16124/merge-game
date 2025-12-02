@@ -14,7 +14,7 @@ export default function EditAvatar() {
   const navigate = useNavigate();
   const {avatar, setAvatarVariant} = useUserStore();
 
-  const [temp, setTemp] = useState<AvatarVariant>(avatar?.variant ?? 'hybrid');
+  const [temp, setTemp] = useState<AvatarVariant>(avatar ?? 'hybrid');
 
   const variants = [
     {key: 'abstract', label: 'Abstract'},
@@ -23,9 +23,13 @@ export default function EditAvatar() {
   ];
 
   const save = () => {
-    setAvatarVariant(temp);
-    usePlayerStore.setState({avatarVariant: temp});
-    navigate('/profile');
+    const avatarOptions = variants.map(v => v.key);
+    if (avatarOptions.includes(temp)) {
+      console.log({temp});
+      setAvatarVariant(temp);
+      usePlayerStore.setState({avatarVariant: temp});
+      navigate('/profile');
+    }
   };
 
   return (

@@ -35,8 +35,7 @@ import {COLORS} from '@/ui/constants';
 
 export default function Home() {
   const navigate = useNavigate();
-  const {name, coins} = useUserStore();
-  const avatarVariant = usePlayerStore(s => s.avatarVariant);
+  const {name, coins, avatar} = useUserStore();
 
   return (
     <Container>
@@ -56,7 +55,7 @@ export default function Home() {
 
       <Content>
         <AvatarWrap>
-          <CosmicAvatar variant={avatarVariant} />
+          <CosmicAvatar variant={avatar} />
           <CosmicMiniProgress />
         </AvatarWrap>
 

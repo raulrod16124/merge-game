@@ -60,6 +60,7 @@ export type GameStore = {
   }[];
 
   absorbedEffects: AbsorbedEffects[];
+  lastLoadedLevelId: string | null;
 
   // powerups
   activePowerup: null | PowerupType;
@@ -84,6 +85,8 @@ export type GameStore = {
   incrementTurn: () => void;
 
   getEffectiveNextItem(): CosmicType;
+
+  safeLoadLevel(level: LevelConfig): void;
 
   setCellRect: (
     key: string,
@@ -167,6 +170,7 @@ export const useGameStore = create<GameStore>()(
       _timerId: null,
       turnCounter: 0,
       blackHolesSpawned: 0,
+      lastLoadedLevelId: null,
 
       // positioning
       cellRects: {},
@@ -764,6 +768,64 @@ export const useGameStore = create<GameStore>()(
         }));
       },
 
+      safeLoadLevel: (lvl: LevelConfig) => {
+        const state = get();
+
+        // Si ya está cargado este nivel correctamente, no recargamos
+        if (
+          state.lastLoadedLevelId === lvl.id &&
+          state.currentLevel?.id === lvl.id
+        ) {
+          return;
+        }
+
+        // Guardamos cual es el ultimo nivel cargado
+        set({lastLoadedLevelId: lvl.id});
+
+        // Validar bloqueo
+        const player = usePlayerStore.getState();
+        if (!player.isLevelUnlocked(lvl.id)) {
+          console.warn(`Level ${lvl.id} is locked for current player`);
+          return;
+        }
+
+        // Tamaño del tablero según dispositivo
+        const size = getResponsiveBoardSize(lvl);
+
+        // Items iniciales
+        const initialItems = lvl.initialMap.map((s, idx) => ({
+          id: `init_${idx}_${Date.now()}`,
+          type: s.type as CosmicType,
+          level: 1,
+          pos: {x: s.x, y: s.y},
+          createdAt: Date.now(),
+        }));
+
+        // Reset seguro del estado del nivel
+        set({
+          items: initialItems,
+          boardSize: size,
+          currentLevel: lvl,
+          score: 0,
+          moves: 0,
+          nextItem: 'dust',
+          timeLeft: lvl.timerSeconds ?? 120,
+          powerupUsed: false,
+          levelCoins: 0,
+          floatingScores: [],
+          createdCounts: {},
+          cellRects: {},
+          absorbAnimations: [],
+          visualEnemyPlans: [],
+          levelResult: null,
+        });
+
+        // Spawn y timer
+        get().spawnNextItem();
+        get().stopTimer();
+        get().startTimer();
+      },
+
       // === Load/reset ===
       loadLevel: lvl => {
         const player = usePlayerStore.getState();
@@ -804,7 +866,8 @@ export const useGameStore = create<GameStore>()(
 
       resetLevel: () => {
         const lvl = get().currentLevel;
-        lvl && get().loadLevel(lvl);
+        if (!lvl) return;
+        get().safeLoadLevel(lvl);
       },
 
       // === Delegated actions ===

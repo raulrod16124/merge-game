@@ -178,7 +178,7 @@
     "blackHoleSpawnRate": 0,
     "blackHoleSpawnChance": 0,
     "mapAsset": "/cosmic/map08.png",
-    "objective": [{"type": "create", "subject": "star", "target": 0}],
+    "objective": [{"type": "create", "subject": "star", "target": 1}],
     "timerSeconds": 145
   },
   {

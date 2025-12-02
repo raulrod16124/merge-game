@@ -3,10 +3,7 @@ import {create} from 'zustand';
 import {doc, setDoc, getDoc, serverTimestamp} from 'firebase/firestore';
 import {signInAnonIfNeeded, db} from '@/core/firebase';
 import type {AvatarVariant} from '@/ui/components/cosmic-avatar/types';
-
-type Avatar = {
-  variant: AvatarVariant;
-};
+import {usePlayerStore} from '../player-store';
 
 type Inventory = Record<string, number>;
 type Combinations = Record<string, number>;
@@ -17,7 +14,7 @@ type UserState = {
   loading: boolean;
 
   name: string | null;
-  avatar: Avatar | null;
+  avatar: AvatarVariant;
   coins: number;
   inventory: Inventory;
   combinations: Combinations;
@@ -30,7 +27,7 @@ type UserState = {
   loadFromFirebase: (uid: string) => Promise<void>;
 
   setAvatarVariant: (variant: AvatarVariant) => Promise<void>;
-  persistAvatar: (avatar: Avatar) => Promise<void>;
+  persistAvatar: (avatar: AvatarVariant) => Promise<void>;
 
   addCoins: (amount: number) => void;
   addInventoryItem: (itemId: string, qty?: number) => void;
@@ -50,7 +47,7 @@ export const useUserStore = create<UserState>((set, get) => ({
   loading: false,
 
   name: null,
-  avatar: null,
+  avatar: 'humanoid' as AvatarVariant,
   coins: 0,
   inventory: {},
   combinations: {},
@@ -65,11 +62,13 @@ export const useUserStore = create<UserState>((set, get) => ({
       uid: fbUser.uid,
       authenticated: true,
       name,
-      avatar: {variant},
+      avatar: variant,
       coins: 0,
       inventory: {},
       combinations: {},
     };
+
+    usePlayerStore.getState();
 
     // persist locally
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));
@@ -96,7 +95,7 @@ export const useUserStore = create<UserState>((set, get) => ({
       uid: null,
       authenticated: false,
       name: null,
-      avatar: null,
+      avatar: 'humanoid',
       coins: 0,
       inventory: {},
       combinations: {},
@@ -191,9 +190,8 @@ export const useUserStore = create<UserState>((set, get) => ({
 
   setAvatarVariant: async variant => {
     get();
-    const newAvatar = {variant};
-    await get().persistAvatar(newAvatar);
-    set({avatar: newAvatar});
+    await get().persistAvatar(variant as AvatarVariant);
+    set({avatar: variant});
   },
 
   // ------------------------------

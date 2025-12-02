@@ -1,5 +1,6 @@
 // src/ui/screens/BoardScreen.tsx
-import {useEffect, useRef, useState} from 'react';
+
+import {useEffect, useRef, useState, useCallback} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 
 import {LEVELS} from '@/data/levels';
@@ -15,26 +16,36 @@ import type {ModalState, UnlockItem} from '@/core/types';
 import AppLayout from '@/ui/layout';
 import {PowerupBar} from '@/ui/board/PowerupBar';
 import {LevelCompleteModal} from '@/ui/components/modals/LevelCompleteModal';
+
 import {LEVEL_UNLOCKS} from '@/data/levelUnlocks';
 import NewUnlockModal from '@/ui/components/modals/NewUnlockModal';
+
 import {useAchievementStore, usePlayerStore} from '@/state';
+
 import {LEVEL_XP_REWARD} from '@/data/levelXPRewards';
 
+/**
+ * BoardScreen FINAL — versión SAFE, estable, sin doble carga.
+ * - Usa safeLoadLevel desde game-store
+ * - No llama a resetLevel() al desmontar
+ * - Controla el inicio del timer de forma segura
+ * - Evita estados corruptos tras reload/StrictMode
+ */
+
 export function BoardScreen() {
-  const {levelId} = useParams();
+  const {levelId} = useParams<{levelId: string}>();
   const navigate = useNavigate();
 
-  const loadLevel = useGameStore(s => s.loadLevel);
+  // Game store selectors
   const currentLevel = useGameStore(s => s.currentLevel);
-  const resetLevel = useGameStore(s => s.resetLevel);
-
   const levelResult = useGameStore(s => s.levelResult);
   const setLevelResult = useGameStore(s => s.setLevelResult);
+
   const createdCounts = useGameStore(s => s.createdCounts);
   const levelCoins = useGameStore(s => s.levelCoins);
   const stopTimer = useGameStore(s => s.stopTimer);
 
-  // Selectores reactivos: obtenemos solo lo que necesitamos del store
+  // Player store selectors
   const addXP = usePlayerStore(s => s.addXP);
   const completedLevelUnlocks = usePlayerStore(s => s.completedLevelUnlocks);
   const markLevelUnlocksAsCompleted = usePlayerStore(
@@ -43,22 +54,18 @@ export function BoardScreen() {
   const newAchievements = usePlayerStore(s => s.newAchievements);
   const clearNewAchievements = usePlayerStore(s => s.clearNewAchievements);
 
-  // Ref para evitar procesar varias veces el mismo levelResult
-  const processedLevelsRef = useRef<Set<string>>(new Set());
-
+  // UI state
   const [modalState, setModalState] = useState<null | ModalState>(null);
   const [paused, setPaused] = useState(false);
-  const openPause = () => setPaused(true);
-  const closePause = () => setPaused(false);
-
   const [unlockModalItems, setUnlockModalItems] = useState<UnlockItem[]>([]);
   const [unlockModalOpen, setUnlockModalOpen] = useState(false);
 
-  useEffect(() => {
-    setModalState(null);
-  }, []);
+  // Prevent double-run of levelResult
+  const processedLevelsRef = useRef<Set<string>>(new Set());
 
-  // Load level
+  // ------------------------------
+  // LOAD LEVEL (SAFE)
+  // ------------------------------
   useEffect(() => {
     if (!levelId) {
       navigate('/levels');
@@ -71,135 +78,133 @@ export function BoardScreen() {
       return;
     }
 
-    if (!currentLevel || currentLevel.id !== lvl.id) {
-      setTimeout(() => loadLevel(lvl), 0);
+    try {
+      // Carga segura — evita dobles cargas incluso en StrictMode
+      useGameStore.getState().safeLoadLevel(lvl);
       setModalState(null);
+    } catch (e) {
+      console.warn('BoardScreen: safeLoadLevel failed', e);
     }
-  }, [levelId, currentLevel, loadLevel, navigate]);
+  }, [levelId, navigate]);
 
-  // Listen to store
-  // Listen to levelResult and award XP / open unlock modal safely and idempotently
+  // ------------------------------
+  // HANDLE LEVEL RESULT
+  // ------------------------------
   useEffect(() => {
     if (!levelResult) return;
 
-    // Protegemos usando levelId (si existe) para evitar doble procesamiento
     const levelIdStr = levelResult.levelId ?? 'unknown';
+
+    // Ya procesado → solo abrir modal si corresponde
     if (processedLevelsRef.current.has(levelIdStr)) {
-      // Ya procesado: solo actualizamos modalState si es necesario
-      setModalState(levelResult as ModalState | null);
+      setModalState(levelResult as ModalState);
       return;
     }
 
-    setModalState(levelResult as ModalState | null);
+    processedLevelsRef.current.add(levelIdStr);
+    setModalState(levelResult as ModalState);
 
-    const lvlNum = parseInt(levelResult.levelId.replace(/\D/g, ''), 10) || null;
+    const lvlNum =
+      parseInt((levelResult.levelId || '').replace(/\D/g, ''), 10) || null;
 
     if (
       levelResult.status === 'win' &&
-      !unlockModalOpen &&
       lvlNum !== null &&
       !completedLevelUnlocks?.[lvlNum + 1]
     ) {
-      // Marcar como procesado inmediatamente para evitar reentradas
-      processedLevelsRef.current.add(levelIdStr);
-
-      // XP formula (igual que antes)
       const xpGained =
         Math.floor((createdCounts?.star ?? 0) * 10 + (levelCoins ?? 0) * 0.2) +
         50;
 
-      console.log(
-        'ADDXP (BoardScreen) - awarding XP:',
-        xpGained + (LEVEL_XP_REWARD[lvlNum] ?? 50),
-      );
       addXP(xpGained + (LEVEL_XP_REWARD[lvlNum] ?? 50));
 
-      // === ACHIEVEMENTS: level win ===
+      // Achievements
       const ach = useAchievementStore.getState();
       if (lvlNum === 10) ach.unlock('WIN_LEVEL_10');
       if (lvlNum === 20) ach.unlock('WIN_LEVEL_20');
 
-      // Unlock modal items (same lógica)
-      if (lvlNum) {
-        const unlock = LEVEL_UNLOCKS[lvlNum + 1];
-        if (unlock) {
-          const items: any[] = [];
-          if (unlock.powerups)
-            unlock.powerups.forEach((p: any) =>
-              items.push({kind: 'powerup', id: p, name: p}),
-            );
-          if (unlock.maps)
-            unlock.maps.forEach((m: any) =>
-              items.push({kind: 'map', id: m, name: m}),
-            );
-          if (unlock.coins)
-            items.push({
-              kind: 'coins',
-              amount: unlock.coins,
-              name: `${unlock.coins} coins`,
-            });
-          if (unlock.achievements)
-            unlock.achievements.forEach(a =>
-              items.push({kind: 'achievement', id: a, name: a}),
-            );
+      // Unlock modal
+      const unlock = LEVEL_UNLOCKS[lvlNum + 1];
+      if (unlock) {
+        const items: UnlockItem[] = [];
 
-          setUnlockModalItems(items);
-          setUnlockModalOpen(true);
-        }
+        if (unlock.powerups)
+          unlock.powerups.forEach(p =>
+            items.push({kind: 'powerup', id: p, name: p}),
+          );
+
+        if (unlock.maps)
+          unlock.maps.forEach(m => items.push({kind: 'map', id: m, name: m}));
+
+        if (unlock.coins)
+          items.push({
+            kind: 'coins',
+            amount: unlock.coins,
+            name: `${unlock.coins} coins`,
+          });
+
+        if (unlock.achievements)
+          unlock.achievements.forEach(a =>
+            items.push({kind: 'achievement', id: a, name: a}),
+          );
+
+        setUnlockModalItems(items);
+        setUnlockModalOpen(true);
       }
-      usePlayerStore.getState().markLevelCompleted(lvlNum.toString(), xpGained);
-    } else {
-      // Si no es win o ya desbloqueado, igual marcamos como procesado para evitar reprocesos:
-      processedLevelsRef.current.add(levelIdStr);
-    }
-    // Dependencias intencionadas: reaccionar a cambios relevantes solamente.
-    // Notar: no incluimos el objeto entero del player para evitar efectos no controlados.
-  }, [
-    levelResult?.levelId,
-    levelResult?.status,
-    unlockModalOpen,
-    createdCounts?.star,
-    levelCoins,
-    addXP,
-    completedLevelUnlocks,
-  ]);
 
+      // Mark progress
+      if (typeof lvlNum === 'number') {
+        usePlayerStore.getState().markLevelCompleted(String(lvlNum), xpGained);
+      }
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [levelResult]);
+
+  // ------------------------------
+  // CLEAN-UP ON UNMOUNT (SAFE)
+  // ------------------------------
   useEffect(() => {
     return () => {
       try {
         setModalState(null);
-      } catch (e) {}
+      } catch {}
       try {
         setLevelResult(null);
-      } catch (e) {}
+      } catch {}
       try {
-        stopTimer && stopTimer();
-        resetLevel();
-      } catch (e) {}
+        stopTimer();
+      } catch {}
+      // NO resetLevel() aquí — importante
     };
-    // empty deps so this runs only on unmount
   }, [setLevelResult, stopTimer]);
 
-  const handleCloseModal = () => {
+  // ------------------------------
+  // HELPERS
+  // ------------------------------
+  const openPause = useCallback(() => setPaused(true), []);
+  const closePause = useCallback(() => setPaused(false), []);
+
+  const handleCloseModal = useCallback(() => {
     setLevelResult(null);
     setModalState(null);
-  };
+  }, [setLevelResult]);
 
   const fusionStats = Object.entries(createdCounts || {}).map(
-    ([type, qty]) => ({
-      type,
-      qty,
-    }),
+    ([type, qty]) => ({type, qty}),
   );
 
+  // ------------------------------
+  // UI
+  // ------------------------------
   return (
-    <AppLayout prevRoute="/home" hideHeader={true}>
+    <AppLayout prevRoute="/home" hideHeader>
       <BoardScreenWrapper>
         <HUDColumn>
           <GameHeader
             // @ts-ignore
             objective={currentLevel?.objective?.subject || 'Objetivo'}
-            onPause={() => openPause()}
+            onPause={openPause}
           />
           <HUD />
         </HUDColumn>
@@ -211,7 +216,7 @@ export function BoardScreen() {
         <PowerupBar />
       </BoardScreenWrapper>
 
-      {/* Modal success */}
+      {/* Unlock modal */}
       {unlockModalOpen && (
         <NewUnlockModal
           open={unlockModalOpen}
@@ -220,6 +225,7 @@ export function BoardScreen() {
             if (levelResult !== null) {
               const lvlNum =
                 parseInt(levelResult.levelId.replace(/\D/g, ''), 10) || null;
+
               if (lvlNum !== null) {
                 markLevelUnlocksAsCompleted(lvlNum + 1);
               }
@@ -231,7 +237,7 @@ export function BoardScreen() {
         />
       )}
 
-      {/* Modal success */}
+      {/* Win modal */}
       {!unlockModalOpen && modalState?.status === 'win' && (
         <LevelCompleteModal
           coins={levelCoins || 0}
@@ -240,18 +246,16 @@ export function BoardScreen() {
           onNextLevel={nextLevelId => {
             clearNewAchievements();
             handleCloseModal();
-            setLevelResult(null);
             navigate(`/play/${nextLevelId}`);
           }}
           onContinue={() => {
             clearNewAchievements();
             handleCloseModal();
-            setLevelResult(null);
           }}
         />
       )}
 
-      {/* Modal fail */}
+      {/* Fail modal */}
       {modalState?.status === 'fail' && (
         <Modal
           onClose={handleCloseModal}
@@ -263,7 +267,7 @@ export function BoardScreen() {
               label: 'Reintentar',
               variant: 'secondary',
               onClick: () => {
-                resetLevel();
+                useGameStore.getState().resetLevel();
                 handleCloseModal();
               },
             },
@@ -272,48 +276,45 @@ export function BoardScreen() {
               variant: 'fail',
               to: '/levels',
               onClick: () => {
-                resetLevel();
                 handleCloseModal();
+                navigate('/levels');
               },
             },
             {
               label: 'Cerrar',
               variant: 'tertiary',
-              onClick: () => {
-                resetLevel();
-                handleCloseModal();
-              },
+              onClick: handleCloseModal,
             },
           ]}
         />
       )}
+
+      {/* Pause modal */}
       {paused && (
         <Modal
           onClose={closePause}
           open={paused}
           title="Juego pausado"
-          buttons={
-            [
-              {
-                label: 'Reanudar',
-                variant: 'primary',
-                onClick: closePause,
+          buttons={[
+            {
+              label: 'Reanudar',
+              variant: 'primary',
+              onClick: closePause,
+            },
+            {
+              label: 'Reiniciar',
+              variant: 'secondary',
+              onClick: () => {
+                useGameStore.getState().resetLevel();
+                closePause();
               },
-              {
-                label: 'Reinicar',
-                variant: 'secondary',
-                onClick: () => {
-                  resetLevel();
-                  closePause();
-                },
-              },
-              {
-                label: 'Salir',
-                variant: 'tertiary',
-                to: '/levels',
-              },
-            ].filter(Boolean) as any
-          }
+            },
+            {
+              label: 'Salir',
+              variant: 'tertiary',
+              to: '/levels',
+            },
+          ]}
         />
       )}
     </AppLayout>

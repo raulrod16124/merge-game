@@ -67,22 +67,27 @@ type Props = {
 };
 
 export function CosmicAvatar({variant, forceVariant, hideProgress}: Props) {
-  const userVariant = useUserStore(s => s.avatar?.variant);
+  const userVariant = useUserStore(s => s.avatar);
   const playerVariant = usePlayerStore(s => s.avatarVariant);
 
-  /** 🔥 Resolución final de variante (prioridades) */
-  const finalVariant =
-    forceVariant || variant || userVariant || playerVariant || 'hybrid';
+  const resolvedVariant =
+    forceVariant ??
+    variant ??
+    (typeof userVariant === 'string' ? userVariant : undefined) ??
+    (typeof playerVariant === 'string' ? playerVariant : undefined) ??
+    'hybrid';
+
+  const finalVariant = resolvedVariant as AvatarVariant;
 
   const progress = usePlayerStore(s => s.cosmicProgress);
-  const variantProgress = progress[finalVariant];
+  const variantProgress = progress[finalVariant] ?? progress['hybrid'];
 
-  const xp = variantProgress?.xp ?? 0;
-  const level = variantProgress?.level ?? 1;
+  const xp = variantProgress.xp;
+  const level = variantProgress.level;
 
-  const profile =
-    COSMIC_EVOLUTION[finalVariant]?.[level] ??
-    COSMIC_EVOLUTION[finalVariant]?.[1];
+  const evoBase = COSMIC_EVOLUTION[finalVariant] || COSMIC_EVOLUTION['hybrid'];
+
+  const profile = evoBase[level] ?? evoBase[1];
 
   const {progressPercent, nextLevelXP} = computeCosmicProgress(level, xp);
 

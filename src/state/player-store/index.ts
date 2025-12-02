@@ -9,6 +9,7 @@ import {db} from '@/core/firebase';
 import {useUserStore} from '@/state/user-store';
 import {levelIdToIndex} from '@/data/levelIndexMap';
 import {SECTION_UNLOCKS} from '@/data/sectionUnlocks';
+import type {AvatarVariant} from '@/ui/components/cosmic-avatar/types';
 
 export type AchievementId = string;
 
@@ -62,6 +63,7 @@ export type PlayerProgressState = {
   isLevelUnlocked: (levelId: string) => boolean;
   isSectionUnlocked: (sectionNumber: number) => boolean;
   completeLevel: (levelId: string, score?: number) => void;
+  setAvatarVariant: (avatar: AvatarVariant) => void;
 
   triggerCosmicEvolution: ((lvl: number) => void) | null;
   setEvolutionHandler: (fn: (lvl: number) => void) => void;
@@ -115,6 +117,13 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
     } catch (e) {
       console.warn('Failed loading player cache', e);
     }
+  },
+
+  setAvatarVariant: avatar => {
+    set(state => ({
+      ...state,
+      avatarVariant: avatar,
+    }));
   },
 
   saveCache: () => {
@@ -378,7 +387,7 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
         {
           uid,
           name: name ?? 'Unknown',
-          avatar: avatar ?? {variant: 'hybrid'},
+          avatar: {variant: avatar ?? 'hybrid'},
 
           // Valores exportados al ranking
           rankScoreGlobal,
