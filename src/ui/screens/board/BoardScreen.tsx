@@ -180,9 +180,6 @@ export function BoardScreen() {
     };
   }, [setLevelResult, stopTimer]);
 
-  // ------------------------------
-  // HELPERS
-  // ------------------------------
   const openPause = useCallback(() => setPaused(true), []);
   const closePause = useCallback(() => setPaused(false), []);
 
@@ -191,13 +188,6 @@ export function BoardScreen() {
     setModalState(null);
   }, [setLevelResult]);
 
-  const fusionStats = Object.entries(createdCounts || {}).map(
-    ([type, qty]) => ({type, qty}),
-  );
-
-  // ------------------------------
-  // UI
-  // ------------------------------
   return (
     <AppLayout prevRoute="/home" hideHeader>
       <BoardScreenWrapper>
@@ -243,7 +233,6 @@ export function BoardScreen() {
       {!unlockModalOpen && modalState?.status === 'win' && (
         <LevelCompleteModal
           coins={levelCoins || 0}
-          fusionStats={fusionStats}
           newAchievements={newAchievements}
           onNextLevel={nextLevelId => {
             clearNewAchievements();

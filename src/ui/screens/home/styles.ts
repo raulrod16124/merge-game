@@ -41,9 +41,10 @@ export const Container = styled.div`
 /* Top header */
 export const TopBar = styled.header`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   padding: 18px 18px 8px;
+  gap: 15px;
   z-index: 30;
 `;
 
@@ -58,7 +59,21 @@ export const TopLeft = styled.div`
     background: rgba(255, 255, 255, 0.06);
     border-radius: 16px;
     padding: 6px 10px;
-    color: ${COLORS.primary};
+    color: ${COLORS.white};
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    font-weight: 700;
+    font-size: 1rem;
+    backdrop-filter: blur(6px);
+  }
+
+  .header-xp {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 6px 10px;
+    color: ${COLORS.white};
     border: 1px solid rgba(255, 255, 255, 0.04);
     font-weight: 700;
     font-size: 1rem;

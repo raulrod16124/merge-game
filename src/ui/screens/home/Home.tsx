@@ -12,6 +12,7 @@ import {
   SquareStar,
   Play,
   ChartSpline,
+  Star,
 } from 'lucide-react';
 import {
   Container,
@@ -28,13 +29,17 @@ import {
   UserName,
 } from './styles';
 import {CosmicAvatar} from '@/ui/components/cosmic-avatar';
-import CosmicMiniProgress from '@/ui/components/cosmic-avatar/CosmicMiniProgress';
 import StarField from '@/ui/components/StarField';
 import {COLORS} from '@/ui/constants';
+import {CosmicXPStatus} from '@/ui/components/cosmic-avatar/CosmicXPStatus';
+import {usePlayerStore} from '@/state';
+import {formatCoins} from '@/utils/formatCoins';
 
 export default function Home() {
   const navigate = useNavigate();
   const {name, coins, avatar} = useUserStore();
+  const avatarVariant = usePlayerStore(s => s.avatarVariant);
+  const progress = usePlayerStore(s => s.cosmicProgress[avatarVariant]);
 
   return (
     <Container>
@@ -47,15 +52,22 @@ export default function Home() {
             className="header-coin"
             onClick={() => navigate('/store')}
             aria-label="Coins">
-            <Coins size={20} strokeWidth={2.2} /> <span>{coins}</span>
+            <Coins size={20} strokeWidth={2.2} color={COLORS.primary} />{' '}
+            <span>{formatCoins(coins)}</span>
           </button>
+        </TopLeft>
+        <TopLeft>
+          <div className="header-xp">
+            <Star size={20} fill={COLORS.secondary} />
+            {formatCoins(progress.xp)}
+          </div>
         </TopLeft>
       </TopBar>
 
       <Content>
         <AvatarWrap>
           <CosmicAvatar variant={avatar} />
-          <CosmicMiniProgress />
+          <CosmicXPStatus />
         </AvatarWrap>
 
         <Greeting>

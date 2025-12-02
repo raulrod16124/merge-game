@@ -24,6 +24,7 @@ import {Coins, Lock} from 'lucide-react';
 import {Modal} from '@/common/Modal';
 import type {PowerupType} from '@/core/types';
 import {COLORS} from '@/ui/constants';
+import {formatCoins} from '@/utils/formatCoins';
 
 export default function Store() {
   const coins = useUserStore(s => s.coins);
@@ -78,7 +79,7 @@ export default function Store() {
               fontSize: '1.6rem',
               color: COLORS.primary,
             }}>
-            <Coins size={20} /> {coins}
+            <Coins size={20} /> {formatCoins(coins)}
           </div>
         </div>
 

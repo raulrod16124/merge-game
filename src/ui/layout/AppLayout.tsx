@@ -4,7 +4,6 @@ import {useLocation, useNavigate} from 'react-router-dom';
 import {HudNotifications} from '../components/HudNotifications';
 import {usePlayerStore} from '@/state';
 import React from 'react';
-import {CosmicEvolutionModal} from '../components/modals/CosmicEvolutionModal';
 import StarField from '../components/StarField';
 
 interface Props {

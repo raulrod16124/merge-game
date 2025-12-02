@@ -6,6 +6,8 @@ import {Star, Trophy} from 'lucide-react';
 import {useParams} from 'react-router-dom';
 import {getNextLevelID} from '@/utils/getNextLevelID';
 import {ACHIEVEMENTS} from '@/data/achievements';
+import {useGameStore} from '@/state/game-store';
+import {formatCoins} from '@/utils/formatCoins';
 
 const Overlay = styled.div`
   position: fixed;
@@ -83,37 +85,26 @@ const CoinsBox = styled.div`
   gap: 6px;
 `;
 
-const FusionList = styled.div`
-  margin: 18px auto 28px auto;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  color: white;
-  opacity: 0.85;
-`;
-
-const FusionItem = styled.div`
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.95rem;
-  padding: 4px 0;
-`;
-
 export function LevelCompleteModal({
   coins,
-  fusionStats,
   newAchievements,
   onNextLevel,
   onContinue,
 }: {
   coins: number;
-  fusionStats: {type: string; qty: number}[];
   newAchievements: string[];
   onNextLevel: (nextLevelId: string) => void;
   onContinue: () => void;
 }) {
   const {levelId} = useParams();
   const nextLevel = getNextLevelID(levelId || '');
+
+  // --- NEW: Read XP from game-store ---
+  const levelResult = useGameStore(s => s.levelResult);
+  const xpEarned = levelResult?.xpEarned ?? 0;
+
+  const clearLevelResult = useGameStore(s => s.setLevelResult);
+
   return (
     <Overlay>
       <Box>
@@ -143,25 +134,24 @@ export function LevelCompleteModal({
           </AchievementsSection>
         )}
 
+        {/* Monedas obtenidas */}
         <CoinsBox>
-          <Star size={20} /> +{coins} monedas
+          <Star size={20} /> +{formatCoins(coins)} monedas
         </CoinsBox>
 
-        {fusionStats.length > 0 && (
-          <FusionList>
-            {fusionStats.map(f => (
-              <FusionItem key={f.type}>
-                <span>{f.type}</span>
-                <span>x{f.qty}</span>
-              </FusionItem>
-            ))}
-          </FusionList>
+        {/* XP obtenida — NUEVO BLOQUE */}
+        {xpEarned > 0 && (
+          <CoinsBox style={{color: '#6ee7ff'}}>
+            <Star size={20} /> +{formatCoins(xpEarned)} XP Cósmica
+          </CoinsBox>
         )}
+
         <ButtonContainer>
           <Button
             variant="primary"
             fullWidth={true}
             onClick={() => {
+              clearLevelResult(null);
               onNextLevel(nextLevel);
             }}>
             Próximo nivel
@@ -170,7 +160,10 @@ export function LevelCompleteModal({
             to="/levels"
             variant="tertiary"
             fullWidth={true}
-            onClick={onContinue}>
+            onClick={() => {
+              clearLevelResult(null);
+              onContinue();
+            }}>
             Salir
           </Button>
         </ButtonContainer>

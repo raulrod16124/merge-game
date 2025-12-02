@@ -22,6 +22,7 @@ import {createPowerups} from './actions/powerups';
 import {maybeSpawnBlackHole} from './utils/spawnHelpers';
 import {computeEnemyMovePlans, type EnemyMovePlan} from './utils/enemyMovement';
 import {usePlayerStore} from '@/state/player-store';
+import {computeXPForLevelCompletion} from '@/data/xpRules';
 
 export type AbsorbedEffects = {
   id: string;
@@ -78,8 +79,14 @@ export type GameStore = {
   visualEnemyPlans: EnemyMovePlan[];
 
   // level result
-  levelResult: {status: 'win' | 'fail'; levelId: string} | null;
-  setLevelResult: (r: {status: 'win' | 'fail'; levelId: string} | null) => void;
+  levelResult: {
+    status: 'win' | 'fail';
+    levelId: string;
+    xpEarned?: number;
+  } | null;
+  setLevelResult: (
+    r: {status: 'win' | 'fail'; levelId: string; xpEarned?: number} | null,
+  ) => void;
 
   // actions
   incrementTurn: () => void;
@@ -190,31 +197,60 @@ export const useGameStore = create<GameStore>()(
       // level result
       levelResult: null,
       setLevelResult: r => {
-        set(() => ({levelResult: r}));
+        if (!r) {
+          set(() => ({levelResult: null}));
+          return;
+        }
 
-        if (!r || r.status !== 'win') return;
+        const {status, levelId} = r;
+        const stateSnapshot = get();
 
-        const lvlNum = parseInt(r.levelId.replace(/\D/g, ''), 10);
-        if (!lvlNum) return;
+        let xpEarned: number | undefined = undefined;
 
-        const fixedId = `level${String(lvlNum).padStart(2, '0')}`;
+        if (status === 'win' && stateSnapshot.currentLevel) {
+          // datos necesarios
+          const score = stateSnapshot.score ?? 0;
+          const movesUsed = stateSnapshot.moves ?? 0;
+          const lvlNum = parseInt(levelId.replace(/\D/g, ''), 10) || 1;
 
-        // Importamos player-store de forma lazy para evitar ciclos
-        import('@/state/player-store')
-          .then(mod => {
-            const player = mod.usePlayerStore.getState();
+          xpEarned = computeXPForLevelCompletion({
+            score,
+            movesUsed,
+            baseLevelIndex: lvlNum,
+          });
 
-            // 1. Guardar progreso real del nivel
-            player.completeLevel(fixedId);
+          // aplicar XP al jugador
+          import('@/state/player-store')
+            .then(mod => {
+              const player = mod.usePlayerStore.getState();
+              player.addXP(xpEarned!);
+            })
+            .catch(() => {});
+        }
 
-            // 2. Desbloquear el siguiente nivel
-            const nextLevelId = `level${String(lvlNum + 1).padStart(2, '0')}`;
-            player.unlockLevel(nextLevelId);
+        // guardar result con xpEarned para usarlo en el modal
+        set(() => ({
+          levelResult: {...r, xpEarned},
+        }));
 
-            // 3. Aplicar recompensas por nivel (powerups/maps/etc)
-            player.applyLevelUnlocks(lvlNum);
-          })
-          .catch(() => {});
+        // --- tu lógica de unlocks, sin tocar ---
+        try {
+          if (status === 'win') {
+            import('@/state/player-store')
+              .then(mod => {
+                const player = mod.usePlayerStore.getState();
+                const lvlNum = parseInt(levelId.replace(/\D/g, ''), 10) || null;
+                if (lvlNum) {
+                  const nextLevelId = `level${String(lvlNum + 1).padStart(2, '0')}`;
+                  player.unlockLevel(nextLevelId);
+                  player.applyLevelUnlocks(lvlNum + 1);
+                }
+              })
+              .catch(() => {});
+          }
+        } catch (e) {
+          console.warn('apply level unlocks failed', e);
+        }
       },
 
       // === move action + selectCell handling for powerups ===
