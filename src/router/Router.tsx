@@ -3,7 +3,6 @@ import BoardScreen from '@/ui/screens/board';
 import EditAvatar from '@/ui/screens/edit-avatar';
 import EditName from '@/ui/screens/edit-name';
 import Home from '@/ui/screens/home';
-import Inventory from '@/ui/screens/inventory';
 import Landing from '@/ui/screens/landing';
 import Levels from '@/ui/screens/levels';
 import Login from '@/ui/screens/login';
@@ -88,15 +87,6 @@ export default function Router() {
         element={
           <ProtectedRoute>
             <EditAvatar />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/inventory"
-        element={
-          <ProtectedRoute>
-            <Inventory />
           </ProtectedRoute>
         }
       />

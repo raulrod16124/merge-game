@@ -4,7 +4,6 @@ import {useUserStore} from '@/state/user-store';
 import {Button} from '@/common/Button';
 import {
   Coins,
-  Archive,
   Trophy,
   User,
   Settings,
@@ -96,12 +95,6 @@ export default function Home() {
       <FloatingButtons>
         <FloatingButton onClick={() => navigate('/ranking')} title="Ranking">
           <Trophy size={20} strokeWidth={2.2} />
-        </FloatingButton>
-
-        <FloatingButton
-          onClick={() => navigate('/inventory')}
-          title="Inventario">
-          <Archive size={20} strokeWidth={2.2} />
         </FloatingButton>
 
         <FloatingButton onClick={() => navigate('/stats')} title="Estadísticas">
