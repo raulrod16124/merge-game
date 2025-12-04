@@ -1,7 +1,7 @@
 // src/ui/board/LevelCompleteModal.tsx
 import styled from 'styled-components';
 import {Button} from '@/common/Button';
-import {COLORS, COSMIC_ICONS} from '@/ui/constants';
+import {COLORS, COSMIC_ACHIEVEMENTS, COSMIC_ICONS} from '@/ui/constants';
 import {Star, Trophy} from 'lucide-react';
 import {useParams} from 'react-router-dom';
 import {getNextLevelID} from '@/utils/getNextLevelID';
@@ -123,7 +123,9 @@ export function LevelCompleteModal({
                 return (
                   <li key={id}>
                     <img
-                      src={COSMIC_ICONS[a.icon as keyof typeof COSMIC_ICONS]}
+                      src={
+                        COSMIC_ACHIEVEMENTS[a.icon as keyof typeof COSMIC_ICONS]
+                      }
                       alt={a.title}
                     />
                     <span>{a.title}</span>

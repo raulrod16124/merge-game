@@ -6,7 +6,13 @@ import {COLORS} from '../ui/constants';
 import {soundManager} from '@/core/sound/soundManager';
 import {vibrate} from '@/core/vibration';
 
-type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'success' | 'fail';
+type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'success'
+  | 'fail'
+  | 'fail-ghost';
 
 type ButtonProps = {
   children: React.ReactNode;
@@ -57,6 +63,11 @@ const variantStyles = {
   fail: css`
     background: linear-gradient(180deg, ${redFail}, ${redFailDark});
     color: #300000;
+  `,
+  'fail-ghost': css`
+    background: transparent;
+    color: ${redFail};
+    border: 2px solid ${redFail};
   `,
 };
 

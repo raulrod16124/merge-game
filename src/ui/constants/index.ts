@@ -18,6 +18,23 @@ export type CosmicType =
   | 'fragment_dark'
   | 'black_hole';
 
+export type CosmicAchievementsType =
+  | 'dust'
+  | 'micro_asteroid'
+  | 'meteorite'
+  | 'baby_planet'
+  | 'mature_planet'
+  | 'star'
+  | 'star_system'
+  | 'supernova'
+  | 'nebula'
+  | 'galaxy'
+  | 'fragment_dark'
+  | 'black_hole'
+  | 'master'
+  | 'move'
+  | 'freeze_bh';
+
 export const COSMIC_ICONS: Record<CosmicType, string> = {
   dust: `${import.meta.env.BASE_URL}cosmic/dust.png`,
   micro_asteroid: `${import.meta.env.BASE_URL}cosmic/micro_asteroid.png`,
@@ -31,6 +48,24 @@ export const COSMIC_ICONS: Record<CosmicType, string> = {
   galaxy: `${import.meta.env.BASE_URL}cosmic/galaxy.png`,
   fragment_dark: `${import.meta.env.BASE_URL}cosmic/fragment_dark.png`,
   black_hole: `${import.meta.env.BASE_URL}cosmic/black_hole.png`,
+};
+
+export const COSMIC_ACHIEVEMENTS: Record<CosmicAchievementsType, string> = {
+  dust: `${import.meta.env.BASE_URL}achievements/dust.png`,
+  micro_asteroid: `${import.meta.env.BASE_URL}achievements/micro_asteroid.png`,
+  meteorite: `${import.meta.env.BASE_URL}achievements/meteorite.png`,
+  baby_planet: `${import.meta.env.BASE_URL}achievements/baby_planet.png`,
+  mature_planet: `${import.meta.env.BASE_URL}achievements/mature_planet.png`,
+  star: `${import.meta.env.BASE_URL}achievements/star.png`,
+  star_system: `${import.meta.env.BASE_URL}achievements/star_system.png`,
+  supernova: `${import.meta.env.BASE_URL}achievements/supernova.png`,
+  nebula: `${import.meta.env.BASE_URL}achievements/nebula.png`,
+  galaxy: `${import.meta.env.BASE_URL}achievements/galaxy.png`,
+  fragment_dark: `${import.meta.env.BASE_URL}achievements/fragment_dark.png`,
+  black_hole: `${import.meta.env.BASE_URL}achievements/black_hole.png`,
+  master: `${import.meta.env.BASE_URL}achievements/master.png`,
+  move: `${import.meta.env.BASE_URL}achievements/move.png`,
+  freeze_bh: `${import.meta.env.BASE_URL}achievements/freeze_bh.png`,
 };
 
 export const COSMIC_TEXT: Record<CosmicType, string> = {

@@ -1,6 +1,6 @@
 import AppLayout from '@/ui/layout';
 import {ACHIEVEMENTS} from '@/data/achievements';
-import {COSMIC_ICONS, type CosmicType} from '@/ui/constants';
+import {COSMIC_ACHIEVEMENTS, type CosmicType} from '@/ui/constants';
 import {Check, Lock, Star} from 'lucide-react';
 import {usePlayerStore} from '@/state/player-store';
 
@@ -40,7 +40,7 @@ export default function AchievementsScreen() {
                   </LockOverlay>
                 )}
 
-                <Icon src={COSMIC_ICONS[a.icon as CosmicType]} />
+                <Icon src={COSMIC_ACHIEVEMENTS[a.icon as CosmicType]} />
 
                 <Title>{a.title}</Title>
                 <Desc>{a.description}</Desc>

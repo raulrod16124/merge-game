@@ -36,7 +36,7 @@ export default function Settings() {
       <Wrapper>
         {/* --- SECCIÓN GENERAL --- */}
         <Section>
-          x<SectionTitle>General</SectionTitle>
+          <SectionTitle>General</SectionTitle>
           <CosmicDivider />
           {/* Idioma */}
           <SettingCard
@@ -76,8 +76,9 @@ export default function Settings() {
         {/* --- CERRAR SESIÓN --- */}
         <Section>
           <Button
-            variant="fail"
+            variant="fail-ghost"
             fullWidth={true}
+            styles={{marginTop: '2dvh'}}
             onClick={() => {
               logout();
               window.location.href = '/login';

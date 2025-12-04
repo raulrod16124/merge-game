@@ -14,7 +14,7 @@ export const Wrapper = styled.div`
 `;
 
 export const Section = styled.div`
-  padding: 22px 24px;
+  padding: 0 24px 22px 24px;
   display: flex;
   flex-direction: column;
   animation: ${fadeIn} 0.4s ease;
