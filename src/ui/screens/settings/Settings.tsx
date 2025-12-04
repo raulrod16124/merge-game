@@ -4,7 +4,16 @@ import {useUserStore} from '@/state/user-store';
 import {useSettingsStore} from '@/state/settings-store';
 import AppLayout from '@/ui/layout';
 import {Button} from '@/common/Button';
-import {Section, SectionTitle, Row, Label, Toggle, LinkRow} from './styles';
+
+import {
+  Section,
+  SectionTitle,
+  CosmicDivider,
+  SettingCard,
+  Label,
+  Toggle,
+  LinkCard,
+} from './styles';
 
 import {ChevronRight} from 'lucide-react';
 
@@ -22,48 +31,49 @@ export default function Settings() {
   const language = useSettingsStore(state => state.language);
 
   return (
-    <AppLayout
-      title="Ajustes"
-      showBack={true}
-      prevRoute="/home"
-      secondaryBg={true}>
+    <AppLayout title="Ajustes" showBack={true} prevRoute="/home">
+      {/* --- SECCIÓN GENERAL --- */}
       <Section>
         <SectionTitle>General</SectionTitle>
+        <CosmicDivider />
 
         {/* Idioma */}
-        <Row onClick={() => alert('Selector de idiomas próximamente')}>
+        <SettingCard onClick={() => alert('Selector de idiomas próximamente')}>
           <Label>Idioma</Label>
           <div style={{opacity: 0.8}}>{language.toUpperCase()}</div>
           <ChevronRight size={20} />
-        </Row>
+        </SettingCard>
 
         {/* Sonido */}
-        <Row onClick={() => setSoundEnabled(!sound)}>
+        <SettingCard onClick={() => setSoundEnabled(!sound)}>
           <Label>Sonido</Label>
           <Toggle $active={sound}>{sound ? 'ON' : 'OFF'}</Toggle>
-        </Row>
+        </SettingCard>
 
         {/* Vibración */}
-        <Row onClick={() => setVibrationEnabled(!vibration)}>
+        <SettingCard onClick={() => setVibrationEnabled(!vibration)}>
           <Label>Vibración</Label>
           <Toggle $active={vibration}>{vibration ? 'ON' : 'OFF'}</Toggle>
-        </Row>
+        </SettingCard>
       </Section>
 
+      {/* --- SECCIÓN INFORMACIÓN --- */}
       <Section>
         <SectionTitle>Información</SectionTitle>
+        <CosmicDivider />
 
-        <LinkRow onClick={() => alert('Mostrar Política de Privacidad')}>
+        <LinkCard onClick={() => alert('Mostrar Política de Privacidad')}>
           <Label>Política de Privacidad</Label>
           <ChevronRight size={20} />
-        </LinkRow>
+        </LinkCard>
 
-        <LinkRow onClick={() => alert('Acerca de Stellar Merge')}>
+        <LinkCard onClick={() => alert('Acerca del juego')}>
           <Label>Acerca del juego</Label>
           <ChevronRight size={20} />
-        </LinkRow>
+        </LinkCard>
       </Section>
 
+      {/* --- CERRAR SESIÓN --- */}
       <Section>
         <Button
           variant="fail"

@@ -18,8 +18,8 @@ const ResultList = styled.div`
 
 const ResultItem = styled.div`
   background: #1f2330;
-  padding: 10px;
-  border-radius: 8px;
+  padding: 10px 16px;
+  border-radius: 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -79,8 +79,9 @@ export default function AddFriendModal({
                   onClick={() => {
                     sendFriendRequest(profile.uid);
                     onClose();
-                  }}>
-                  <Plus size={22} />
+                  }}
+                  styles={{padding: '0.5rem', borderRadius: '12px'}}>
+                  <Plus size={25} />
                 </Button>
               </ResultItem>
             ))}

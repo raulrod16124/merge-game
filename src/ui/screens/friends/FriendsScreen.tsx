@@ -13,6 +13,7 @@ import {
 } from './styles';
 import AddFriendModal from '@/ui/components/modals/AddFriendModal';
 import {useUserStore} from '@/state';
+import {Check, Plus, X} from 'lucide-react';
 
 export default function FriendsScreen() {
   const {
@@ -44,9 +45,8 @@ export default function FriendsScreen() {
           styles={{
             marginTop: 6,
             marginBottom: 18,
-            boxShadow: '0 0 12px rgba(120, 200, 255, 0.5)',
           }}>
-          + Agregar Amigo
+          <Plus size={25} /> Buscar Jugador
         </Button>
 
         {/* --- SECCIÓN: AMIGOS --- */}
@@ -66,8 +66,11 @@ export default function FriendsScreen() {
                   {friend.uniqueName} — Nivel Cósmico {friend.cosmicLevel}
                 </div>
               </div>
-              <Button variant="fail" onClick={() => removeFriend(friend.uid)}>
-                Eliminar
+              <Button
+                variant="fail"
+                onClick={() => removeFriend(friend.uid)}
+                styles={{padding: '0.5rem', borderRadius: '12px'}}>
+                <X size={25} />
               </Button>
             </FriendCard>
           ))}
@@ -87,14 +90,16 @@ export default function FriendsScreen() {
               <FriendName>{friend.name}</FriendName>
               <ActionRow>
                 <Button
-                  variant="primary"
-                  onClick={() => acceptRequest(friend.uid)}>
-                  Aceptar
+                  variant="success"
+                  onClick={() => acceptRequest(friend.uid)}
+                  styles={{padding: '0.5rem', borderRadius: '12px'}}>
+                  <Check size={25} />
                 </Button>
                 <Button
                   variant="fail"
-                  onClick={() => rejectRequest(friend.uid)}>
-                  Rechazar
+                  onClick={() => rejectRequest(friend.uid)}
+                  styles={{padding: '0.5rem', borderRadius: '12px'}}>
+                  <X size={25} />
                 </Button>
               </ActionRow>
             </FriendCard>
@@ -113,8 +118,11 @@ export default function FriendsScreen() {
           {outgoing.map(friend => (
             <FriendCard key={friend.uid}>
               <FriendName>{friend.name}</FriendName>
-              <Button variant="fail" onClick={() => cancelRequest(friend.uid)}>
-                Cancelar
+              <Button
+                variant="fail"
+                onClick={() => cancelRequest(friend.uid)}
+                styles={{padding: '0.5rem', borderRadius: '12px'}}>
+                <X size={25} />
               </Button>
             </FriendCard>
           ))}

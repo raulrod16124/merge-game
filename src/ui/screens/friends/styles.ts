@@ -1,3 +1,4 @@
+import {COLORS} from '@/ui/constants';
 import styled, {keyframes} from 'styled-components';
 
 export const Section = styled.div`
@@ -27,11 +28,15 @@ export const List = styled.div`
 
 export const FriendCard = styled.div`
   padding: 14px;
-  background: linear-gradient(145deg, #1c1c25 0%, #232334 100%);
-  border-radius: 16px;
+  background: linear-gradient(
+    145deg,
+    ${COLORS.tertiary} 0%,
+    ${COLORS.tertiaryDark} 100%
+  );
+  border-radius: 12px;
   margin-bottom: 12px;
 
-  border: 1px solid rgba(100, 160, 255, 0.22);
+  border: 1px solid ${COLORS.secondary};
   box-shadow:
     0 0 12px rgba(70, 130, 255, 0.15),
     inset 0 0 12px rgba(90, 160, 255, 0.07);
