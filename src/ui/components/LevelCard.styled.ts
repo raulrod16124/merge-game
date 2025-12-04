@@ -67,7 +67,7 @@ export const ScoreBadge = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  color: ${COLORS.primary};
+  color: ${COLORS.white};
 `;
 
 export const SectionLevelWrapper = styled.div`

@@ -510,7 +510,7 @@
   {
     "id": "level21",
     "name": "Stellar Forge 1",
-    "image": "/levels/level_21.png",
+    "image": "/levels/level-3/level_21.png",
     "boardSize": {
       "mobile": {"cols": 5, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
@@ -538,7 +538,7 @@
   {
     "id": "level22",
     "name": "Stellar Forge 2",
-    "image": "/levels/level_22.png",
+    "image": "/levels/level-3/level_22.png",
     "boardSize": {
       "mobile": {"cols": 5, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
@@ -566,7 +566,7 @@
   {
     "id": "level23",
     "name": "Stellar Forge 3",
-    "image": "/levels/level_23.png",
+    "image": "/levels/level-3/level_23.png",
     "boardSize": {
       "mobile": {"cols": 5, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
@@ -594,7 +594,7 @@
   {
     "id": "level24",
     "name": "Stellar Forge 4",
-    "image": "/levels/level_24.png",
+    "image": "/levels/level-3/level_24.png",
     "boardSize": {
       "mobile": {"cols": 5, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
@@ -622,7 +622,7 @@
   {
     "id": "level25",
     "name": "Stellar Forge 5",
-    "image": "/levels/level_25.png",
+    "image": "/levels/level-3/level_25.png",
     "boardSize": {
       "mobile": {"cols": 5, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
@@ -650,7 +650,7 @@
   {
     "id": "level26",
     "name": "Stellar Forge 6",
-    "image": "/levels/level_26.png",
+    "image": "/levels/level-3/level_26.png",
     "boardSize": {
       "mobile": {"cols": 5, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
@@ -678,7 +678,7 @@
   {
     "id": "level27",
     "name": "Stellar Forge 7",
-    "image": "/levels/level_27.png",
+    "image": "/levels/level-3/level_27.png",
     "boardSize": {
       "mobile": {"cols": 5, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
@@ -706,7 +706,7 @@
   {
     "id": "level28",
     "name": "Stellar Forge 8",
-    "image": "/levels/level_28.png",
+    "image": "/levels/level-3/level_28.png",
     "boardSize": {
       "mobile": {"cols": 5, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
@@ -734,7 +734,7 @@
   {
     "id": "level29",
     "name": "Stellar Forge 9",
-    "image": "/levels/level_29.png",
+    "image": "/levels/level-3/level_29.png",
     "boardSize": {
       "mobile": {"cols": 5, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}
@@ -762,7 +762,7 @@
   {
     "id": "level30",
     "name": "Stellar Forge 10",
-    "image": "/levels/level_30.png",
+    "image": "/levels/level-3/level_30.png",
     "boardSize": {
       "mobile": {"cols": 5, "rows": 6},
       "desktop": {"cols": 6, "rows": 6}

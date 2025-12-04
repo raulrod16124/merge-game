@@ -59,7 +59,7 @@ export function LevelCard({
 
         {completed && highScore != null && (
           <ScoreBadge>
-            <Star size={15} fill={COLORS.primary} />
+            <Star size={20} fill={COLORS.secondary} />
             {highScore}
           </ScoreBadge>
         )}

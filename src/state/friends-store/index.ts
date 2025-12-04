@@ -4,6 +4,7 @@ import {doc, getDoc, setDoc} from 'firebase/firestore';
 import {useUserStore} from '../user-store';
 import {useHudStore} from '../hud-store';
 import {loadProfiles, type Profile} from '@/core/friendsSearchService';
+import {usePlayerStore} from '../player-store';
 
 export type FriendsState = {
   friends: Profile[];
@@ -45,10 +46,12 @@ export const useFriendsStore = create<FriendsState>((set, get) => ({
   outgoing: [],
 
   loadFriends: async () => {
-    const uid = useUserStore.getState().uid;
-    if (!uid) return;
+    const user = useUserStore.getState();
+    const player = usePlayerStore.getState();
 
-    const myRef = await ensureDoc(uid);
+    if (!user.uid) return;
+
+    const myRef = await ensureDoc(user.uid);
     const snap = await getDoc(myRef);
     const data = (snap.data() as FriendsDoc) ?? {
       list: [],
@@ -68,8 +71,16 @@ export const useFriendsStore = create<FriendsState>((set, get) => ({
         loadProfiles(outgoingUids),
       ]);
 
+    const userMapped: Profile = {
+      uid: user.uid,
+      name: user.name!,
+      uniqueName: user.uniqueName!,
+      cosmicLevel: player.cosmicProgress.level,
+      avatar: user.avatar,
+    };
+
     set({
-      friends: friendsProfiles,
+      friends: [...friendsProfiles, userMapped],
       incoming: incomingProfiles,
       outgoing: outgoingProfiles,
     });

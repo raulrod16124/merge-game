@@ -67,7 +67,7 @@ export default function FriendsScreen() {
                 </div>
               </div>
               <Button
-                variant="fail"
+                variant="fail-ghost"
                 onClick={() => removeFriend(friend.uid)}
                 styles={{padding: '0.5rem', borderRadius: '12px'}}>
                 <X size={25} />
@@ -90,13 +90,13 @@ export default function FriendsScreen() {
               <FriendName>{friend.name}</FriendName>
               <ActionRow>
                 <Button
-                  variant="success"
+                  variant="success-ghost"
                   onClick={() => acceptRequest(friend.uid)}
                   styles={{padding: '0.5rem', borderRadius: '12px'}}>
                   <Check size={25} />
                 </Button>
                 <Button
-                  variant="fail"
+                  variant="fail-ghost"
                   onClick={() => rejectRequest(friend.uid)}
                   styles={{padding: '0.5rem', borderRadius: '12px'}}>
                   <X size={25} />
@@ -119,7 +119,7 @@ export default function FriendsScreen() {
             <FriendCard key={friend.uid}>
               <FriendName>{friend.name}</FriendName>
               <Button
-                variant="fail"
+                variant="fail-ghost"
                 onClick={() => cancelRequest(friend.uid)}
                 styles={{padding: '0.5rem', borderRadius: '12px'}}>
                 <X size={25} />

@@ -11,8 +11,10 @@ type ButtonVariant =
   | 'secondary'
   | 'tertiary'
   | 'success'
+  | 'success-ghost'
   | 'fail'
-  | 'fail-ghost';
+  | 'fail-ghost'
+  | 'light-ghost';
 
 type ButtonProps = {
   children: React.ReactNode;
@@ -60,6 +62,11 @@ const variantStyles = {
     background: linear-gradient(180deg, ${greenSuccess}, ${greenSuccessDark});
     color: #00300f;
   `,
+  'success-ghost': css`
+    background: transparent;
+    color: ${COLORS.success};
+    border: 2px solid ${COLORS.success};
+  `,
   fail: css`
     background: linear-gradient(180deg, ${redFail}, ${redFailDark});
     color: #300000;
@@ -68,6 +75,11 @@ const variantStyles = {
     background: transparent;
     color: ${redFail};
     border: 2px solid ${redFail};
+  `,
+  'light-ghost': css`
+    background: transparent;
+    color: ${COLORS.white};
+    border: 2px solid ${COLORS.white};
   `,
 };
 

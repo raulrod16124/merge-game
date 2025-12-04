@@ -136,7 +136,7 @@ export default function RankingScreen() {
                     {filter === 'totalXP' &&
                       `XP Total: ${p.rankTotalCosmicXP ?? 0}`}
                     {filter === 'friends' &&
-                      `Nivel Cósmico: ${p.rankCosmicLevel ?? 1}`}
+                      `Nivel Cósmico: ${p.rankCosmicLevel ?? 1} | XP Total: ${p.rankTotalCosmicXP ?? 1}`}
                   </PlayerStats>
                 </PlayerInfo>
               </PlayerCard>
