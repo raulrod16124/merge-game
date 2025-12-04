@@ -5,6 +5,7 @@ import {Coins, Pause} from 'lucide-react';
 import {COLORS} from '@/ui/constants';
 import {useGameStore} from '@/state';
 import {ScoreBar} from './ScoreBar';
+import {formatCoins} from '@/utils/formatCoins';
 
 const Wrapper = styled.div`
   position: relative;
@@ -101,7 +102,7 @@ export function GameHeader({
   return (
     <Wrapper>
       <CoinsWrapper>
-        <Coins size={22} strokeWidth={2.4} /> {displayCoins}
+        <Coins size={22} strokeWidth={2.4} /> {formatCoins(displayCoins)}
       </CoinsWrapper>
 
       <InfoRow>

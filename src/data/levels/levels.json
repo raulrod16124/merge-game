@@ -2,7 +2,7 @@
   {
     "id": "level01",
     "name": "Nebula Nursery 1",
-    "image": "/levels/level_1.png",
+    "image": "/levels/level-1/level_1.png",
     "boardSize": {
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 4, "rows": 6}
@@ -24,7 +24,7 @@
   {
     "id": "level02",
     "name": "Nebula Nursery 2",
-    "image": "/levels/level_2.png",
+    "image": "/levels/level-1/level_2.png",
     "boardSize": {
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 4, "rows": 6}
@@ -47,7 +47,7 @@
   {
     "id": "level03",
     "name": "Nebula Nursery 3",
-    "image": "/levels/level_3.png",
+    "image": "/levels/level-1/level_3.png",
     "boardSize": {
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 4, "rows": 6}
@@ -69,7 +69,7 @@
   {
     "id": "level04",
     "name": "Nebula Nursery 4",
-    "image": "/levels/level_4.png",
+    "image": "/levels/level-1/level_4.png",
     "boardSize": {
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 4, "rows": 6}
@@ -93,7 +93,7 @@
   {
     "id": "level05",
     "name": "Nebula Nursery 5",
-    "image": "/levels/level_5.png",
+    "image": "/levels/level-1/level_5.png",
     "boardSize": {
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 4, "rows": 6}
@@ -117,7 +117,7 @@
   {
     "id": "level06",
     "name": "Nebula Nursery 6",
-    "image": "/levels/level_6.png",
+    "image": "/levels/level-1/level_6.png",
     "boardSize": {
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 4, "rows": 6}
@@ -140,7 +140,7 @@
   {
     "id": "level07",
     "name": "Nebula Nursery 7",
-    "image": "/levels/level_7.png",
+    "image": "/levels/level-1/level_7.png",
     "boardSize": {
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 4, "rows": 6}
@@ -162,7 +162,7 @@
   {
     "id": "level08",
     "name": "Nebula Nursery 8",
-    "image": "/levels/level_8.png",
+    "image": "/levels/level-1/level_8.png",
     "boardSize": {
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 4, "rows": 6}
@@ -184,7 +184,7 @@
   {
     "id": "level09",
     "name": "Nebula Nursery 9",
-    "image": "/levels/level_9.png",
+    "image": "/levels/level-1/level_9.png",
     "boardSize": {
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 4, "rows": 6}
@@ -206,7 +206,7 @@
   {
     "id": "level10",
     "name": "Nebula Nursery 10",
-    "image": "/levels/level_10.png",
+    "image": "/levels/level-1/level_10.png",
     "boardSize": {
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 4, "rows": 6}
@@ -234,7 +234,7 @@
   {
     "id": "level11",
     "name": "Orbital Awakening 1",
-    "image": "/levels/level_11.png",
+    "image": "/levels/level-2/level_11.png",
     "boardSize": {
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 5, "rows": 6}
@@ -262,7 +262,7 @@
   {
     "id": "level12",
     "name": "Orbital Awakening 2",
-    "image": "/levels/level_12.png",
+    "image": "/levels/level-2/level_12.png",
     "boardSize": {
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 5, "rows": 6}
@@ -289,7 +289,7 @@
   {
     "id": "level13",
     "name": "Orbital Awakening 3",
-    "image": "/levels/level_13.png",
+    "image": "/levels/level-2/level_13.png",
     "boardSize": {
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 5, "rows": 6}
@@ -317,7 +317,7 @@
   {
     "id": "level14",
     "name": "Orbital Awakening 4",
-    "image": "/levels/level_14.png",
+    "image": "/levels/level-2/level_14.png",
     "boardSize": {
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 5, "rows": 6}
@@ -345,7 +345,7 @@
   {
     "id": "level15",
     "name": "Orbital Awakening 5",
-    "image": "/levels/level_15.png",
+    "image": "/levels/level-2/level_15.png",
     "boardSize": {
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 5, "rows": 6}
@@ -373,7 +373,7 @@
   {
     "id": "level16",
     "name": "Orbital Awakening 6",
-    "image": "/levels/level_16.png",
+    "image": "/levels/level-2/level_16.png",
     "boardSize": {
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 5, "rows": 6}
@@ -400,7 +400,7 @@
   {
     "id": "level17",
     "name": "Orbital Awakening 7",
-    "image": "/levels/level_17.png",
+    "image": "/levels/level-2/level_17.png",
     "boardSize": {
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 5, "rows": 6}
@@ -427,7 +427,7 @@
   {
     "id": "level18",
     "name": "Orbital Awakening 8",
-    "image": "/levels/level_18.png",
+    "image": "/levels/level-2/level_18.png",
     "boardSize": {
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 5, "rows": 6}
@@ -454,7 +454,7 @@
   {
     "id": "level19",
     "name": "Orbital Awakening 9",
-    "image": "/levels/level_19.png",
+    "image": "/levels/level-2/level_19.png",
     "boardSize": {
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 5, "rows": 6}
@@ -482,7 +482,7 @@
   {
     "id": "level20",
     "name": "Orbital Awakening 10",
-    "image": "/levels/level_20.png",
+    "image": "/levels/level-2/level_20.png",
     "boardSize": {
       "mobile": {"cols": 4, "rows": 6},
       "desktop": {"cols": 5, "rows": 6}
