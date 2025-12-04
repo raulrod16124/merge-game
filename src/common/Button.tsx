@@ -3,6 +3,8 @@ import React from 'react';
 import styled, {css} from 'styled-components';
 import {Link} from 'react-router-dom';
 import {COLORS} from '../ui/constants';
+import {soundManager} from '@/core/sound/soundManager';
+import {vibrate} from '@/core/vibration';
 
 type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'success' | 'fail';
 
@@ -110,6 +112,12 @@ export function Button({
   styles,
 }: ButtonProps) {
   const content = loading ? 'Cargando...' : children;
+  const handleClick = () => {
+    soundManager.play('ui-tap');
+    vibrate(10);
+
+    onClick?.();
+  };
 
   if (to) {
     return (
@@ -130,7 +138,7 @@ export function Button({
     <BaseButton
       $variant={selected ? 'secondary' : variant}
       disabled={disabled}
-      onClick={onClick}
+      onClick={handleClick}
       $fullWidth={fullWidth}
       className={className}
       style={styles}>

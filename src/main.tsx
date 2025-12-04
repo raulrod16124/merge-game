@@ -7,6 +7,8 @@ import App from '../src/ui/screens/App';
 import './index.css';
 import {usePlayerStore, useUserStore} from './state';
 import {onAuthChanged} from './core/firebase';
+import {SoundSettingsSync} from './core/sound/SoundSettingsSync';
+import {FriendsRealtimeListener} from './ui/friends/FriendsRealtimeListener';
 
 function InitFirebaseAuthSync() {
   useEffect(() => {
@@ -60,6 +62,8 @@ updateViewportSize();
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <InitFirebaseAuthSync />
+    <SoundSettingsSync />
+    <FriendsRealtimeListener />
     <BrowserRouter
       basename={
         window.location.hostname.includes('github.io') ? '/merge-game/' : '/'

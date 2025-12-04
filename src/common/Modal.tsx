@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import styled from 'styled-components';
 import {Button} from './Button';
 import type {ModalButton} from '../core/types';
 import {CircleX} from 'lucide-react';
 import {COLORS} from '@/ui/constants';
+import {soundManager} from '@/core/sound/soundManager';
 
 type Props = {
   open: boolean;
@@ -87,6 +88,12 @@ const BtnGroup = styled.div`
 
 export function Modal({open, title, message, buttons, onClose}: Props) {
   if (!open) return;
+
+  useEffect(() => {
+    if (open) {
+      soundManager.play('store-open');
+    }
+  }, [open]);
 
   return (
     <Overlay>

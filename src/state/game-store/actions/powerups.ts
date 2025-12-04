@@ -1,6 +1,8 @@
 import type {StateCreator} from 'zustand';
 import type {GameStore} from '../index';
 import type {PowerupType} from '@/core/types';
+import {vibrate} from '@/core/vibration';
+import {soundManager} from '@/core/sound/soundManager';
 
 export const createPowerups = (
   set: Parameters<StateCreator<GameStore>>[0],
@@ -11,6 +13,9 @@ export const createPowerups = (
    * (antes solo marcaba powerupUsed: true y no habilitaba el modo).
    */
   activatePowerup: (id: PowerupType) => {
+    soundManager.play('powerup');
+    vibrate([30, 30, 30]);
+
     get();
 
     console.log('Powerup activado (createPowerups):', id);

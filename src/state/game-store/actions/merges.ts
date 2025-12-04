@@ -9,6 +9,8 @@ import {pickWeighted} from '../utils/weighted';
 import {applyMergeRewards} from './rewards';
 import {useAchievementStore} from '@/state/achievement-store';
 import {ACHIEVEMENTS} from '@/data/achievements';
+import {vibrate} from '@/core/vibration';
+import {soundManager} from '@/core/sound/soundManager';
 
 function getConnectedCluster(
   start: Pos,
@@ -99,6 +101,8 @@ export const createMerges = (
 
     const nextType = getNextType(placed.type);
     if (!nextType) return;
+    soundManager.play('merge');
+    vibrate(15);
 
     const fused: ItemBase = {
       id:

@@ -12,6 +12,7 @@ import {
   Play,
   ChartSpline,
   Star,
+  Users,
 } from 'lucide-react';
 import {
   Container,
@@ -33,11 +34,28 @@ import {COLORS} from '@/ui/constants';
 import {CosmicXPStatus} from '@/ui/components/cosmic-avatar/CosmicXPStatus';
 import {usePlayerStore} from '@/state';
 import {formatCoins} from '@/utils/formatCoins';
+import {soundManager} from '@/core/sound/soundManager';
+import {vibrate} from '@/core/vibration';
+import {useEffect} from 'react';
 
 export default function Home() {
   const navigate = useNavigate();
   const {name, coins} = useUserStore();
   const progress = usePlayerStore(s => s.cosmicProgress);
+
+  useEffect(() => {
+    soundManager.playMusic('bgm-menu');
+
+    return () => {
+      soundManager.stopMusic();
+    };
+  }, []);
+
+  const handleTabPress = (route: string) => {
+    soundManager.play('ui-tap');
+    vibrate(10);
+    navigate(route);
+  };
 
   return (
     <Container>
@@ -100,31 +118,34 @@ export default function Home() {
         <FloatingButton onClick={() => navigate('/stats')} title="Estadísticas">
           <ChartSpline size={20} strokeWidth={2.2} />
         </FloatingButton>
+        <FloatingButton onClick={() => navigate('/friends')} title="Amigos∫">
+          <Users size={20} strokeWidth={2.2} />
+        </FloatingButton>
       </FloatingButtons>
 
       {/* bottom tab bar (mobile style) */}
       <TabBar role="tablist" aria-label="Main navigation">
-        <TabItem onClick={() => navigate('/store')}>
+        <TabItem onClick={() => handleTabPress('/store')}>
           <Box size={30} strokeWidth={1.8} />
           <div>Tienda</div>
         </TabItem>
 
-        <TabItem onClick={() => navigate('/achievements')}>
+        <TabItem onClick={() => handleTabPress('/achievements')}>
           <SquareStar size={30} strokeWidth={1.8} />
           <div>Logros</div>
         </TabItem>
 
-        <TabItem $active={true} onClick={() => navigate('/home')}>
+        <TabItem $active={true} onClick={() => handleTabPress('/home')}>
           <Play size={30} strokeWidth={1.8} />
           <div>Play</div>
         </TabItem>
 
-        <TabItem onClick={() => navigate('/profile')}>
+        <TabItem onClick={() => handleTabPress('/profile')}>
           <User size={30} strokeWidth={1.8} />
           <div>Perfil</div>
         </TabItem>
 
-        <TabItem onClick={() => navigate('/settings')}>
+        <TabItem onClick={() => handleTabPress('/settings')}>
           <Settings size={30} strokeWidth={1.8} />
           <div>Ajustes</div>
         </TabItem>

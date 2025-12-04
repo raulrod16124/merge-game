@@ -71,5 +71,59 @@ service cloud.firestore {
           && data.avatar is map;
       }
     }
+
+    // ===========================
+    // FRIENDS COLLECTION
+    // ===========================
+    match /friends/{userId} {
+      // Cualquier usuario autenticado puede leer docs de friends
+      allow read: if request.auth != null;
+
+      // Cualquier usuario autenticado puede escribir, mientras la estructura sea válida
+      allow create, update: if request.auth != null
+        && isValidFriends(request.resource.data);
+
+      function isValidFriends(data) {
+        return data.list is list
+            && data.incoming is list
+            && data.outgoing is list;
+      }
+    }
+
+    // ===========================
+    // PROFILES COLLECTION
+    // ===========================
+    match /profiles/{userId} {
+      // Cualquiera puede leer perfiles (para ranking, búsqueda, amigos)
+      allow read: if true;
+
+      // Solo el propio usuario puede escribir su perfil
+      allow write: if request.auth != null
+        && request.auth.uid == userId
+        && isValidProfile(request.resource.data);
+
+      function isValidProfile(data) {
+        return data.uid is string
+          && data.name is string
+          && data.avatar is map
+          && data.avatar.shape is string
+          && data.avatar.color is string
+          && data.cosmicLevel is number
+          && data.totalXP is number
+          && data.searchName is string;
+      }
+    }
+    // ===========================
+    // CHATS COLLECTION
+    // ===========================
+    match /chats/{chatId} {
+      allow read, write: if request.auth != null
+        && request.auth.uid in resource.data.participants;
+
+      match /messages/{messageId} {
+        allow read, write: if request.auth != null
+          && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
+      }
+    }
   }
 }

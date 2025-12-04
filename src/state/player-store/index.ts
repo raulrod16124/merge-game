@@ -333,6 +333,10 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
     get().saveCache();
     get().syncToFirebase();
     get().updateLeaderboardScores();
+    // sincronizar perfil público
+    import('@/state/profile-store').then(mod => {
+      mod.useProfileStore.getState().syncMyProfile();
+    });
   },
 
   // -----------------------------
@@ -341,6 +345,7 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
   updateLeaderboardScores: async () => {
     const uid = useUserStore.getState().uid;
     const name = useUserStore.getState().name;
+    const avatar = useUserStore.getState().avatar;
 
     if (!uid) return;
 
@@ -358,6 +363,7 @@ export const usePlayerStore = create<PlayerProgressState>((set, get) => ({
         {
           uid,
           name: name ?? 'Unknown',
+          avatar: avatar ?? {shape: 'default', color: '#ffffff'},
 
           // Valores exportados al ranking
           rankScoreGlobal,

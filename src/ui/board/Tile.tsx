@@ -5,6 +5,8 @@ import {COSMIC_ICONS} from '../constants';
 import {TileBase, TilePlaceholder} from './Tile.styled';
 import {useGameStore} from '@/state/game-store';
 import {Plus} from 'lucide-react';
+import {soundManager} from '@/core/sound/soundManager';
+import {vibrate} from '@/core/vibration';
 
 /**
  * Tile component — muestra el item si existe, o un placeholder.
@@ -26,6 +28,8 @@ type TileProps = {
 export function Tile({x, y, item, onClickEmpty}: TileProps) {
   const {activePowerup, selectedCell, selectCell} = useGameStore(s => s);
   const handleClick = () => {
+    soundManager.play('ui-click');
+    vibrate(10);
     // 1) Si un powerup está activo -> SOLO selectCell
     if (activePowerup) {
       selectCell({x, y});

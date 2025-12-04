@@ -25,6 +25,8 @@ import {Modal} from '@/common/Modal';
 import type {PowerupType} from '@/core/types';
 import {COLORS} from '@/ui/constants';
 import {formatCoins} from '@/utils/formatCoins';
+import {soundManager} from '@/core/sound/soundManager';
+import {vibrate} from '@/core/vibration';
 
 export default function Store() {
   const coins = useUserStore(s => s.coins);
@@ -53,6 +55,9 @@ export default function Store() {
       alert('No tienes suficientes monedas');
       return;
     }
+
+    soundManager.play('store-buy-ok');
+    vibrate([30, 40]);
 
     addCoins(-total);
     addInventoryItem(modal.item.id, modal.qty);

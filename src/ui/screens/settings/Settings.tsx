@@ -1,7 +1,7 @@
 // src/ui/screens/settings/index.tsx
 
-import {useState} from 'react';
 import {useUserStore} from '@/state/user-store';
+import {useSettingsStore} from '@/state/settings-store';
 import AppLayout from '@/ui/layout';
 import {Button} from '@/common/Button';
 import {Section, SectionTitle, Row, Label, Toggle, LinkRow} from './styles';
@@ -11,9 +11,15 @@ import {ChevronRight} from 'lucide-react';
 export default function Settings() {
   const {logout} = useUserStore();
 
-  const [sound, setSound] = useState(true);
-  const [vibration, setVibration] = useState(true);
-  const [language] = useState('es');
+  const sound = useSettingsStore(state => state.soundEnabled);
+  const setSoundEnabled = useSettingsStore(state => state.setSoundEnabled);
+
+  const vibration = useSettingsStore(state => state.vibrationEnabled);
+  const setVibrationEnabled = useSettingsStore(
+    state => state.setVibrationEnabled,
+  );
+
+  const language = useSettingsStore(state => state.language);
 
   return (
     <AppLayout
@@ -32,13 +38,13 @@ export default function Settings() {
         </Row>
 
         {/* Sonido */}
-        <Row onClick={() => setSound(!sound)}>
+        <Row onClick={() => setSoundEnabled(!sound)}>
           <Label>Sonido</Label>
           <Toggle $active={sound}>{sound ? 'ON' : 'OFF'}</Toggle>
         </Row>
 
         {/* Vibración */}
-        <Row onClick={() => setVibration(!vibration)}>
+        <Row onClick={() => setVibrationEnabled(!vibration)}>
           <Label>Vibración</Label>
           <Toggle $active={vibration}>{vibration ? 'ON' : 'OFF'}</Toggle>
         </Row>

@@ -8,27 +8,14 @@ import {InputWrapper, Input} from './styles';
 
 export default function EditName() {
   const navigate = useNavigate();
-  const {name} = useUserStore();
-  const setStore = useUserStore.setState;
+  const {name, setName} = useUserStore();
 
   const [value, setValue] = useState(name ?? '');
 
-  const save = () => {
+  const save = async () => {
     if (!value.trim()) return;
 
-    // Updating store
-    setStore(state => ({
-      ...state,
-      name: value,
-    }));
-
-    // Persistir local
-    const stored = localStorage.getItem('stellar_user');
-    if (stored) {
-      const u = JSON.parse(stored);
-      u.name = value;
-      localStorage.setItem('stellar_user', JSON.stringify(u));
-    }
+    await setName(value.trim());
 
     navigate('/profile');
   };

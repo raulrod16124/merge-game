@@ -58,7 +58,6 @@ export function computeSpawnWeights(
   if (Object.values(effective).reduce((s, v) => s + v, 0) === 0) {
     effective['dust'] = 100;
   }
-
   return effective;
 }
 

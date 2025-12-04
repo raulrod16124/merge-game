@@ -15,7 +15,7 @@ type UserState = {
   uid: string | null;
   authenticated: boolean;
   loading: boolean;
-
+  uniqueName: string | null;
   name: string | null;
   avatar: AvatarAppearance;
   coins: number;
@@ -30,6 +30,7 @@ type UserState = {
   loadFromFirebase: (uid: string) => Promise<void>;
 
   setAvatarAppearance: (appearance: AvatarAppearance) => Promise<void>;
+  setName: (newName: string) => Promise<void>;
   persistAvatar: (avatar: AvatarAppearance) => Promise<void>;
 
   addCoins: (amount: number) => void;
@@ -48,7 +49,7 @@ export const useUserStore = create<UserState>((set, get) => ({
   uid: null,
   authenticated: false,
   loading: false,
-
+  uniqueName: null,
   name: null,
   avatar: {
     shape: AvatarVariant.HYBRID,
@@ -66,9 +67,13 @@ export const useUserStore = create<UserState>((set, get) => ({
   authenticate: async (name, avatar) => {
     const fbUser = await signInAnonIfNeeded();
 
+    const timestamp = new Date();
+    const uniqueName = `${name}#${timestamp.getTime().toString().slice(0, 4)}`;
+
     const newUser = {
       uid: fbUser.uid,
       authenticated: true,
+      uniqueName,
       name,
       avatar,
       coins: 0,
@@ -135,6 +140,7 @@ export const useUserStore = create<UserState>((set, get) => ({
     const payload = {
       uid: state.uid,
       authenticated: state.authenticated,
+      uniqueName: state.uniqueName,
       name: state.name,
       avatar: state.avatar,
       coins: state.coins,
@@ -163,6 +169,7 @@ export const useUserStore = create<UserState>((set, get) => ({
       const merged = {
         uid,
         authenticated: true,
+        uniqueName: data.uniqueName ?? get().uniqueName,
         name: data.name ?? get().name,
         avatar: data.avatar ?? get().avatar,
         coins: data.coins ?? get().coins,
@@ -222,6 +229,56 @@ export const useUserStore = create<UserState>((set, get) => ({
     }
 
     set({avatar: appearance});
+    // sincronizar perfil público
+    import('@/state/profile-store').then(mod => {
+      mod.useProfileStore.getState().syncMyProfile();
+    });
+  },
+
+  setName: async (newName: string) => {
+    const state = get();
+    const uid = state.uid;
+    if (!uid) return;
+
+    // --- USERS ---
+    await setDoc(
+      doc(db, 'users', uid),
+      {
+        name: newName,
+        lastUpdated: serverTimestamp(),
+      },
+      {merge: true},
+    );
+
+    // --- PROFILES ---
+    await setDoc(
+      doc(db, 'profiles', uid),
+      {
+        name: newName,
+        searchName: newName.toLowerCase(),
+      },
+      {merge: true},
+    );
+
+    // --- LEADERBOARD ---
+    await setDoc(
+      doc(db, 'leaderboard', uid),
+      {
+        name: newName,
+      },
+      {merge: true},
+    );
+
+    // --- LOCAL STORAGE ---
+    const stored = localStorage.getItem('stellar_user');
+    if (stored) {
+      const u = JSON.parse(stored);
+      u.name = newName;
+      localStorage.setItem('stellar_user', JSON.stringify(u));
+    }
+
+    // --- ZUSTAND ---
+    set({name: newName});
   },
 
   // ------------------------------

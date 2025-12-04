@@ -8,6 +8,8 @@ import {CosmicAvatar} from '@/ui/components/cosmic-avatar';
 import {useEffect, useState} from 'react';
 import {Button} from '@/common/Button';
 import {AvatarVariant, type AvatarAppearance} from '../cosmic-avatar/types';
+import {vibrate} from '@/core/vibration';
+import {soundManager} from '@/core/sound/soundManager';
 
 const Backdrop = styled.div`
   position: fixed;
@@ -50,6 +52,9 @@ export function CosmicEvolutionModal() {
 
   useEffect(() => {
     if (level) {
+      soundManager.play('evolution');
+      vibrate([20, 40, 20, 40, 60]);
+
       if (!previousAppearance) {
         setPreviousAppearance(
           currentAppearance ?? {

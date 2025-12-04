@@ -2,17 +2,18 @@ import AchievementsScreen from '@/ui/screens/achievements/AchievementsScreen';
 import BoardScreen from '@/ui/screens/board';
 import EditAvatar from '@/ui/screens/edit-avatar';
 import EditName from '@/ui/screens/edit-name';
-import Home from '@/ui/screens/home';
-import Landing from '@/ui/screens/landing';
-import Levels from '@/ui/screens/levels';
-import Login from '@/ui/screens/login';
-import Profile from '@/ui/screens/profile';
-import RankingScreen from '@/ui/screens/ranking';
-import Settings from '@/ui/screens/settings';
-import Store from '@/ui/screens/store';
 import {Routes, Route, Navigate} from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 import PlayerStats from '@/ui/screens/stats/PlayerStats';
+import Landing from '@/ui/screens/landing/Landing';
+import Login from '@/ui/screens/login/Login';
+import Home from '@/ui/screens/home/Home';
+import {Levels} from '@/ui/screens/levels/Levels';
+import Profile from '@/ui/screens/profile/Profile';
+import Settings from '@/ui/screens/settings/Settings';
+import Store from '@/ui/screens/store/Store';
+import RankingScreen from '@/ui/screens/ranking/RankingScreen';
+import FriendsScreen from '@/ui/screens/friends/FriendsScreen';
 
 export default function Router() {
   return (
@@ -114,6 +115,24 @@ export default function Router() {
         element={
           <ProtectedRoute>
             <PlayerStats />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/stats"
+        element={
+          <ProtectedRoute>
+            <PlayerStats />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/friends"
+        element={
+          <ProtectedRoute>
+            <FriendsScreen />
           </ProtectedRoute>
         }
       />

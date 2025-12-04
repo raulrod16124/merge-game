@@ -9,11 +9,11 @@ export interface InputProps
   styles?: React.CSSProperties;
 }
 
-const Wrapper = styled.div<{fullWidth?: boolean}>`
+const Wrapper = styled.div<{$fullWidth?: boolean}>`
   display: flex;
   flex-direction: column;
   gap: 6px;
-  width: ${({fullWidth}) => (fullWidth ? '100%' : 'auto')};
+  width: ${({$fullWidth}) => ($fullWidth ? '100%' : 'auto')};
 `;
 
 const Label = styled.label`
@@ -23,14 +23,14 @@ const Label = styled.label`
   text-align: left;
 `;
 
-const StyledInput = styled.input<{hasError?: boolean}>`
+const StyledInput = styled.input<{$hasError?: boolean}>`
   padding: 12px 14px;
   border-radius: 12px;
 
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid
-    ${({hasError}) =>
-      hasError ? 'rgba(255, 80, 80, 0.7)' : 'rgba(255, 255, 255, 0.18)'};
+    ${({$hasError}) =>
+      $hasError ? 'rgba(255, 80, 80, 0.7)' : 'rgba(255, 255, 255, 0.18)'};
 
   font-size: 1rem;
   color: white;
@@ -39,11 +39,11 @@ const StyledInput = styled.input<{hasError?: boolean}>`
   transition: all 0.2s ease;
 
   &:focus {
-    border-color: ${({hasError}) =>
-      hasError ? 'rgba(255, 100, 100, 0.9)' : '#ffb844'};
+    border-color: ${({$hasError}) =>
+      $hasError ? 'rgba(255, 100, 100, 0.9)' : '#ffb844'};
     box-shadow: 0 0 10px
-      ${({hasError}) =>
-        hasError ? 'rgba(255, 80, 80, 0.5)' : 'rgba(255, 184, 68, 0.35)'};
+      ${({$hasError}) =>
+        $hasError ? 'rgba(255, 80, 80, 0.5)' : 'rgba(255, 184, 68, 0.35)'};
   }
 
   &::placeholder {
@@ -65,9 +65,9 @@ export function Input({
   ...props
 }: InputProps) {
   return (
-    <Wrapper fullWidth={fullWidth} style={styles}>
+    <Wrapper $fullWidth={fullWidth} style={styles}>
       {label && <Label htmlFor={props.id}>{label}</Label>}
-      <StyledInput hasError={Boolean(error)} {...props} />
+      <StyledInput $hasError={Boolean(error)} {...props} />
       {error && <ErrorText>{error}</ErrorText>}
     </Wrapper>
   );

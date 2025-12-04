@@ -24,6 +24,8 @@ import {useAchievementStore, usePlayerStore} from '@/state';
 
 import {LEVEL_XP_REWARD} from '@/data/levelXPRewards';
 import {CosmicEvolutionModal} from '@/ui/components/modals/CosmicEvolutionModal';
+import {vibrate} from '@/core/vibration';
+import {soundManager} from '@/core/sound/soundManager';
 
 /**
  * BoardScreen FINAL — versión SAFE, estable, sin doble carga.
@@ -113,6 +115,9 @@ export function BoardScreen() {
       lvlNum !== null &&
       !completedLevelUnlocks?.[lvlNum + 1]
     ) {
+      soundManager.play('level-win');
+      vibrate([40, 80, 40]);
+
       const xpGained =
         Math.floor((createdCounts?.star ?? 0) * 10 + (levelCoins ?? 0) * 0.2) +
         50;
@@ -157,6 +162,9 @@ export function BoardScreen() {
       if (typeof lvlNum === 'number') {
         usePlayerStore.getState().markLevelCompleted(String(lvlNum), xpGained);
       }
+    } else if (levelResult.status === 'fail') {
+      soundManager.play('level-fail');
+      vibrate([50, 60, 50]);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -180,6 +188,14 @@ export function BoardScreen() {
     };
   }, [setLevelResult, stopTimer]);
 
+  //useEffect(() => {
+  //  soundManager.playMusic('bgm-board');
+
+  //  return () => {
+  //    soundManager.stopMusic();
+  //  };
+  //}, []);
+
   const openPause = useCallback(() => setPaused(true), []);
   const closePause = useCallback(() => setPaused(false), []);
 
@@ -189,7 +205,7 @@ export function BoardScreen() {
   }, [setLevelResult]);
 
   return (
-    <AppLayout prevRoute="/home" hideHeader>
+    <AppLayout prevRoute="/home" hideHeader={true} muteMenuMusic={true}>
       <BoardScreenWrapper>
         <CosmicEvolutionModal />
         <HUDColumn>

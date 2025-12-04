@@ -1,10 +1,10 @@
 import {useEffect, useState} from 'react';
 import AppLayout from '@/ui/layout';
 
-import {Trophy, Star, Award} from 'lucide-react';
+import {Users, Star, Award} from 'lucide-react';
 
 import {
-  getTopGlobal,
+  getFriendsLeaderboard,
   getTopCosmicLevel,
   getTopTotalCosmicXP,
 } from '@/core/leaderboard';
@@ -25,30 +25,45 @@ import {
   SkeletonShimmer,
   RankBadge,
 } from './styles';
+
+import {useFriendsStore} from '@/state/friends-store';
+
 import type {AvatarVariant} from '@/ui/components/cosmic-avatar/types';
 
 type LeaderboardEntry = {
   uid: string;
   name: string;
   avatar: AvatarVariant;
-  rankScoreGlobal?: number;
   rankCosmicLevel?: number;
   rankTotalCosmicXP?: number;
 };
 
-type FilterType = 'global' | 'cosmicLevel' | 'totalXP';
+type FilterType = 'friends' | 'cosmicLevel' | 'totalXP';
 
 export default function RankingScreen() {
-  const [filter, setFilter] = useState<FilterType>('global');
+  const [filter, setFilter] = useState<FilterType>('totalXP');
   const [players, setPlayers] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const friends = useFriendsStore(s => s.friends);
+  const loadFriends = useFriendsStore(s => s.loadFriends);
 
   async function loadRanking(mode: FilterType) {
     setLoading(true);
 
     let data: any[] = [];
 
-    if (mode === 'global') data = await getTopGlobal(50);
+    if (mode === 'friends') {
+      await loadFriends(); // aseguramos datos frescos
+
+      if (!friends.length) {
+        setPlayers([]);
+        setLoading(false);
+        return;
+      }
+      data = await getFriendsLeaderboard(friends);
+    }
+
     if (mode === 'cosmicLevel') data = await getTopCosmicLevel(50);
     if (mode === 'totalXP') data = await getTopTotalCosmicXP(50);
 
@@ -60,17 +75,19 @@ export default function RankingScreen() {
     loadRanking(filter);
   }, [filter]);
 
+  const renderEmptyFriends =
+    filter === 'friends' && !friends.length && !loading;
+
   return (
     <AppLayout title="Ranking" showBack={true} prevRoute="/home">
       <Section>
         {/* FILTROS */}
         <FilterBar>
           <FilterButton
-            $active={filter === 'global'}
-            onClick={() => setFilter('global')}>
-            <Trophy size={18} /> Global
+            $active={filter === 'totalXP'}
+            onClick={() => setFilter('totalXP')}>
+            <Award size={18} /> XP Total
           </FilterButton>
-
           <FilterButton
             $active={filter === 'cosmicLevel'}
             onClick={() => setFilter('cosmicLevel')}>
@@ -78,13 +95,13 @@ export default function RankingScreen() {
           </FilterButton>
 
           <FilterButton
-            $active={filter === 'totalXP'}
-            onClick={() => setFilter('totalXP')}>
-            <Award size={18} /> XP Total
+            $active={filter === 'friends'}
+            onClick={() => setFilter('friends')}>
+            <Users size={18} /> Amigos
           </FilterButton>
         </FilterBar>
 
-        {/* LISTA */}
+        {/* LISTA O ESTADO */}
         {loading ? (
           <SkeletonList>
             {Array.from({length: 5}).map((_, i) => (
@@ -98,6 +115,12 @@ export default function RankingScreen() {
               </SkeletonCard>
             ))}
           </SkeletonList>
+        ) : renderEmptyFriends ? (
+          <div style={{padding: '20px', textAlign: 'center', opacity: 0.7}}>
+            Todavía no tienes amigos.
+            <br />
+            Pronto podrás enviar y aceptar solicitudes.
+          </div>
         ) : (
           <List>
             {players.map((p, idx) => (
@@ -108,14 +131,12 @@ export default function RankingScreen() {
                   <PlayerName>{p.name ?? 'Jugador'}</PlayerName>
 
                   <PlayerStats>
-                    {filter === 'global' &&
-                      `Puntuación Global: ${p.rankScoreGlobal ?? 0}`}
-
                     {filter === 'cosmicLevel' &&
                       `Nivel Cósmico: ${p.rankCosmicLevel ?? 1}`}
-
                     {filter === 'totalXP' &&
                       `XP Total: ${p.rankTotalCosmicXP ?? 0}`}
+                    {filter === 'friends' &&
+                      `Nivel Cósmico: ${p.rankCosmicLevel ?? 1}`}
                   </PlayerStats>
                 </PlayerInfo>
               </PlayerCard>
