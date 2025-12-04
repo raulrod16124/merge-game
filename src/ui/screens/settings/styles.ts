@@ -8,6 +8,11 @@ const fadeIn = keyframes`
   to { opacity: 1; transform: translateY(0); }
 `;
 
+export const Wrapper = styled.div`
+  overflow: auto;
+  padding-bottom: 12dvh;
+`;
+
 export const Section = styled.div`
   padding: 22px 24px;
   display: flex;

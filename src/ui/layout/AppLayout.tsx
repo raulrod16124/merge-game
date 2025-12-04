@@ -17,6 +17,7 @@ interface Props {
   secondaryBg?: boolean;
   renderStarts?: boolean;
   muteMenuMusic?: boolean;
+  styles?: React.CSSProperties;
 }
 
 export default function AppLayout({
@@ -28,6 +29,7 @@ export default function AppLayout({
   secondaryBg = false,
   renderStarts = false,
   muteMenuMusic = false,
+  styles,
 }: Props) {
   const {pathname} = useLocation();
   const navigate = useNavigate();
@@ -70,7 +72,7 @@ export default function AppLayout({
   };
 
   return (
-    <Wrapper $secondaryBg={secondaryBg}>
+    <Wrapper $secondaryBg={secondaryBg} style={styles}>
       <Content>
         {renderStarts && <StarField />}
         {!hideHeader && (

@@ -13,6 +13,7 @@ import {
   Label,
   Toggle,
   LinkCard,
+  Wrapper,
 } from './styles';
 
 import {ChevronRight} from 'lucide-react';
@@ -32,59 +33,59 @@ export default function Settings() {
 
   return (
     <AppLayout title="Ajustes" showBack={true} prevRoute="/home">
-      {/* --- SECCIÓN GENERAL --- */}
-      <Section>
-        <SectionTitle>General</SectionTitle>
-        <CosmicDivider />
+      <Wrapper>
+        {/* --- SECCIÓN GENERAL --- */}
+        <Section>
+          x<SectionTitle>General</SectionTitle>
+          <CosmicDivider />
+          {/* Idioma */}
+          <SettingCard
+            onClick={() => alert('Selector de idiomas próximamente')}>
+            <Label>Idioma</Label>
+            <div style={{opacity: 0.8}}>{language.toUpperCase()}</div>
+            <ChevronRight size={20} />
+          </SettingCard>
+          {/* Sonido */}
+          <SettingCard onClick={() => setSoundEnabled(!sound)}>
+            <Label>Sonido</Label>
+            <Toggle $active={sound}>{sound ? 'ON' : 'OFF'}</Toggle>
+          </SettingCard>
+          {/* Vibración */}
+          <SettingCard onClick={() => setVibrationEnabled(!vibration)}>
+            <Label>Vibración</Label>
+            <Toggle $active={vibration}>{vibration ? 'ON' : 'OFF'}</Toggle>
+          </SettingCard>
+        </Section>
 
-        {/* Idioma */}
-        <SettingCard onClick={() => alert('Selector de idiomas próximamente')}>
-          <Label>Idioma</Label>
-          <div style={{opacity: 0.8}}>{language.toUpperCase()}</div>
-          <ChevronRight size={20} />
-        </SettingCard>
+        {/* --- SECCIÓN INFORMACIÓN --- */}
+        <Section>
+          <SectionTitle>Información</SectionTitle>
+          <CosmicDivider />
 
-        {/* Sonido */}
-        <SettingCard onClick={() => setSoundEnabled(!sound)}>
-          <Label>Sonido</Label>
-          <Toggle $active={sound}>{sound ? 'ON' : 'OFF'}</Toggle>
-        </SettingCard>
+          <LinkCard onClick={() => alert('Mostrar Política de Privacidad')}>
+            <Label>Política de Privacidad</Label>
+            <ChevronRight size={20} />
+          </LinkCard>
 
-        {/* Vibración */}
-        <SettingCard onClick={() => setVibrationEnabled(!vibration)}>
-          <Label>Vibración</Label>
-          <Toggle $active={vibration}>{vibration ? 'ON' : 'OFF'}</Toggle>
-        </SettingCard>
-      </Section>
+          <LinkCard onClick={() => alert('Acerca del juego')}>
+            <Label>Acerca del juego</Label>
+            <ChevronRight size={20} />
+          </LinkCard>
+        </Section>
 
-      {/* --- SECCIÓN INFORMACIÓN --- */}
-      <Section>
-        <SectionTitle>Información</SectionTitle>
-        <CosmicDivider />
-
-        <LinkCard onClick={() => alert('Mostrar Política de Privacidad')}>
-          <Label>Política de Privacidad</Label>
-          <ChevronRight size={20} />
-        </LinkCard>
-
-        <LinkCard onClick={() => alert('Acerca del juego')}>
-          <Label>Acerca del juego</Label>
-          <ChevronRight size={20} />
-        </LinkCard>
-      </Section>
-
-      {/* --- CERRAR SESIÓN --- */}
-      <Section>
-        <Button
-          variant="fail"
-          fullWidth={true}
-          onClick={() => {
-            logout();
-            window.location.href = '/login';
-          }}>
-          Cerrar sesión
-        </Button>
-      </Section>
+        {/* --- CERRAR SESIÓN --- */}
+        <Section>
+          <Button
+            variant="fail"
+            fullWidth={true}
+            onClick={() => {
+              logout();
+              window.location.href = '/login';
+            }}>
+            Cerrar sesión
+          </Button>
+        </Section>
+      </Wrapper>
     </AppLayout>
   );
 }
