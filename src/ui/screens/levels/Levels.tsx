@@ -25,7 +25,7 @@ const SECTIONS = [
 export function Levels() {
   const highestUnlocked = usePlayerStore(s => s.highestLevelUnlocked);
   const unlockedSections = usePlayerStore(s => s.unlockedSections);
-  console.log({unlockedSections});
+
   // sección seleccionada
   const [selectedSection, setSelectedSection] = useState<number | null>(null);
 

@@ -232,25 +232,6 @@ export const useGameStore = create<GameStore>()(
         set(() => ({
           levelResult: {...r, xpEarned},
         }));
-
-        // --- tu lógica de unlocks, sin tocar ---
-        try {
-          if (status === 'win') {
-            import('@/state/player-store')
-              .then(mod => {
-                const player = mod.usePlayerStore.getState();
-                const lvlNum = parseInt(levelId.replace(/\D/g, ''), 10) || null;
-                if (lvlNum) {
-                  const nextLevelId = `level${String(lvlNum + 1).padStart(2, '0')}`;
-                  player.unlockLevel(nextLevelId);
-                  player.applyLevelUnlocks(lvlNum + 1);
-                }
-              })
-              .catch(() => {});
-          }
-        } catch (e) {
-          console.warn('apply level unlocks failed', e);
-        }
       },
 
       // === move action + selectCell handling for powerups ===

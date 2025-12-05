@@ -1,4 +1,5 @@
 // src/ui/board/PowerupBar.tsx
+
 import styled from 'styled-components';
 import {useUserStore} from '@/state/user-store';
 import {useGameStore} from '@/state/game-store';
@@ -7,95 +8,101 @@ import {STORE_ITEMS} from '@/data/store/store-items';
 import {usePlayerStore} from '@/state/player-store';
 
 const Wrapper = styled.div`
-  height: calc(15dvh - 24px);
-  padding: 0.5dvh 8px;
+  height: calc(15dvh - 5px);
+  padding: 8px;
   display: flex;
   justify-content: center;
-  gap: 18px;
+  gap: 2%;
 
-  background: rgba(13, 16, 32, 0.95);
-  backdrop-filter: blur(6px);
-
-  /* Centrado seguro */
+  background: linear-gradient(
+    to top,
+    rgba(6, 8, 20, 0.95),
+    rgba(18, 15, 40, 0.85)
+  );
+  backdrop-filter: blur(8px);
   width: 100%;
   box-sizing: border-box;
-`;
-
-const PowerupImg = styled.img`
-  width: 52px;
-  height: 52px;
-  object-fit: contain;
-  user-select: none;
-  pointer-events: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 `;
 
 const PwrBtn = styled.button<{disabled?: boolean}>`
-  background: ${({disabled}) =>
-    disabled ? 'rgba(255,255,255,0.03)' : COLORS.tertiaryDark};
-  border: 1px solid ${COLORS.primaryDark};
+  position: relative;
 
-  padding: 8px 8px 8px 8px;
-  border-radius: 14px;
-  min-width: 90px;
+  background: ${({disabled}) =>
+    disabled
+      ? 'rgba(255,255,255,0.04)'
+      : 'linear-gradient(145deg, #1a1a23, #272732)'};
+
+  border: 2px solid
+    ${({disabled}) =>
+      disabled ? 'rgba(255,255,255,0.07)' : COLORS.secondaryDark};
+
+  box-shadow: ${({disabled}) =>
+    disabled
+      ? 'none'
+      : `0 0 10px ${COLORS.secondaryDark}55, 0 0 18px ${COLORS.secondary}33`};
+
+  padding: 8px;
+  border-radius: 12px;
+
+  width: 25%;
 
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 
   cursor: ${({disabled}) => (disabled ? 'default' : 'pointer')};
   opacity: ${({disabled}) => (disabled ? 0.45 : 1)};
 
-  transition: 0.16s ease;
+  transition: 0.18s ease;
 
   &:hover {
-    background: ${({disabled}) => (disabled ? undefined : COLORS.tertiary)};
-    transform: ${({disabled}) => (disabled ? 'none' : 'translateY(-2px)')};
+    transform: ${({disabled}) => (disabled ? 'none' : 'translateY(-4px)')};
+    box-shadow: ${({disabled}) =>
+      disabled
+        ? 'none'
+        : `0 0 14px ${COLORS.secondary}, 0 0 26px ${COLORS.secondaryDark}`};
   }
+`;
 
-  .label {
-    margin-top: 6px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: ${COLORS.white};
-    text-align: center;
-  }
-
-  .qty {
-    margin-top: 4px;
-    font-size: 0.75rem;
-    color: ${COLORS.white};
-    opacity: 0.9;
-    display: flex;
-    align-items: center;
-    gap: 3px;
-  }
+const PowerupImg = styled.img`
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
 `;
 
 const QtyBubble = styled.div`
   position: absolute;
-  top: -2dvh;
-  right: -40px;
+  top: -10px;
+  right: -10px;
 
-  background: ${COLORS.primary};
-  color: #000;
-  font-size: 1.2rem;
-
-  padding: 3px;
-  border-radius: 50%;
+  width: 10px;
+  height: 10px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  min-width: 24px;
-  text-align: center;
+  background: ${COLORS.primary};
+  color: #000;
+  font-size: 1rem;
+
+  padding: 6px;
+  border-radius: 50%;
+  font-weight: 700;
+
+  box-shadow: 0 0 8px ${COLORS.primary};
 `;
 
-const IconWrap = styled.div`
-  position: relative;
-  width: 48px;
-  height: 48px;
+const Label = styled.div`
+  margin-top: 2px;
+  font-size: 0.8rem;
+  text-align: center;
+  color: ${COLORS.white};
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.22);
 `;
 
 function pickPowerupsFromStore() {
@@ -107,15 +114,11 @@ export function PowerupBar() {
   const consumeItem = useUserStore(s => s.consumeItem);
   const activatePowerup = useGameStore(s => s.activatePowerup);
 
-  const unlockedPowerups = usePlayerStore(s => s.unlockedPowerups);
+  const unlocked = usePlayerStore(s => s.unlockedPowerups);
 
-  const powerups = pickPowerupsFromStore().filter(p => {
-    const unlocked = unlockedPowerups.includes(p.id);
-    const qty = inventory[p.id] || 0;
-    return unlocked && qty > 0;
-  });
+  const powerups = pickPowerupsFromStore().filter(p => unlocked.includes(p.id));
 
-  if (!powerups || powerups.length === 0) return null;
+  if (!powerups.length) return null;
 
   return (
     <Wrapper>
@@ -125,25 +128,16 @@ export function PowerupBar() {
 
         const handleClick = () => {
           if (disabled) return;
-
-          const ok = consumeItem(item.id, 1);
-          if (!ok) return;
-
-          try {
-            activatePowerup(item.id);
-          } catch (e) {
-            console.warn('activatePowerup failed', e);
-          }
+          if (!consumeItem(item.id, 1)) return;
+          activatePowerup(item.id);
         };
 
         return (
           <PwrBtn key={item.id} disabled={disabled} onClick={handleClick}>
-            <IconWrap>
-              <PowerupImg src={`/powerups/${item.id}.png`} alt={item.id} />
-              {qty > 0 && <QtyBubble>{qty}</QtyBubble>}
-            </IconWrap>
+            <PowerupImg src={`/powerups/${item.id}.png`} alt={item.id} />
+            {qty > 0 && <QtyBubble>{qty}</QtyBubble>}
 
-            <div className="label">{item.name ?? item.id}</div>
+            <Label>{item.name ?? item.id}</Label>
           </PwrBtn>
         );
       })}
